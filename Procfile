@@ -1,1 +1,1 @@
-web: dotnet VehicleReservationSystem.dll --urls "http://0.0.0.0:$PORT"
+web: dotnet VehicleReservationSystem.dll --urls http://0.0.0.0:$PORT
