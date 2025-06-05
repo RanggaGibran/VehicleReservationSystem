@@ -343,10 +343,9 @@
                             </small>
                         </div>
                     </div>
-                    
-                    <!-- Enhanced Approvers Checkboxes -->
+                      <!-- Enhanced Approvers Checkboxes -->
                     <div class="approvers-container">
-                        @if (Model.Approvers != null)
+                        @if (Model.Approvers != null && Model.Approvers.Any())
                         {
                             @foreach (var approver in Model.Approvers)
                             {
@@ -369,6 +368,18 @@
                                     </div>
                                 }
                             }
+                        }
+                        else
+                        {
+                            <div class="alert alert-warning">
+                                <div class="d-flex align-items-center">
+                                    <i class="bi bi-exclamation-triangle me-2 text-warning fs-5"></i>
+                                    <div>
+                                        <strong>Tidak Ada Penyetuju Tersedia</strong>
+                                        <p class="mb-0">Saat ini tidak ada penyetuju yang tersedia dalam sistem. Silakan hubungi administrator untuk menambahkan penyetuju.</p>
+                                    </div>
+                                </div>
+                            </div>
                         }
                     </div>
                     
@@ -744,10 +755,19 @@
                             isValid = false;
                         }
                     }
-                    break;
-                case 4:
+                    break;                case 4:
                     const selectedApprovers = $('.approver-checkbox:checked').length;
-                    if (selectedApprovers < 2) {
+                    const totalApprovers = $('.approver-checkbox').length;
+                    
+                    // Check if there are any approvers available
+                    if (totalApprovers === 0) {
+                        $("#approverError").removeClass('d-none').text('Tidak ada penyetuju yang tersedia. Hubungi administrator.');
+                        $('.approvers-container').addClass('border border-warning rounded-3');
+                        setTimeout(() => {
+                            $('.approvers-container').removeClass('border border-warning rounded-3');
+                        }, 3000);
+                        isValid = false;
+                    } else if (selectedApprovers < 2) {
                         $("#approverError").removeClass('d-none').text('Pilih minimal 2 penyetuju untuk melanjutkan');
                         $('.approvers-container').addClass('border border-danger rounded-3');
                         setTimeout(() => {
