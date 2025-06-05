@@ -19,7 +19,7 @@
                     </div>
                     <div class="card-body p-4 p-md-5">
                         <h5 class="text-center mb-4 fw-bold text-primary">Masuk ke Akun Anda</h5>
-                          <form id="account" method="post">                            <div asp-validation-summary="ModelOnly" class="alert custom-alert-danger py-2 mb-4" role="alert">
+                          <form id="account" method="post">                            <div asp-validation-summary="ModelOnly" class="alert custom-alert-danger py-2 mb-4 d-none" role="alert">
                                 <div class="d-flex align-items-center">
                                     <i class="bi bi-exclamation-triangle-fill me-2 text-danger"></i>
                                     <span class="fw-semibold">Terjadi kesalahan saat login. Silakan periksa kembali data yang Anda masukkan.</span>
@@ -30,10 +30,7 @@
                                 <div class="input-group">
                                     <span class="input-group-text bg-light"><i class="bi bi-person"></i></span>
                                     <input asp-for="Email" class="form-control form-control-lg" placeholder="Masukkan email" autocomplete="username" />
-                                </div>                                <span asp-validation-for="Email" class="text-danger small d-inline-flex align-items-center mt-1 validation-message">
-                                    <i class="bi bi-exclamation-circle-fill me-1"></i>
-                                    <span></span>
-                                </span>
+                                </div>                                <span asp-validation-for="Email" class="text-danger small mt-1 validation-message"></span>
                             </div>
                             
                             <div class="form-group mb-4">
@@ -44,10 +41,7 @@
                                     <button class="btn btn-outline-secondary" type="button" id="togglePassword">
                                         <i class="bi bi-eye"></i>
                                     </button>
-                                </div>                                <span asp-validation-for="Password" class="text-danger small d-inline-flex align-items-center mt-1 validation-message">
-                                    <i class="bi bi-exclamation-circle-fill me-1"></i>
-                                    <span></span>
-                                </span>
+                                </div>                                <span asp-validation-for="Password" class="text-danger small mt-1 validation-message"></span>
                             </div>
                             
                             <div class="form-group mb-4">
@@ -118,9 +112,30 @@
                 icon.classList.add('bi-eye');
             }
         });
-        
-        // Custom validation messages
-        $(document).ready(function () {            $.validator.setDefaults({
+          // Custom validation messages
+        $(document).ready(function () {            // Handle validation summary visibility
+            const validationSummary = $('[asp-validation-summary]');
+            
+            // Hide initially
+            validationSummary.addClass('d-none');
+            
+            // Show only when it contains errors
+            if (validationSummary.find('ul li').length > 0) {
+                validationSummary.removeClass('d-none');
+            }
+            
+            // Observe DOM changes to show/hide validation summary when errors appear
+            const observer = new MutationObserver(function(mutations) {
+                const hasErrors = validationSummary.find('ul li').length > 0;
+                validationSummary.toggleClass('d-none', !hasErrors);
+            });
+            
+            observer.observe(validationSummary[0], { 
+                childList: true,
+                subtree: true
+            });
+            
+            $.validator.setDefaults({
                 errorElement: 'span',
                 errorClass: 'field-validation-error',
                 highlight: function(element) {
@@ -134,9 +149,18 @@
                     $(element).closest('.form-group').removeClass('has-error');
                 },
                 errorPlacement: function(error, element) {
-                    error.addClass('validation-message d-inline-flex align-items-center mt-1');
-                    error.html('<i class="bi bi-exclamation-circle-fill me-1"></i><span>' + error.text() + '</span>');
-                    error.insertAfter(element.closest('.input-group').length ? element.closest('.input-group') : element);
+                    // Find validation container
+                    const container = element.closest('.form-group').find('.validation-message');
+                    if (container.length) {
+                        // Format error message with icon
+                        container.html('<div class="d-flex align-items-center"><i class="bi bi-exclamation-circle-fill me-1"></i><span>' + error.text() + '</span></div>');
+                        container.show();
+                    } else {
+                        // Fallback to default placement
+                        error.addClass('validation-message');
+                        error.html('<div class="d-flex align-items-center"><i class="bi bi-exclamation-circle-fill me-1"></i><span>' + error.text() + '</span></div>');
+                        error.insertAfter(element.closest('.input-group').length ? element.closest('.input-group') : element);
+                    }
                 }
             });
               // Custom validation messages
@@ -306,28 +330,43 @@
         opacity: 0;
         animation: fadeIn 0.3s ease forwards;
     }
-    
-    /* Enhanced validation styling */
+      /* Enhanced validation styling */
     .validation-message {
         background-color: rgba(220, 53, 69, 0.1);
         padding: 0.35rem 0.75rem;
         border-radius: 0.25rem;
         font-size: 0.85rem;
         border-left: 3px solid #dc3545;
+        display: none; /* Hide initially */
     }
     
-    /* Enhanced login button */
+    .validation-message:empty {
+        display: none;
+    }
+    
+    .validation-message:not(:empty) {
+        display: block;
+    }
+      /* Enhanced login button */
     .login-button {
         background: linear-gradient(135deg, var(--mining-primary), var(--mining-primary-dark));
         border: none;
         position: relative;
         overflow: hidden;
         transition: all 0.5s ease;
+        box-shadow: 0 4px 15px rgba(var(--mining-primary-rgb), 0.25) !important;
+        border-radius: 8px;
     }
     
     .login-button:hover {
         transform: translateY(-3px);
-        box-shadow: 0 0.5rem 1rem rgba(var(--mining-primary-rgb), 0.3) !important;
+        box-shadow: 0 8px 20px rgba(var(--mining-primary-rgb), 0.4) !important;
+        background: linear-gradient(135deg, var(--mining-primary-dark), var(--mining-primary));
+    }
+    
+    .login-button:active {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(var(--mining-primary-rgb), 0.35) !important;
     }
     
     .login-button:before {
@@ -337,7 +376,7 @@
         left: -100%;
         width: 100%;
         height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
         transition: 0.5s;
     }
     
