@@ -1,0 +1,378 @@
+@model VehicleReservationSystem.ViewModels.ReservationViewModel
+
+@{
+    ViewData["Title"] = "Edit Reservasi";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="mb-1">
+            <i class="bi bi-pencil-square text-warning me-2"></i>Edit Reservasi
+        </h1>
+        <p class="text-muted mb-0">
+            <i class="bi bi-info-circle me-1"></i>Perbarui informasi reservasi kendaraan
+        </p>
+    </div>
+    <div class="d-flex gap-2">
+        <a asp-action="Index" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i>Kembali ke Daftar
+        </a>
+    </div>
+</div>
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-triangle me-2"></i>@TempData["Error"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<div class="card modern-card">
+    <div class="card-header bg-gradient-warning text-white">
+        <h5 class="mb-0">
+            <i class="bi bi-pencil me-2"></i>Form Edit Reservasi
+        </h5>
+    </div>
+    <div class="card-body">
+        <form asp-action="Edit" method="post" id="editReservationForm">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+            
+            <!-- Basic Information -->
+            <div class="row g-3 mb-4">
+                <div class="col-12">
+                    <h6 class="text-muted fw-semibold mb-3">
+                        <i class="bi bi-info-circle me-1"></i>Informasi Dasar
+                    </h6>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="form-group mb-3">
+                        <label asp-for="RequesterId" class="form-label fw-medium">
+                            <i class="bi bi-person text-muted me-1"></i>Pemohon <span class="text-danger">*</span>
+                        </label>
+                        <select asp-for="RequesterId" asp-items="Model.Users" class="form-select form-select-modern">
+                            <option value="">-- Pilih Pemohon --</option>
+                        </select>
+                        <span asp-validation-for="RequesterId" class="text-danger small"></span>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="form-group mb-3">
+                        <label asp-for="NumberOfPassengers" class="form-label fw-medium">
+                            <i class="bi bi-people text-muted me-1"></i>Jumlah Penumpang <span class="text-danger">*</span>
+                        </label>
+                        <input asp-for="NumberOfPassengers" class="form-control form-control-modern" placeholder="Masukkan jumlah penumpang" />
+                        <span asp-validation-for="NumberOfPassengers" class="text-danger small"></span>
+                        <small class="text-muted">Termasuk pengemudi</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Vehicle & Driver Selection -->
+            <div class="row g-3 mb-4">
+                <div class="col-12">
+                    <h6 class="text-muted fw-semibold mb-3">
+                        <i class="bi bi-truck me-1"></i>Pilihan Kendaraan & Pengemudi
+                    </h6>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="form-group mb-3">
+                        <label asp-for="VehicleId" class="form-label fw-medium">
+                            <i class="bi bi-truck text-muted me-1"></i>Kendaraan <span class="text-danger">*</span>
+                        </label>
+                        <select asp-for="VehicleId" asp-items="Model.Vehicles" class="form-select form-select-modern">
+                            <option value="">-- Pilih Kendaraan --</option>
+                        </select>
+                        <span asp-validation-for="VehicleId" class="text-danger small"></span>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="form-group mb-3">
+                        <label asp-for="DriverId" class="form-label fw-medium">
+                            <i class="bi bi-person-gear text-muted me-1"></i>Pengemudi
+                        </label>
+                        <select asp-for="DriverId" asp-items="Model.Drivers" class="form-select form-select-modern">
+                            <option value="">-- Pilih Pengemudi (Opsional) --</option>
+                        </select>
+                        <span asp-validation-for="DriverId" class="text-danger small"></span>
+                        <small class="text-muted">Kosongkan jika akan ditentukan kemudian</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Schedule & Destination -->
+            <div class="row g-3 mb-4">
+                <div class="col-12">
+                    <h6 class="text-muted fw-semibold mb-3">
+                        <i class="bi bi-calendar-event me-1"></i>Jadwal & Tujuan
+                    </h6>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="form-group mb-3">
+                        <label asp-for="StartDate" class="form-label fw-medium">
+                            <i class="bi bi-calendar-plus text-muted me-1"></i>Tanggal & Waktu Mulai <span class="text-danger">*</span>
+                        </label>
+                        <input asp-for="StartDate" type="datetime-local" class="form-control form-control-modern" />
+                        <span asp-validation-for="StartDate" class="text-danger small"></span>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="form-group mb-3">
+                        <label asp-for="EndDate" class="form-label fw-medium">
+                            <i class="bi bi-calendar-x text-muted me-1"></i>Tanggal & Waktu Selesai <span class="text-danger">*</span>
+                        </label>
+                        <input asp-for="EndDate" type="datetime-local" class="form-control form-control-modern" />
+                        <span asp-validation-for="EndDate" class="text-danger small"></span>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="form-group mb-3">
+                        <label asp-for="Purpose" class="form-label fw-medium">
+                            <i class="bi bi-clipboard-check text-muted me-1"></i>Tujuan Penggunaan <span class="text-danger">*</span>
+                        </label>
+                        <select asp-for="Purpose" class="form-select form-select-modern" onchange="handlePurposeChange()">
+                            <option value="">-- Pilih Tujuan Penggunaan --</option>
+                            <option value="Transportasi Karyawan">Transportasi Karyawan</option>
+                            <option value="Kunjungan Site Tambang">Kunjungan Site Tambang</option>
+                            <option value="Meeting/Rapat Eksternal">Meeting/Rapat Eksternal</option>
+                            <option value="Inspeksi Operasional">Inspeksi Operasional</option>
+                            <option value="Transportasi Equipment">Transportasi Equipment</option>
+                            <option value="Emergency/Darurat">Emergency/Darurat</option>
+                            <option value="Lainnya">Lainnya</option>
+                        </select>
+                        <span asp-validation-for="Purpose" class="text-danger small"></span>
+                    </div>
+                    
+                    <!-- Custom Purpose Input (hidden by default) -->
+                    <div id="customPurposeDiv" class="form-group mb-3" style="display: none;">
+                        <label class="form-label fw-medium">
+                            <i class="bi bi-pencil text-muted me-1"></i>Tujuan Lainnya <span class="text-danger">*</span>
+                        </label>
+                        <input type="text" id="customPurpose" class="form-control form-control-modern" placeholder="Sebutkan tujuan penggunaan..." />
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="form-group mb-3">
+                        <label asp-for="Destination" class="form-label fw-medium">
+                            <i class="bi bi-geo-alt text-muted me-1"></i>Tujuan/Lokasi <span class="text-danger">*</span>
+                        </label>
+                        <input asp-for="Destination" class="form-control form-control-modern" placeholder="Masukkan tujuan/lokasi" />
+                        <span asp-validation-for="Destination" class="text-danger small"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Approvers -->
+            <div class="row g-3 mb-4">
+                <div class="col-12">
+                    <h6 class="text-muted fw-semibold mb-3">
+                        <i class="bi bi-clipboard-check me-1"></i>Penyetuju
+                    </h6>
+                </div>
+                
+                <div class="col-12">
+                    <div class="form-group mb-3">
+                        <label class="form-label fw-medium">
+                            <i class="bi bi-person-check text-muted me-1"></i>Pilih Penyetuju <span class="text-danger">*</span>
+                            <small class="text-muted">(Minimal 2 orang)</small>
+                        </label>
+                        <div class="border rounded-3 p-3 bg-light">
+                            @for (int i = 0; i < Model.Approvers.Count; i++)
+                            {
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="checkbox" 
+                                           name="ApproverIds" 
+                                           value="@Model.Approvers[i].Value" 
+                                           id="approver_@i"
+                                           @(Model.ApproverIds.Contains(Model.Approvers[i].Value) ? "checked" : "") />
+                                    <label class="form-check-label fw-medium" for="approver_@i">
+                                        @Model.Approvers[i].Text
+                                    </label>
+                                </div>
+                            }
+                        </div>
+                        <span class="text-danger small" id="approverError" style="display: none;">Pilih minimal 2 penyetuju</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="d-flex justify-content-between align-items-center">
+                <a asp-action="Index" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left me-1"></i>Batal
+                </a>
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-warning">
+                        <i class="bi bi-check-circle me-1"></i>Perbarui Reservasi
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    
+    <script>
+        $(document).ready(function() {
+            // Set minimum date/time to current time
+            const now = new Date();
+            const minDateTime = now.toISOString().slice(0, 16);
+            
+            $("#StartDate").attr('min', minDateTime);
+            $("#EndDate").attr('min', minDateTime);
+
+            // Auto-calculate end date when start date changes
+            $("#StartDate").change(function() {
+                const startDate = new Date($(this).val());
+                if (startDate) {
+                    const endDate = new Date(startDate);
+                    endDate.setHours(endDate.getHours() + 4); // Default 4 hours duration
+                    
+                    const year = endDate.getFullYear();
+                    const month = (endDate.getMonth() + 1).toString().padStart(2, '0');
+                    const day = endDate.getDate().toString().padStart(2, '0');
+                    const hours = endDate.getHours().toString().padStart(2, '0');
+                    const minutes = endDate.getMinutes().toString().padStart(2, '0');
+                    
+                    $("#EndDate").val(`${year}-${month}-${day}T${hours}:${minutes}`);
+                    $("#EndDate").attr('min', $(this).val());
+                }
+            });
+            
+            // Initialize purpose if "Lainnya" is selected
+            handlePurposeChange();
+            
+            // Form validation
+            $("#editReservationForm").on('submit', function(e) {
+                if (!validateForm()) {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+        });
+        
+        function handlePurposeChange() {
+            const purpose = $("#Purpose").val();
+            if (purpose === "Lainnya") {
+                $("#customPurposeDiv").show();
+                $("#customPurpose").prop('required', true);
+            } else {
+                $("#customPurposeDiv").hide();
+                $("#customPurpose").prop('required', false);
+            }
+        }
+        
+        function validateForm() {
+            let isValid = true;
+            
+            // Clear previous validation errors
+            $('.is-invalid').removeClass('is-invalid');
+            $('#approverError').hide();
+            
+            // Validate required fields
+            const requiredFields = ['RequesterId', 'VehicleId', 'StartDate', 'EndDate', 'Purpose', 'Destination', 'NumberOfPassengers'];
+            requiredFields.forEach(function(field) {
+                const value = $("#" + field).val();
+                if (!value || value.trim() === '') {
+                    $("#" + field).addClass('is-invalid');
+                    isValid = false;
+                }
+            });
+            
+            // Validate custom purpose if needed
+            if ($("#Purpose").val() === "Lainnya") {
+                const customPurpose = $("#customPurpose").val();
+                if (!customPurpose || customPurpose.trim() === '') {
+                    $("#customPurpose").addClass('is-invalid');
+                    isValid = false;
+                } else {
+                    // Set the actual purpose value
+                    $("#Purpose").val(customPurpose);
+                }
+            }
+            
+            // Validate dates
+            if ($("#StartDate").val() && $("#EndDate").val()) {
+                const start = new Date($("#StartDate").val());
+                const end = new Date($("#EndDate").val());
+                if (end <= start) {
+                    $("#EndDate").addClass('is-invalid');
+                    isValid = false;
+                    alert('Tanggal selesai harus setelah tanggal mulai');
+                }
+            }
+            
+            // Validate approvers (minimum 2)
+            const selectedApprovers = $("input[name='ApproverIds']:checked");
+            if (selectedApprovers.length < 2) {
+                $('#approverError').show();
+                isValid = false;
+            }
+            
+            return isValid;
+        }
+    </script>
+}
+
+<style>
+    .modern-card {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+    }
+
+    .modern-card:hover {
+        box-shadow: 0 8px 25px -5px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-control-modern {
+        border-radius: 8px;
+        border: 1px solid #e2e8f0;
+        padding: 0.625rem 1rem;
+        transition: all 0.15s ease-in-out;
+    }
+
+    .form-control-modern:focus {
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.15);
+    }
+
+    .form-select-modern {
+        border-radius: 8px;
+        border: 1px solid #e2e8f0;
+        padding: 0.625rem 1rem;
+        transition: all 0.15s ease-in-out;
+    }
+
+    .form-select-modern:focus {
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.15);
+    }
+
+    .bg-gradient-warning {
+        background: linear-gradient(135deg, #f59e0b, #d97706);
+    }
+
+    .form-check-input:checked {
+        background-color: #3b82f6;
+        border-color: #3b82f6;
+    }
+
+    .form-check-label {
+        margin-bottom: 0;
+        cursor: pointer;
+    }
+</style>
