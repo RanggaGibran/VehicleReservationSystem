@@ -9,6 +9,11 @@ namespace VehicleReservationSystem.Controllers
             return View();
         }
 
+        public IActionResult Privacy()
+        {
+            return View();
+        }
+
         public IActionResult Error()
         {
             return View();

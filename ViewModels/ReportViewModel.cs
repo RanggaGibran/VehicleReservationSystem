@@ -21,10 +21,9 @@ namespace VehicleReservationSystem.ViewModels
         [Display(Name = "Vehicle Type")]
         public int? VehicleTypeId { get; set; }
 
-        public List<SelectListItem> Locations { get; set; } = new List<SelectListItem>();
-        public List<SelectListItem> VehicleTypes { get; set; } = new List<SelectListItem>();
-
-        public List<ReservationReportItemViewModel> ReportData { get; set; } = new List<ReservationReportItemViewModel>();
+        public List<SelectListItem> Locations { get; set; } = new();
+        public List<SelectListItem> VehicleTypes { get; set; } = new();
+        public List<ReservationReportItemViewModel> ReportData { get; set; } = new();
     }
 
     public class ReservationReportItemViewModel
@@ -34,23 +33,21 @@ namespace VehicleReservationSystem.ViewModels
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public double Duration { get; set; }
-        public string VehicleRegistration { get; set; }
-        public string VehicleType { get; set; }
-        public string VehicleCategory { get; set; }
-        public string Location { get; set; }
-        public string Region { get; set; }
-        public string RequesterName { get; set; }
-        public string RequesterDepartment { get; set; }
-        public string DriverName { get; set; }
-        public string Purpose { get; set; }
-        public string Destination { get; set; }
-        public string Status { get; set; }
-    }
-
-    public class ExcelFileViewModel
+        public string VehicleRegistration { get; set; } = string.Empty;
+        public string VehicleType { get; set; } = string.Empty;
+        public string VehicleCategory { get; set; } = string.Empty;
+        public string Location { get; set; } = string.Empty;
+        public string Region { get; set; } = string.Empty;
+        public string RequesterName { get; set; } = string.Empty;
+        public string RequesterDepartment { get; set; } = string.Empty;
+        public string DriverName { get; set; } = string.Empty;
+        public string Purpose { get; set; } = string.Empty;
+        public string Destination { get; set; } = string.Empty;
+        public string Status { get; set; } = string.Empty;
+    }    public class ExcelFileViewModel
     {
-        public byte[] Content { get; set; }
-        public string ContentType { get; set; }
-        public string FileName { get; set; }
+        public byte[] Content { get; set; } = Array.Empty<byte>();
+        public string ContentType { get; set; } = string.Empty;
+        public string FileName { get; set; } = string.Empty;
     }
 }

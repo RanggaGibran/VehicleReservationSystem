@@ -6,14 +6,11 @@ using VehicleReservationSystem.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddControllersWithViews();
 
-// Add DbContext
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Add Identity
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options => {
     options.Password.RequiredLength = 6;
     options.Password.RequireNonAlphanumeric = false;
@@ -28,12 +25,6 @@ builder.Services.ConfigureApplicationCookie(options => {
     options.LogoutPath = "/Account/Logout";
     options.AccessDeniedPath = "/Account/AccessDenied";
 });
-
-// Register services
-builder.Services.AddScoped<Lazy<IReservationService>>(provider => 
-    new Lazy<IReservationService>(() => provider.GetRequiredService<IReservationService>()));
-builder.Services.AddScoped<Lazy<IApprovalService>>(provider => 
-    new Lazy<IApprovalService>(() => provider.GetRequiredService<IApprovalService>()));
 
 builder.Services.AddScoped<IReservationService, ReservationService>();
 builder.Services.AddScoped<IApprovalService, ApprovalService>();

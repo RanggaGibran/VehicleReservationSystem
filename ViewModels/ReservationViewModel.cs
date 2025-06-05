@@ -6,7 +6,7 @@ namespace VehicleReservationSystem.ViewModels
     public class ReservationViewModel
     {
         [Required]
-        public string RequesterId { get; set; }
+        public string RequesterId { get; set; } = string.Empty;
 
         [Required]
         [Display(Name = "Vehicle")]
@@ -27,11 +27,11 @@ namespace VehicleReservationSystem.ViewModels
 
         [Required]
         [StringLength(200)]
-        public string Purpose { get; set; }
+        public string Purpose { get; set; } = string.Empty;
 
         [Required]
         [StringLength(100)]
-        public string Destination { get; set; }
+        public string Destination { get; set; } = string.Empty;
 
         [Required]
         [Display(Name = "Number of Passengers")]
@@ -40,12 +40,11 @@ namespace VehicleReservationSystem.ViewModels
 
         [Required]
         [Display(Name = "Approvers")]
-        public List<string> ApproverIds { get; set; } = new List<string>();
+        public List<string> ApproverIds { get; set; } = new();
 
-        // For dropdown lists
-        public List<SelectListItem> Vehicles { get; set; } = new List<SelectListItem>();
-        public List<SelectListItem> Drivers { get; set; } = new List<SelectListItem>();
-        public List<SelectListItem> Users { get; set; } = new List<SelectListItem>();
-        public List<SelectListItem> Approvers { get; set; } = new List<SelectListItem>();
+        public List<SelectListItem> Vehicles { get; set; } = new();
+        public List<SelectListItem> Drivers { get; set; } = new();
+        public List<SelectListItem> Users { get; set; } = new();
+        public List<SelectListItem> Approvers { get; set; } = new();
     }
 }

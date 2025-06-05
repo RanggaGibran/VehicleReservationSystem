@@ -8,58 +8,37 @@ namespace VehicleReservationSystem.Services
     {
         Task<int> CreateReservation(ReservationViewModel model);
         Task<bool> UpdateReservationStatus(int reservationId, string status);
-    }
-
-    public class ReservationService : IReservationService
+    }    public class ReservationService : IReservationService
     {
         private readonly AppDbContext _context;
-        private readonly Lazy<IApprovalService> _approvalService;
 
-        public ReservationService(AppDbContext context, Lazy<IApprovalService> approvalService)
+        public ReservationService(AppDbContext context)
         {
             _context = context;
-            _approvalService = approvalService;
         }
 
         public async Task<int> CreateReservation(ReservationViewModel model)
         {
-            // Verify the requester exists
             var requester = await _context.Users.FindAsync(model.RequesterId);
             if (requester == null)
-            {
-                throw new Exception("Selected requester does not exist");
-            }
+                throw new InvalidOperationException("Requester not found");
 
-            // Verify the vehicle exists and is available
             var vehicle = await _context.Vehicles.FindAsync(model.VehicleId);
-            if (vehicle == null)
-            {
-                throw new Exception("Selected vehicle does not exist");
-            }
-            
-            if (!vehicle.IsAvailable)
-            {
-                throw new Exception("Selected vehicle is not available");
-            }
+            if (vehicle == null || !vehicle.IsAvailable)
+                throw new InvalidOperationException("Vehicle not available");
 
-            // Verify the driver exists if one is selected
             if (model.DriverId.HasValue)
             {
                 var driver = await _context.Drivers.FindAsync(model.DriverId.Value);
                 if (driver == null)
-                {
-                    throw new Exception("Selected driver does not exist");
-                }
+                    throw new InvalidOperationException("Driver not found");
             }
 
-            // Verify all approvers exist
             foreach (var approverId in model.ApproverIds)
             {
                 var approver = await _context.Users.FindAsync(approverId);
                 if (approver == null)
-                {
-                    throw new Exception($"One of the selected approvers does not exist");
-                }
+                    throw new InvalidOperationException("Approver not found");
             }
 
             var reservation = new Reservation
@@ -67,29 +46,26 @@ namespace VehicleReservationSystem.Services
                 RequesterId = model.RequesterId,
                 VehicleId = model.VehicleId,
                 DriverId = model.DriverId,
-                RequestDate = DateTime.Now,
                 StartDate = model.StartDate,
                 EndDate = model.EndDate,
                 Purpose = model.Purpose,
                 Destination = model.Destination,
-                NumberOfPassengers = model.NumberOfPassengers,
-                Status = "Pending",
-                Approvals = new List<Approval>()
-            };
-
-            _context.Reservations.Add(reservation);
+                NumberOfPassengers = model.NumberOfPassengers
+            };            _context.Reservations.Add(reservation);
             await _context.SaveChangesAsync();
 
-            // Create approval workflow with selected approvers
             for (int i = 0; i < model.ApproverIds.Count; i++)
             {
-                await _approvalService.Value.CreateApproval(
-                    reservation.Id, 
-                    model.ApproverIds[i], 
-                    i + 1);
+                var approval = new Approval
+                {
+                    ReservationId = reservation.Id,
+                    ApproverId = model.ApproverIds[i],
+                    Level = i + 1,
+                    Status = "Pending"
+                };
+                _context.Approvals.Add(approval);
             }
 
-            // Update vehicle availability
             vehicle.IsAvailable = false;
             await _context.SaveChangesAsync();
 
@@ -99,13 +75,11 @@ namespace VehicleReservationSystem.Services
         public async Task<bool> UpdateReservationStatus(int reservationId, string status)
         {
             var reservation = await _context.Reservations.FindAsync(reservationId);
-            
-            if (reservation == null)
-                return false;
-                
+            if (reservation == null) return false;
+
             reservation.Status = status;
-            
-            if (status == "Completed" || status == "Rejected")
+
+            if (status is "Completed" or "Rejected")
             {
                 var vehicle = await _context.Vehicles.FindAsync(reservation.VehicleId);
                 if (vehicle != null)
@@ -114,10 +88,9 @@ namespace VehicleReservationSystem.Services
                     _context.Vehicles.Update(vehicle);
                 }
             }
-            
+
             _context.Reservations.Update(reservation);
             await _context.SaveChangesAsync();
-            
             return true;
         }
     }

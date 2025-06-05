@@ -1,8 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using VehicleReservationSystem.Models;
 
 namespace VehicleReservationSystem.Services
@@ -13,22 +9,14 @@ namespace VehicleReservationSystem.Services
         Task<bool> ApproveReservation(int approvalId, string approverId, string comments);
         Task<bool> RejectReservation(int approvalId, string approverId, string comments);
         Task<bool> UpdateOtherApprovals(int reservationId, int approvalId, string status, string comment);
-    }
-
-    public class ApprovalService : IApprovalService
+    }    public class ApprovalService : IApprovalService
     {
         private readonly AppDbContext _context;
-        private readonly Lazy<IReservationService> _reservationService;
 
-        public ApprovalService(
-            AppDbContext context, 
-            Lazy<IReservationService> reservationService)
+        public ApprovalService(AppDbContext context)
         {
             _context = context;
-            _reservationService = reservationService;
         }
-
-        // Other methods remain the same
 
         public async Task<bool> UpdateOtherApprovals(int reservationId, int approvalId, string status, string comment)
         {
@@ -67,12 +55,14 @@ namespace VehicleReservationSystem.Services
 
             var pendingHigherLevelApprovals = allApprovals
                 .Where(a => a.Level > approval.Level && a.Status == "Pending")
-                .ToList();
-
-            // If no more pending higher level approvals, update reservation status
+                .ToList();            // If no more pending higher level approvals, update reservation status
             if (pendingHigherLevelApprovals.Count == 0)
             {
-                await _reservationService.Value.UpdateReservationStatus(approval.ReservationId, "Approved");
+                var reservation = await _context.Reservations.FindAsync(approval.ReservationId);
+                if (reservation != null)
+                {
+                    reservation.Status = "Approved";
+                }
             }
 
             _context.Approvals.Update(approval);
@@ -92,10 +82,17 @@ namespace VehicleReservationSystem.Services
 
             approval.Status = "Rejected";
             approval.ActionDate = DateTime.Now;
-            approval.Comments = comments;
-
-            // Reject the reservation
-            await _reservationService.Value.UpdateReservationStatus(approval.ReservationId, "Rejected");
+            approval.Comments = comments;            // Reject the reservation
+            var reservation = await _context.Reservations.FindAsync(approval.ReservationId);
+            if (reservation != null)
+            {
+                reservation.Status = "Rejected";
+                var vehicle = await _context.Vehicles.FindAsync(reservation.VehicleId);
+                if (vehicle != null)
+                {
+                    vehicle.IsAvailable = true;
+                }
+            }
 
             // Update all other pending approvals for this reservation to "Cancelled"
             await UpdateOtherApprovals(
@@ -107,10 +104,8 @@ namespace VehicleReservationSystem.Services
             _context.Approvals.Update(approval);
             await _context.SaveChangesAsync();
 
-            return true;
-        }
+            return true;        }
 
-        // Add CreateApproval method implementation if not already there
         public async Task<int> CreateApproval(int reservationId, string approverId, int level)
         {
             var approval = new Approval

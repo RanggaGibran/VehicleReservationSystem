@@ -8,7 +8,7 @@ namespace VehicleReservationSystem.ViewModels
         public int AvailableVehicles { get; set; }
         public int PendingReservations { get; set; }
         public int ActiveReservations { get; set; }
-        public List<Reservation> RecentReservations { get; set; }
-        public List<ServiceSchedule> UpcomingServices { get; set; }
+        public List<Reservation> RecentReservations { get; set; } = new();
+        public List<ServiceSchedule> UpcomingServices { get; set; } = new();
     }
 }

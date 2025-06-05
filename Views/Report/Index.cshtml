@@ -217,13 +217,18 @@ else if (Model.ReportData != null && !Model.ReportData.Any())
                 
                 return true;
             });
-        });
-
-        // Status Chart
+        });        // Status Chart
         var statusCtx = document.getElementById('reservationStatusChart').getContext('2d');
-        var statusData = @Json.Serialize(Model.ReportData.GroupBy(r => r.Status)
-            .Select(g => new { Status = g.Key, Count = g.Count() })
-            .ToList());
+        @if (Model.ReportData?.Any() == true)
+        {
+            <text>var statusData = @Json.Serialize(Model.ReportData.GroupBy(r => r.Status)
+                .Select(g => new { Status = g.Key, Count = g.Count() })
+                .ToList());</text>
+        }
+        else
+        {
+            <text>var statusData = [];</text>
+        }
             
         new Chart(statusCtx, {
             type: 'pie',

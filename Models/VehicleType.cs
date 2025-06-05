@@ -3,16 +3,10 @@ namespace VehicleReservationSystem.Models
     public class VehicleType
     {
         public int Id { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public string Category { get; set; } // People or Goods
+        public string Name { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public string Category { get; set; } = string.Empty;
         public int Capacity { get; set; }
-        public ICollection<Vehicle> Vehicles { get; set; }
-
-        // Update constructor:
-        public VehicleType()
-        {
-            Vehicles = new HashSet<Vehicle>();
-        }
+        public ICollection<Vehicle> Vehicles { get; set; } = new HashSet<Vehicle>();
     }
 }

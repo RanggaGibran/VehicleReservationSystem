@@ -21,14 +21,13 @@ namespace VehicleReservationSystem.Controllers
         }
 
         public async Task<IActionResult> Index()
-        {
-            var reportViewModel = new ReportViewModel
+        {            var reportViewModel = new ReportViewModel
             {
                 StartDate = DateTime.Today.AddMonths(-1),
                 EndDate = DateTime.Today,
                 Locations = await GetLocationsSelectList(),
                 VehicleTypes = await GetVehicleTypesSelectList(),
-                ReportData = new List<ReservationReportItemViewModel>()
+                ReportData = new()
             };
             
             return View(reportViewModel);
