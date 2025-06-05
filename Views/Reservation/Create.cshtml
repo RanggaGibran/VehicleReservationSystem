@@ -463,7 +463,8 @@
 @section Scripts {
     <script>
         let currentStep = 1;
-          $(document).ready(function() {
+        
+        $(document).ready(function() {
             // Set minimum date to today and clear any invalid initial values
             const now = new Date();
             const minDateTime = now.toISOString().slice(0, 16);
@@ -558,11 +559,11 @@
             
             // Initialize driver option visual state
             selectDriverOption('no-driver');
-            
-            // Initialize form
+              // Initialize form
             initializeForm();
         });
-          // Enhanced Vehicle preview function
+        
+        // Enhanced Vehicle preview function
         function showVehiclePreview(select) {
             const preview = $("#vehiclePreview");
             const namePreview = $("#vehicleNamePreview");
@@ -642,9 +643,9 @@
                 driverIdSelect.val(''); // Clear driver selection
                 noDriverCard.addClass('active-option border-primary bg-primary bg-opacity-10');
                 noDriverCard.find('i').removeClass('text-muted').addClass('text-primary');
-            }
-        }
-          // Enhanced Update approver count with better UX
+            }        }
+        
+        // Enhanced Update approver count with better UX
         function updateApproverCount() {
             const selectedCount = $('.approver-checkbox:checked').length;
             const progressBar = $('#approverProgressBar');
@@ -710,8 +711,7 @@
             // Clear validation error if minimum requirement is met
             if (selectedCount >= 2) {
                 $("#approverError").addClass('d-none');
-                $('.approvers-container').removeClass('border border-danger');
-            }
+                $('.approvers-container').removeClass('border border-danger');            }
         }
         
         function nextStep(step) {
