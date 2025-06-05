@@ -1,53 +1,230 @@
 @model VehicleReservationSystem.ViewModels.LoginViewModel
 
 @{
-    ViewData["Title"] = "Log in";
+    ViewData["Title"] = "Login";
+    Layout = "_Layout";
 }
 
-<h1>@ViewData["Title"]</h1>
-<div class="row">
-    <div class="col-md-4">
-        <section>
-            <form id="account" method="post">
-                <h2>Use your account credentials to log in.</h2>
-                <hr />
-                <div asp-validation-summary="All" class="text-danger"></div>
-                <div class="form-group">
-                    <label asp-for="Email"></label>
-                    <input asp-for="Email" class="form-control" />
-                    <span asp-validation-for="Email" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Password"></label>
-                    <input asp-for="Password" class="form-control" />
-                    <span asp-validation-for="Password" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <div class="checkbox">
-                        <label asp-for="RememberMe">
-                            <input asp-for="RememberMe" />
-                            @Html.DisplayNameFor(m => m.RememberMe)
-                        </label>
+<div class="login-page d-flex align-items-center justify-content-center min-vh-100">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6 col-xl-5">
+                <div class="login-card card shadow-lg border-0">
+                    <div class="card-header bg-gradient-primary text-white text-center py-4">
+                        <div class="mining-logo mb-2">
+                            <i class="bi bi-truck-front-fill display-4"></i>
+                        </div>
+                        <h4 class="mb-0 fw-bold">PT Nikel Nusantara Mining</h4>
+                        <p class="mb-0">Sistem Reservasi Kendaraan</p>
+                    </div>
+                    <div class="card-body p-4 p-md-5">
+                        <h5 class="text-center mb-4 fw-bold text-primary">Masuk ke Akun Anda</h5>
+                        
+                        <form id="account" method="post">
+                            <div asp-validation-summary="All" class="text-danger alert alert-danger py-2 mb-4" role="alert"></div>
+                            
+                            <div class="form-group mb-4">
+                                <label asp-for="Email" class="form-label"><i class="bi bi-envelope me-2"></i>Email</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light"><i class="bi bi-person"></i></span>
+                                    <input asp-for="Email" class="form-control form-control-lg" placeholder="Masukkan email" autocomplete="username" />
+                                </div>
+                                <span asp-validation-for="Email" class="text-danger small"></span>
+                            </div>
+                            
+                            <div class="form-group mb-4">
+                                <label asp-for="Password" class="form-label"><i class="bi bi-lock me-2"></i>Kata Sandi</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light"><i class="bi bi-key"></i></span>
+                                    <input asp-for="Password" class="form-control form-control-lg" placeholder="Masukkan kata sandi" autocomplete="current-password" />
+                                    <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                </div>
+                                <span asp-validation-for="Password" class="text-danger small"></span>
+                            </div>
+                            
+                            <div class="form-group mb-4">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="form-check">
+                                        <input asp-for="RememberMe" class="form-check-input" />
+                                        <label asp-for="RememberMe" class="form-check-label">Ingat Saya</label>
+                                    </div>
+                                    <a href="#" class="text-primary small">Lupa Kata Sandi?</a>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group mb-4">
+                                <button type="submit" class="btn btn-primary btn-lg w-100 shadow-sm">
+                                    <i class="bi bi-box-arrow-in-right me-2"></i>Masuk
+                                </button>
+                            </div>
+                            
+                            <div class="card demo-accounts mt-4">
+                                <div class="card-header bg-light py-2">
+                                    <h6 class="mb-0"><i class="bi bi-info-circle me-2"></i>Akun Demo:</h6>
+                                </div>
+                                <div class="card-body py-2">
+                                    <div class="account-item p-2 mb-2 rounded border">
+                                        <div class="d-flex align-items-center">
+                                            <span class="badge bg-primary me-2">Admin</span>
+                                            <span class="account-detail">admin@example.com / Admin123!</span>
+                                        </div>
+                                    </div>
+                                    <div class="account-item p-2 mb-2 rounded border">
+                                        <div class="d-flex align-items-center">
+                                            <span class="badge bg-info me-2">Approver 1</span>
+                                            <span class="account-detail">approver1@example.com / Approver123!</span>
+                                        </div>
+                                    </div>
+                                    <div class="account-item p-2 rounded border">
+                                        <div class="d-flex align-items-center">
+                                            <span class="badge bg-info me-2">Approver 2</span>
+                                            <span class="account-detail">approver2@example.com / Approver123!</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="card-footer text-center py-3 bg-light">
+                        <small class="text-muted">&copy; @DateTime.Now.Year - PT Nikel Nusantara Mining</small>
                     </div>
                 </div>
-                <div class="form-group">
-                    <button type="submit" class="btn btn-primary">Log in</button>
-                </div>
-                <div class="form-group">
-                    <p>
-                        Demo accounts:
-                    </p>
-                    <ul>
-                        <li>Admin: admin@example.com / Admin123!</li>
-                        <li>Approver 1: approver1@example.com / Approver123!</li>
-                        <li>Approver 2: approver2@example.com / Approver123!</li>
-                    </ul>
-                </div>
-            </form>
-        </section>
+            </div>
+        </div>
     </div>
 </div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        // Toggle password visibility
+        document.getElementById('togglePassword').addEventListener('click', function() {
+            const passwordInput = document.getElementById('Password');
+            const icon = this.querySelector('i');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                icon.classList.remove('bi-eye');
+                icon.classList.add('bi-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                icon.classList.remove('bi-eye-slash');
+                icon.classList.add('bi-eye');
+            }
+        });
+    </script>
 }
+
+<style>
+    body {
+        background: linear-gradient(135deg, #f5f7fa 0%, #e4e9f0 100%);
+        min-height: 100vh;
+    }
+    
+    .login-page {
+        position: relative;
+        z-index: 1;
+    }
+    
+    .login-card {
+        border-radius: 1rem;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+    
+    .login-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 1rem 3rem rgba(0,0,0,0.175)!important;
+    }
+    
+    .bg-gradient-primary {
+        background: linear-gradient(135deg, var(--mining-primary), var(--mining-primary-dark));
+    }
+    
+    .mining-logo {
+        background-color: rgba(255,255,255,0.2);
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto;
+    }
+    
+    .form-control-lg {
+        border-radius: 0.5rem;
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+    }
+    
+    .form-control:focus {
+        border-color: var(--mining-primary);
+        box-shadow: 0 0 0 0.25rem rgba(var(--mining-primary-rgb), 0.15);
+    }
+    
+    .btn-primary {
+        border-radius: 0.5rem;
+        padding: 0.75rem;
+        transition: all 0.3s ease;
+        background: linear-gradient(135deg, var(--mining-primary), var(--mining-primary-dark));
+        border: none;
+    }
+    
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 0.5rem 1rem rgba(var(--mining-primary-rgb), 0.15);
+    }
+    
+    .demo-accounts {
+        border-radius: 0.5rem;
+        border: none;
+        box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,0.075);
+    }
+    
+    .account-item {
+        background-color: rgba(var(--mining-primary-rgb), 0.05);
+        transition: all 0.2s ease;
+    }
+    
+    .account-item:hover {
+        background-color: rgba(var(--mining-primary-rgb), 0.1);
+    }
+    
+    .account-detail {
+        font-family: monospace;
+        font-size: 0.9rem;
+    }
+      /* Animation for form elements */
+    @@keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translate3d(0, 30px, 0);
+        }
+        to {
+            opacity: 1;
+            transform: translate3d(0, 0, 0);
+        }
+    }
+    
+    .form-group {
+        animation: fadeInUp 0.5s ease-out forwards;
+    }
+    
+    .form-group:nth-child(1) { animation-delay: 0.1s; }
+    .form-group:nth-child(2) { animation-delay: 0.2s; }
+    .form-group:nth-child(3) { animation-delay: 0.3s; }
+    .form-group:nth-child(4) { animation-delay: 0.4s; }
+      /* Responsive adjustments */
+    @@media (max-width: 768px) {
+        .login-card {
+            margin: 1rem;
+        }
+        
+        .card-body {
+            padding: 1.5rem;
+        }
+    }
+</style>
