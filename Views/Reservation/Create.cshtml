@@ -325,13 +325,25 @@
 @section Scripts {
     <script>
         let currentStep = 1;
-        
-        $(document).ready(function() {
-            // Set minimum date to today
+          $(document).ready(function() {
+            // Set minimum date to today and clear any invalid initial values
             const now = new Date();
             const minDateTime = now.toISOString().slice(0, 16);
-            $("#StartDate").attr('min', minDateTime);
-            $("#EndDate").attr('min', minDateTime);
+            
+            // Clear any invalid initial values before setting constraints
+            const startDateInput = $("#StartDate");
+            const endDateInput = $("#EndDate");
+            
+            // Check if current values are before minimum and clear them if so
+            if (startDateInput.val() && new Date(startDateInput.val()) < now) {
+                startDateInput.val('');
+            }
+            if (endDateInput.val() && new Date(endDateInput.val()) < now) {
+                endDateInput.val('');
+            }
+            
+            startDateInput.attr('min', minDateTime);
+            endDateInput.attr('min', minDateTime);
 
             // Load initial vehicle and driver cards
             loadVehicleCards();

@@ -56,14 +56,17 @@ namespace VehicleReservationSystem.Controllers
                     .ToListAsync();
                 return View(userReservations);
             }
-        }
-
-        [HttpGet]
+        }        [HttpGet]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create()
         {
+            var now = DateTime.Now;
             var viewModel = new ReservationViewModel
             {
+                // Initialize with valid default dates to avoid HTML5 validation issues
+                StartDate = now.AddHours(1), // Default to 1 hour from now
+                EndDate = now.AddHours(5),   // Default to 5 hours from now
+                
                 Vehicles = await _context.Vehicles
                     .Where(v => v.IsAvailable)
                     .Select(v => new SelectListItem
