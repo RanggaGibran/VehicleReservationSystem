@@ -31,10 +31,9 @@ namespace VehicleReservationSystem.Controllers
             ViewData["ReturnUrl"] = returnUrl;
             if (ModelState.IsValid)
             {
-                var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
-                if (result.Succeeded)
+                var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);                if (result.Succeeded)
                 {
-                    return RedirectToLocal(returnUrl);
+                    return RedirectToLocal(returnUrl ?? "/");
                 }
                 else
                 {

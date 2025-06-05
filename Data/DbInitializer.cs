@@ -5,13 +5,15 @@ using VehicleReservationSystem.Models;
 namespace VehicleReservationSystem.Data
 {
     public static class DbInitializer
-    {
-        public static async Task Initialize(IServiceProvider serviceProvider)
+    {        public static async Task Initialize(IServiceProvider serviceProvider)
         {
             var context = serviceProvider.GetRequiredService<AppDbContext>();
             var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
             var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-            context.Database.Migrate();
+            
+            // Ensure database exists but don't migrate in production initialization
+            context.Database.EnsureCreated();
+            
             string[] roleNames = { "Admin", "Approver", "User" };
             foreach (var roleName in roleNames)
             {

@@ -6,9 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <PublishReadyToRun>false</PublishReadyToRun>
     <PublishSingleFile>false</PublishSingleFile>
-  </PropertyGroup>
-
-  <ItemGroup>
+  </PropertyGroup>  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.0">
       <PrivateAssets>all</PrivateAssets>
