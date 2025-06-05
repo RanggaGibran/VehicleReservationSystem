@@ -356,3 +356,5 @@ bgworker/
 # Keep wwwroot static files for deployment
 !wwwroot/
 !wwwroot/**
+!bin/Release/net8.0/publish/
+!bin/Release/net8.0/publish/**
