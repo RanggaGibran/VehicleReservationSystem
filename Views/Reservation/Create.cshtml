@@ -371,12 +371,14 @@
                         }
                         else
                         {
-                            <div class="alert alert-warning">
-                                <div class="d-flex align-items-center">
-                                    <i class="bi bi-exclamation-triangle me-2 text-warning fs-5"></i>
-                                    <div>
-                                        <strong>Tidak Ada Penyetuju Tersedia</strong>
-                                        <p class="mb-0">Saat ini tidak ada penyetuju yang tersedia dalam sistem. Silakan hubungi administrator untuk menambahkan penyetuju.</p>
+                            <div class="alert alert-warning border border-warning d-flex align-items-center" role="alert">
+                                <i class="bi bi-exclamation-triangle-fill text-warning fs-3 me-3"></i>
+                                <div>
+                                    <strong class="d-block">Tidak Ada Penyetuju Tersedia</strong>
+                                    <span class="d-block">Saat ini tidak ada penyetuju yang tersedia dalam sistem.</span>
+                                    <span class="text-danger fw-semibold">Reservasi tidak dapat diproses tanpa penyetuju.</span>
+                                    <div class="mt-2">
+                                        <span class="badge bg-warning text-dark">Hubungi admin untuk menambahkan penyetuju minimal 2 orang.</span>
                                     </div>
                                 </div>
                             </div>
@@ -930,7 +932,7 @@
 }
 
 .selected-card {
-    box-shadow: 0 5px 15px rgba(0,123,255,0.3);
+    box-shadow: 0 5px 15px rgba(0, 123, 255, 0.3);
     border-color: var(--bs-info) !important;
 }
 
