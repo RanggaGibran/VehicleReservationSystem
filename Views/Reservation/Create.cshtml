@@ -5,16 +5,8 @@
 }
 
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <d                                <!-- No Driver Option -->
-                                <div class="no-driver-option mt-3">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="driverSelection" id="noDriverOption" value="" checked onclick="selectNoDriver()">
-                                        <label class="form-check-label" for="noDriverOption">
-                                            <strong>Tentukan pengemudi nanti</strong>
-                                            <br><small class="text-muted">Pengemudi akan ditentukan oleh admin setelah reservasi disetujui</small>
-                                        </label>
-                                    </div>
-                                </div>   <h1 class="mb-1">
+    <div>
+        <h1 class="mb-1">
             <i class="bi bi-plus-circle text-primary me-2"></i>Buat Reservasi Kendaraan
         </h1>
         <p class="text-muted mb-0">
@@ -697,17 +689,25 @@
             // For now, we assume all drivers loaded are potentially available or
             // the backend handles compatibility.
             // If you were to filter, you'd call loadDriverCards() again,
-            // perhaps with a parameter or by modifying the #DriverId select options first.
-        }
+            // perhaps with a parameter or by modifying the #DriverId select options first.        }
     </script>
 }
-<style>
-/* ... existing styles ... */
 
+<style>
+/* Form Step Wizard Styles */
+.form-step {
+    display: none;
+}
+
+.form-step.active {
+    display: block;
+}
+
+/* Vehicle and Driver Card Styles */
 .vehicle-card, .driver-card {
     cursor: pointer;
     transition: all 0.2s ease-in-out;
-    border: 1px solid #e0e0e0; /* Softer border */
+    border: 1px solid #e0e0e0;
 }
 
 .vehicle-card:hover, .driver-card:hover {
@@ -716,22 +716,22 @@
 }
 
 .selected-card {
-    /* border-width: 2px; */ /* Handled by border-primary/info */
-    box-shadow: 0 5px 12px rgba(0,123,255,0.2); /* Softer shadow for selected */
+    box-shadow: 0 5px 12px rgba(0,123,255,0.2);
 }
 
 .vehicle-icon {
-    font-size: 2.5rem; /* Larger icons */
+    font-size: 2.5rem;
 }
 
 .bg-success-soft {
     background-color: rgba(var(--bs-success-rgb), 0.15);
 }
+
 .text-success {
     color: var(--bs-success) !important;
 }
 
-/* Ensure step circles are styled */
+/* Step Circle Styles */
 .step-circle {
     width: 50px;
     height: 50px;
@@ -750,53 +750,55 @@
 .step-circle.active {
     background-color: var(--mining-primary);
     color: white;
-    border-color: var(--mining-primary-dark); /* A slightly darker border for active step */
+    border-color: var(--mining-primary-dark);
 }
 
 /* Modern Card Styling */
 .modern-card {
     border: none;
-    border-radius: 0.75rem; /* Softer radius */
-    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1); /* Standard shadow */
-    overflow: hidden; /* To ensure header radius is applied */
+    border-radius: 0.75rem;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+    overflow: hidden;
 }
 
 .modern-card .card-header.bg-gradient-primary {
     background: linear-gradient(45deg, var(--mining-primary), var(--mining-primary-dark));
     color: white;
     padding: 1rem 1.25rem;
-    border-bottom: none; /* Remove default border */
+    border-bottom: none;
 }
 
 .form-control-modern, .form-select-modern {
-    border-radius: 0.5rem; /* Softer radius for form elements */
+    border-radius: 0.5rem;
     border: 1px solid #ced4da;
-    padding: 0.75rem 1rem; /* More padding */
+    padding: 0.75rem 1rem;
     transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
 }
+
 .form-control-modern:focus, .form-select-modern:focus {
     border-color: var(--mining-primary-light);
     box-shadow: 0 0 0 0.25rem rgba(var(--mining-primary-rgb), 0.25);
 }
 
-/* Styling for selected vehicle/driver display cards */
+/* Selected Vehicle/Driver Display Styling */
 #selectedVehicleDisplay .card, #selectedDriverDisplay .card {
     border-radius: 0.5rem;
 }
+
 #selectedVehicleDisplay .card-header, #selectedDriverDisplay .card-header {
     border-top-left-radius: 0.5rem;
     border-top-right-radius: 0.5rem;
 }
 
-/* Ensure radio buttons for driver selection are visually distinct when selected via card */
 .driver-card.selected-card {
-    border-color: var(--bs-info) !important; /* Use Bootstrap info color for selected driver */
+    border-color: var(--bs-info) !important;
 }
 
 .no-driver-option .form-check-input:checked + .form-check-label {
     font-weight: bold;
     color: var(--mining-primary);
 }
+
 .no-driver-option .form-check-label {
     cursor: pointer;
 }
@@ -804,11 +806,20 @@
 /* Responsive adjustments for cards */
 @@media (max-width: 768px) {
     .vehicle-card, .driver-card {
-        margin-bottom: 1rem; /* Add some space between cards on mobile */
+        margin-bottom: 1rem;
     }
     .vehicle-cards-container .col-md-6, .driver-cards-container .col-md-6 {
-        flex: 0 0 100%; /* Full width on smaller screens */
+        flex: 0 0 100%;
         max-width: 100%;
     }
 }
+
+/* Mining Company Theme Variables */
+:root {
+    --mining-primary: #0d6efd;
+    --mining-primary-light: #6ea8fe;
+    --mining-primary-dark: #0b5ed7;
+    --mining-primary-rgb: 13, 110, 253;
+}
+</style>
 </style>
