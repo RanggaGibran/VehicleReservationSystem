@@ -679,9 +679,7 @@
                 $("#selectedVehicleDisplay").addClass("d-none");
             }
             // The rest of the logic is in selectVehicle
-        }
-
-        // Ensure updateAvailableDrivers is defined, even if it's a placeholder
+        }        // Ensure updateAvailableDrivers is defined, even if it's a placeholder
         function updateAvailableDrivers() {
             const vehicleId = $("#VehicleId").val();
             console.log('Selected vehicle for driver filtering (if implemented):', vehicleId);
@@ -689,7 +687,8 @@
             // For now, we assume all drivers loaded are potentially available or
             // the backend handles compatibility.
             // If you were to filter, you'd call loadDriverCards() again,
-            // perhaps with a parameter or by modifying the #DriverId select options first.        }
+            // perhaps with a parameter or by modifying the #DriverId select options first.
+        }
     </script>
 }
 
@@ -821,5 +820,4 @@
     --mining-primary-dark: #0b5ed7;
     --mining-primary-rgb: 13, 110, 253;
 }
-</style>
 </style>
