@@ -1,1 +1,1 @@
-web: dotnet publish -c Release -o out && dotnet out/VehicleReservationSystem.dll --urls http://0.0.0.0:$PORT
+web: dotnet run --configuration Release --urls http://0.0.0.0:$PORT
