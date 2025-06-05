@@ -101,11 +101,13 @@ app.MapGet("/health", async (AppDbContext context) =>
 });
 
 // HAPUS atau KOMENTARI kode ini:
-// app.MapGet("/", () => Results.Ok(new { 
-//     message = "Vehicle Reservation System is running",
-//     timestamp = DateTime.UtcNow,
-//     environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production"
-// }));
+/*
+app.MapGet("/", () => Results.Ok(new { 
+    message = "Vehicle Reservation System is running",
+    timestamp = DateTime.UtcNow,
+    environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production"
+}));
+*/
 
 // Database initialization - more robust for production
 try
