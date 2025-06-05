@@ -21,32 +21,34 @@
 </div>
 
 <!-- Progress Steps -->
-<div class="card mb-4">
-    <div class="card-body">
-        <div class="row text-center">
-            <div class="col-3">
-                <div class="step-circle active">
-                    <i class="bi bi-person-fill"></i>
+<div class="card mb-4 modern-card">
+    <div class="card-body py-4">
+        <div class="progress-steps">
+            <div class="row text-center position-relative">
+                <div class="col-3">
+                    <div class="step-circle active" id="stepCircle1">
+                        <i class="bi bi-person-fill"></i>
+                    </div>
+                    <small class="text-muted d-block mt-3 fw-medium">Informasi Pemohon</small>
                 </div>
-                <small class="text-muted d-block mt-2">Informasi Pemohon</small>
-            </div>
-            <div class="col-3">
-                <div class="step-circle">
-                    <i class="bi bi-truck"></i>
+                <div class="col-3">
+                    <div class="step-circle" id="stepCircle2">
+                        <i class="bi bi-truck"></i>
+                    </div>
+                    <small class="text-muted d-block mt-3 fw-medium">Pilih Kendaraan</small>
                 </div>
-                <small class="text-muted d-block mt-2">Pilih Kendaraan</small>
-            </div>
-            <div class="col-3">
-                <div class="step-circle">
-                    <i class="bi bi-calendar-event"></i>
+                <div class="col-3">
+                    <div class="step-circle" id="stepCircle3">
+                        <i class="bi bi-calendar-event"></i>
+                    </div>
+                    <small class="text-muted d-block mt-3 fw-medium">Jadwal & Tujuan</small>
                 </div>
-                <small class="text-muted d-block mt-2">Jadwal & Tujuan</small>
-            </div>
-            <div class="col-3">
-                <div class="step-circle">
-                    <i class="bi bi-check-circle"></i>
+                <div class="col-3">
+                    <div class="step-circle" id="stepCircle4">
+                        <i class="bi bi-check-circle"></i>
+                    </div>
+                    <small class="text-muted d-block mt-3 fw-medium">Persetujuan</small>
                 </div>
-                <small class="text-muted d-block mt-2">Persetujuan</small>
             </div>
         </div>
     </div>
@@ -342,58 +344,101 @@
                                 <span id="approversSelectedCount">0</span> / 2 minimum
                             </small>
                         </div>
-                    </div>
-                      <!-- Enhanced Approvers Checkboxes -->
-                    <div class="approvers-container">
-                        @if (Model.Approvers != null && Model.Approvers.Any())
-                        {
-                            @foreach (var approver in Model.Approvers)
-                            {
-                                if (!string.IsNullOrEmpty(approver.Value))
-                                {
-                                    <div class="form-check mb-2 p-3 rounded approver-card" id="approverCard_@approver.Value">
-                                        <input class="form-check-input approver-checkbox" type="checkbox" name="ApproverIds" value="@approver.Value" id="approver_@approver.Value">
-                                        <label class="form-check-label w-100" for="approver_@approver.Value">
-                                            <div class="d-flex align-items-center">
-                                                <i class="bi bi-person-badge text-primary me-2 fs-5"></i>
-                                                <div class="flex-grow-1">
-                                                    <strong>@approver.Text</strong>
-                                                    <br><small class="text-muted">Klik untuk memilih sebagai penyetuju</small>
-                                                </div>
-                                                <div class="check-indicator d-none">
-                                                    <i class="bi bi-check-circle-fill text-success fs-5"></i>
-                                                </div>
-                                            </div>
-                                        </label>
-                                    </div>
-                                }
-                            }
-                        }
-                        else
-                        {
-                            <div class="alert alert-warning border border-warning d-flex align-items-center" role="alert">
-                                <i class="bi bi-exclamation-triangle-fill text-warning fs-3 me-3"></i>
-                                <div>
-                                    <strong class="d-block">Tidak Ada Penyetuju Tersedia</strong>
-                                    <span class="d-block">Saat ini tidak ada penyetuju yang tersedia dalam sistem.</span>
-                                    <span class="text-danger fw-semibold">Reservasi tidak dapat diproses tanpa penyetuju.</span>
-                                    <div class="mt-2">
-                                        <span class="badge bg-warning text-dark">Hubungi admin untuk menambahkan penyetuju minimal 2 orang.</span>
-                                    </div>
+                    </div>                <!-- Enhanced Approvers Selection -->
+                <div class="form-group mb-4">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <label class="form-label fw-medium mb-0">
+                            <i class="bi bi-people-fill text-muted me-2"></i>Pilih Penyetuju <span class="text-danger">*</span>
+                        </label>
+                        <div class="approver-progress-info">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="progress" style="width: 120px; height: 8px;">
+                                    <div class="progress-bar bg-danger" role="progressbar" style="width: 0%" id="approverProgressBar"></div>
+                                </div>
+                                <div class="text-center">
+                                    <small class="text-muted fw-medium">
+                                        <span id="approversSelectedCount" class="text-primary fw-bold">0</span> / <span class="text-success fw-bold">2</span> minimum
+                                    </small>
                                 </div>
                             </div>
-                        }
+                        </div>
+                    </div>
+
+                    <!-- Approvers Grid -->
+                    <div class="approvers-container">
+                        <div class="row g-3">
+                            @if (Model.Approvers != null && Model.Approvers.Any())
+                            {
+                                @foreach (var approver in Model.Approvers)
+                                {
+                                    if (!string.IsNullOrEmpty(approver.Value))
+                                    {
+                                        <div class="col-md-6">
+                                            <div class="approver-card" id="approverCard_@approver.Value">
+                                                <input class="form-check-input approver-checkbox d-none" type="checkbox" name="ApproverIds" value="@approver.Value" id="approver_@approver.Value">
+                                                <label class="form-check-label w-100 cursor-pointer" for="approver_@approver.Value">
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="approver-avatar me-3">
+                                                            <i class="bi bi-person-badge text-primary fs-3"></i>
+                                                        </div>
+                                                        <div class="flex-grow-1">
+                                                            <h6 class="mb-1 text-dark fw-bold">@approver.Text</h6>
+                                                            <small class="text-muted">Klik untuk memilih sebagai penyetuju</small>
+                                                            <div class="mt-2">
+                                                                <span class="badge bg-primary bg-opacity-10 text-primary">
+                                                                    <i class="bi bi-shield-check me-1"></i>Atasan Berwenang
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="check-indicator d-none">
+                                                            <div class="check-circle">
+                                                                <i class="bi bi-check-circle-fill text-success fs-4"></i>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                <div class="col-12">
+                                    <div class="alert alert-warning border-warning">
+                                        <div class="d-flex align-items-center">
+                                            <i class="bi bi-exclamation-triangle me-3 text-warning fs-4"></i>
+                                            <div>
+                                                <h6 class="mb-1 fw-bold">Tidak Ada Penyetuju Tersedia</h6>
+                                                <p class="mb-0">Saat ini tidak ada penyetuju yang tersedia dalam sistem. Silakan hubungi administrator untuk menambahkan penyetuju.</p>
+                                                <div class="mt-2">
+                                                    <small class="text-muted">
+                                                        <i class="bi bi-telephone me-1"></i>Hubungi: admin@nikelnusantara.co.id
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
                     </div>
                     
-                    <div class="selected-approvers-info mt-3 p-3 rounded bg-light" id="approverFeedback">
-                        <div class="d-flex align-items-center">
-                            <i class="bi bi-exclamation-triangle text-warning me-2 fs-5" id="approverIcon"></i>
-                            <div>
-                                <small class="fw-medium" id="approverMessage">
-                                    Pilih minimal 2 penyetuju untuk melanjutkan
-                                </small>
-                                <div class="selected-approvers-list mt-1" id="selectedApproversList" style="display: none;">
-                                    <small class="text-muted">Penyetuju yang dipilih: <span id="approverNames"></span></small>
+                    <!-- Feedback Section -->
+                    <div class="approver-feedback-section mt-4">
+                        <div class="selected-approvers-info p-3 rounded" id="approverFeedback">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-exclamation-triangle text-warning me-3 fs-5" id="approverIcon"></i>
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1 fw-medium" id="approverMessage">
+                                        Pilih minimal 2 penyetuju untuk melanjutkan
+                                    </h6>
+                                    <div class="selected-approvers-list mt-2" id="selectedApproversList" style="display: none;">
+                                        <small class="text-muted">
+                                            <i class="bi bi-people me-1"></i>Penyetuju yang dipilih: 
+                                            <span id="approverNames" class="fw-medium text-primary"></span>
+                                        </small>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -932,7 +977,7 @@
 }
 
 .selected-card {
-    box-shadow: 0 5px 15px rgba(0, 123, 255, 0.3);
+    box-shadow: 0 5px 15px rgba(0,123,255,0.3);
     border-color: var(--bs-info) !important;
 }
 
@@ -1139,12 +1184,383 @@
     }
 }
 
-/* Mining Company Theme Variables */
+/* Mining Company Theme Variables - Consistent with Site.css */
 :root {
-    --mining-primary: #0d6efd;
-    --mining-primary-light: #6ea8fe;
-    --mining-primary-dark: #0b5ed7;
-    --mining-primary-rgb: 13, 110, 253;
+    --mining-primary: #1a365d;
+    --mining-secondary: #2d3748;
+    --mining-accent: #f6ad55;
+    --mining-success: #38a169;
+    --mining-warning: #d69e2e;
+    --mining-danger: #e53e3e;
+    --mining-info: #3182ce;
+    --mining-light: #f7fafc;
+    --mining-dark: #1a202c;
+    --mining-gold: #d4af37;
+}
+
+/* Step Circle Enhancements */
+.step-circle {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    color: #6c757d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    font-size: 1.5rem;
+    transition: all 0.4s ease;
+    border: 3px solid #e9ecef;
+    position: relative;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.step-circle.active {
+    background: linear-gradient(135deg, var(--mining-primary), var(--mining-secondary));
+    color: white;
+    border-color: var(--mining-accent);
+    box-shadow: 0 4px 20px rgba(26, 54, 93, 0.4);
+    transform: scale(1.15);
+}
+
+.step-circle.active::before {
+    content: '';
+    position: absolute;
+    width: 70px;
+    height: 70px;
+    border: 2px solid var(--mining-accent);
+    border-radius: 50%;
+    opacity: 0.6;
+    animation: stepPulse 2s infinite;
+}
+
+@@keyframes stepPulse {
+    0% { transform: scale(1); opacity: 0.6; }
+    50% { transform: scale(1.2); opacity: 0.3; }
+    100% { transform: scale(1); opacity: 0.6; }
+}
+
+.step-circle.completed {
+    background: linear-gradient(135deg, var(--mining-success), #48bb78);
+    color: white;
+    border-color: var(--mining-success);
+    box-shadow: 0 4px 15px rgba(56, 161, 105, 0.3);
+}
+
+/* Step Progress Line */
+.progress-steps {
+    position: relative;
+}
+
+.progress-steps::before {
+    content: '';
+    position: absolute;
+    top: 30px;
+    left: 12.5%;
+    right: 12.5%;
+    height: 4px;
+    background: linear-gradient(90deg, #e9ecef 0%, var(--mining-accent) 50%, #e9ecef 100%);
+    z-index: 0;
+    border-radius: 2px;
+}
+
+/* Modern Card Styling */
+.modern-card {
+    border: none;
+    border-radius: 1rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.modern-card:hover {
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+}
+
+.modern-card .card-header.bg-gradient-primary {
+    background: linear-gradient(135deg, var(--mining-primary), var(--mining-secondary)) !important;
+    color: white;
+    padding: 1.5rem;
+    border-bottom: none;
+    box-shadow: 0 2px 10px rgba(26, 54, 93, 0.2);
+}
+
+/* Form Control Enhancements */
+.form-control-modern, .form-select-modern {
+    border-radius: 0.75rem;
+    border: 2px solid #e2e8f0;
+    padding: 0.875rem 1rem;
+    transition: all 0.3s ease;
+    background-color: #fff;
+    font-size: 0.95rem;
+}
+
+.form-control-modern:focus, .form-select-modern:focus {
+    border-color: var(--mining-accent);
+    box-shadow: 0 0 0 0.25rem rgba(212, 175, 55, 0.15);
+    background-color: #fff;
+    transform: translateY(-1px);
+}
+
+.form-control-modern.is-invalid, .form-select-modern.is-invalid {
+    border-color: var(--mining-danger);
+    box-shadow: 0 0 0 0.25rem rgba(229, 62, 62, 0.15);
+    animation: shake 0.5s ease-in-out;
+}
+
+@@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+/* Button Enhancements */
+.btn {
+    border-radius: 0.75rem;
+    padding: 0.875rem 1.75rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    border: none;
+    font-size: 0.95rem;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--mining-primary), var(--mining-info));
+    color: white;
+    box-shadow: 0 4px 15px rgba(26, 54, 93, 0.3);
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, var(--mining-info), var(--mining-primary));
+    box-shadow: 0 6px 25px rgba(26, 54, 93, 0.4);
+}
+
+.btn-success {
+    background: linear-gradient(135deg, var(--mining-success), #48bb78);
+    color: white;
+    box-shadow: 0 4px 15px rgba(56, 161, 105, 0.3);
+}
+
+.btn-success:hover {
+    background: linear-gradient(135deg, #48bb78, var(--mining-success));
+    box-shadow: 0 6px 25px rgba(56, 161, 105, 0.4);
+}
+
+.btn-outline-secondary {
+    border: 2px solid var(--mining-secondary);
+    color: var(--mining-secondary);
+    background: transparent;
+}
+
+.btn-outline-secondary:hover {
+    background: var(--mining-secondary);
+    color: white;
+}
+
+/* Alert Enhancements */
+.alert {
+    border-radius: 0.875rem;
+    border: none;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    border-left: 4px solid;
+}
+
+.alert-info {
+    background: linear-gradient(135deg, rgba(49, 130, 206, 0.1), rgba(49, 130, 206, 0.05));
+    border-left-color: var(--mining-info);
+    color: var(--mining-info);
+}
+
+.alert-warning {
+    background: linear-gradient(135deg, rgba(214, 158, 46, 0.1), rgba(214, 158, 46, 0.05));
+    border-left-color: var(--mining-warning);
+    color: var(--mining-warning);
+}
+
+/* Enhanced Approver Cards */
+.approver-card {
+    cursor: pointer;
+    transition: all 0.4s ease;
+    border: 2px solid #e2e8f0 !important;
+    background: linear-gradient(135deg, #ffffff, #f8fafc) !important;
+    border-radius: 0.875rem;
+    padding: 1.25rem !important;
+    position: relative;
+    overflow: hidden;
+    min-height: 120px;
+}
+
+.approver-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.1), transparent);
+    transition: left 0.5s ease;
+}
+
+.approver-card:hover {
+    background: linear-gradient(135deg, #f8fafc, #edf2f7) !important;
+    transform: translateY(-4px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    border-color: var(--mining-accent) !important;
+}
+
+.approver-card:hover::before {
+    left: 100%;
+}
+
+.approver-card.border-success {
+    border-color: var(--mining-success) !important;
+    background: linear-gradient(135deg, rgba(56, 161, 105, 0.1), rgba(56, 161, 105, 0.05)) !important;
+    box-shadow: 0 8px 25px rgba(56, 161, 105, 0.25);
+    transform: translateY(-2px);
+}
+
+.approver-card .check-indicator {
+    animation: bounceIn 0.6s ease;
+    transform-origin: center;
+}
+
+.approver-card .check-circle {
+    width: 40px;
+    height: 40px;
+    background: rgba(56, 161, 105, 0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: checkPulse 2s infinite;
+}
+
+@@keyframes checkPulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.1); opacity: 0.8; }
+}
+
+/* Approver Avatar */
+.approver-avatar {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, rgba(26, 54, 93, 0.1), rgba(26, 54, 93, 0.05));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid rgba(26, 54, 93, 0.2);
+    transition: all 0.3s ease;
+}
+
+.approver-card:hover .approver-avatar {
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.15), rgba(212, 175, 55, 0.08));
+    border-color: var(--mining-accent);
+    transform: scale(1.1);
+}
+
+.approver-card.border-success .approver-avatar {
+    background: linear-gradient(135deg, rgba(56, 161, 105, 0.15), rgba(56, 161, 105, 0.08));
+    border-color: var(--mining-success);
+}
+
+/* Approver Progress Info */
+.approver-progress-info {
+    background: rgba(26, 54, 93, 0.05);
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    border: 1px solid rgba(26, 54, 93, 0.1);
+}
+
+/* Feedback Section */
+.approver-feedback-section {
+    border-top: 2px dashed #e2e8f0;
+    padding-top: 1rem;
+}
+
+.selected-approvers-info {
+    background: linear-gradient(135deg, #f8fafc, #ffffff);
+    border: 2px solid #e2e8f0;
+    transition: all 0.4s ease;
+}
+
+.selected-approvers-info.success {
+    background: linear-gradient(135deg, rgba(56, 161, 105, 0.08), rgba(56, 161, 105, 0.04));
+    border-color: var(--mining-success);
+}
+
+.selected-approvers-info.warning {
+    background: linear-gradient(135deg, rgba(214, 158, 46, 0.08), rgba(214, 158, 46, 0.04));
+    border-color: var(--mining-warning);
+}
+
+/* Cursor pointer for labels */
+.cursor-pointer {
+    cursor: pointer;
+}
+
+/* Vehicle and Driver Card Enhancements */
+.driver-option-card {
+    transition: all 0.4s ease;
+    border: 2px solid #e2e8f0 !important;
+    background: linear-gradient(135deg, #ffffff, #f8fafc) !important;
+    border-radius: 0.875rem;
+}
+
+.driver-option-card:hover {
+    border-color: var(--mining-accent) !important;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+    transform: translateY(-2px);
+}
+
+.driver-option-card.active-option {
+    border-color: var(--mining-primary) !important;
+    background: linear-gradient(135deg, rgba(26, 54, 93, 0.08), rgba(26, 54, 93, 0.04)) !important;
+    box-shadow: 0 6px 20px rgba(26, 54, 93, 0.2);
+}
+
+/* Vehicle Preview Card */
+.vehicle-preview .card {
+    transition: all 0.4s ease;
+    border: 2px solid var(--mining-success) !important;
+    border-radius: 0.875rem;
+    overflow: hidden;
+}
+
+.vehicle-icon-large {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 90px;
+    height: 90px;
+    background: linear-gradient(135deg, rgba(56, 161, 105, 0.1), rgba(56, 161, 105, 0.05));
+    border-radius: 50%;
+    border: 3px solid rgba(56, 161, 105, 0.2);
+}
+
+/* Progress Bar Enhancements */
+.progress {
+    border-radius: 10px;
+    background: linear-gradient(135deg, #e9ecef, #f8f9fa);
+    height: 10px;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.progress-bar {
+    border-radius: 10px;
+    transition: all 0.8s ease;
+    background: linear-gradient(135deg, var(--mining-success), #48bb78);
+}
+
+.progress-bar.bg-danger {
+    background: linear-gradient(135deg, var(--mining-danger), #f56565) !important;
 }
 
 /* Loading States */
@@ -1152,10 +1568,90 @@
     opacity: 0.7;
     transform: none !important;
     cursor: not-allowed;
+    animation: pulse 1.5s infinite;
 }
 
-/* Smooth Scrolling */
+/* Check Indicator Animation */
+.check-indicator {
+    animation: bounceIn 0.6s ease;
+}
+
+@@keyframes bounceIn {
+    0% { transform: scale(0); opacity: 0; }
+    60% { transform: scale(1.3); opacity: 0.8; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+/* Form Step Transitions */
+.form-step {
+    opacity: 0;
+    transform: translateX(30px);
+    transition: all 0.4s ease;
+    display: none;
+}
+
+.form-step.active {
+    opacity: 1;
+    transform: translateX(0);
+    display: block;
+}
+
+/* Responsive Enhancements */
+@@media (max-width: 768px) {
+    .step-circle {
+        width: 50px;
+        height: 50px;
+        font-size: 1.2rem;
+    }
+    
+    .step-circle.active::before {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .modern-card .card-header {
+        padding: 1.25rem;
+    }
+    
+    .btn {
+        padding: 0.75rem 1.5rem;
+        font-size: 0.9rem;
+    }
+    
+    .approver-card, .driver-option-card {
+        margin-bottom: 1rem;
+        padding: 0.875rem !important;
+    }
+}
+
+/* Additional Mining Theme Colors */
+.text-primary {
+    color: var(--mining-primary) !important;
+}
+
+.bg-gradient-primary {
+    background: linear-gradient(135deg, var(--mining-primary), var(--mining-secondary)) !important;
+}
+
+/* Form Label Enhancements */
+.form-label.fw-medium {
+    color: var(--mining-secondary);
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    font-size: 0.95rem;
+}
+
+/* Input Group Enhancements */
+.input-group .form-control-modern,
+.input-group .form-select-modern {
+    border-radius: 0.75rem 0 0 0.75rem;
+}
+
+/* Smooth Scrolling and General Improvements */
 html {
     scroll-behavior: smooth;
 }
-</style>
+
+.container-fluid {
+    max-width: 1400px;
+}
