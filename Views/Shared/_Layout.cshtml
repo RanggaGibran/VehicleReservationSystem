@@ -58,23 +58,56 @@
                 </div>
             </div>
         </nav>
-    </header>
-    <div class="main-content">
-        <main role="main" class="container-fluid">
+    </header>    <div class="main-content">
+        <main role="main" class="container-fluid pb-5">
             @RenderBody()
         </main>
-    </div>    <footer class="mining-footer text-white">
+    </div>
+    <footer class="mining-footer text-white">
         <div class="container-fluid">
-            <div class="row">
-                <div class="col-md-8">
-                    <div class="d-flex align-items-center">
-                        <i class="bi bi-gem me-2 text-warning"></i>
-                        <span>&copy; 2025 PT Nikel Nusantara Mining - Sistem Reservasi Kendaraan</span>
+            <div class="row g-4">
+                <div class="col-lg-6">
+                    <div class="company-info">
+                        <i class="bi bi-gem me-2 text-warning fs-4"></i>
+                        <span class="company-name">&copy; 2025 PT Nikel Nusantara Mining</span>
                     </div>
-                    <small class="text-muted">Kantor Pusat: Jakarta | Kantor Cabang: Surabaya | 6 Lokasi Tambang di Seluruh Indonesia</small>
+                    <p class="mb-0 text-muted">
+                        <i class="bi bi-buildings me-1"></i> Kantor Pusat: Jakarta 
+                        <i class="bi bi-building ms-2 me-1"></i> Kantor Cabang: Surabaya 
+                        <i class="bi bi-geo-alt ms-2 me-1"></i> 6 Lokasi Tambang di Seluruh Indonesia
+                    </p>
+                    
+                    <div class="footer-links">
+                        <a href="#"><i class="bi bi-shield-check"></i>Kebijakan Privasi</a>
+                        <a href="#"><i class="bi bi-file-earmark-text"></i>Syarat & Ketentuan</a>
+                        <a href="#"><i class="bi bi-question-circle"></i>Bantuan</a>
+                    </div>
                 </div>
-                <div class="col-md-4 text-end">
-                    <small class="text-muted">v1.0.0 | .NET 9.0</small>
+                <div class="col-lg-3 col-md-6">
+                    <h6 class="mb-3 text-warning">Kontak</h6>
+                    <div class="d-flex align-items-center mb-2">
+                        <i class="bi bi-telephone-fill me-2"></i>
+                        <span class="text-muted">+62 21 5555 8888</span>
+                    </div>
+                    <div class="d-flex align-items-center mb-2">
+                        <i class="bi bi-envelope-fill me-2"></i>
+                        <span class="text-muted">contact@nikelnusantara.co.id</span>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-globe me-2"></i>
+                        <span class="text-muted">www.nikelnusantara.co.id</span>
+                    </div>
+                </div>                <div class="col-lg-3 col-md-6 text-end">
+                    <div class="d-flex align-items-center justify-content-end mb-3 social-icons">
+                        <a href="#" title="Facebook"><i class="bi bi-facebook"></i></a>
+                        <a href="#" title="Twitter"><i class="bi bi-twitter-x"></i></a>
+                        <a href="#" title="LinkedIn"><i class="bi bi-linkedin"></i></a>
+                        <a href="#" title="Instagram"><i class="bi bi-instagram"></i></a>
+                        <a href="#" title="YouTube"><i class="bi bi-youtube"></i></a>
+                    </div>
+                    <div class="version-info">
+                        <small><i class="bi bi-code-slash me-1"></i>v1.0.0 | .NET 9.0</small>
+                    </div>
                 </div>
             </div>
         </div>

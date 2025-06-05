@@ -9,13 +9,11 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-8 col-lg-6 col-xl-5">
-                <div class="login-card card shadow-lg border-0">
-                    <div class="card-header bg-gradient-primary text-white text-center py-4">
-                        <div class="mining-logo mb-2">
-                            <i class="bi bi-truck-front-fill display-4"></i>
+                <div class="login-card card shadow-lg border-0">                    <div class="card-header bg-gradient-primary text-center py-4">                        <div class="mining-logo mb-3">
+                            <i class="bi bi-truck-front-fill display-4 text-white"></i>
                         </div>
-                        <h4 class="mb-0 fw-bold">PT Nikel Nusantara Mining</h4>
-                        <p class="mb-0">Sistem Reservasi Kendaraan</p>
+                        <h4 class="mb-1 fw-bold company-name">PT Nikel Nusantara Mining</h4>
+                        <p class="mb-0 system-name">Sistem Reservasi Kendaraan</p>
                     </div>
                     <div class="card-body p-4 p-md-5">
                         <h5 class="text-center mb-4 fw-bold text-primary">Masuk ke Akun Anda</h5>
@@ -178,9 +176,8 @@
     </script>
 }
 
-<style>
-    body {
-        background: linear-gradient(135deg, #f5f7fa 0%, #e4e9f0 100%);
+<style>    body {
+        background: linear-gradient(135deg, #eaf2f8 0%, #d6e9f3 100%);
         min-height: 100vh;
     }
     
@@ -199,20 +196,54 @@
         transform: translateY(-5px);
         box-shadow: 0 1rem 3rem rgba(0,0,0,0.175)!important;
     }
-    
-    .bg-gradient-primary {
-        background: linear-gradient(135deg, var(--mining-primary), var(--mining-primary-dark));
+      .bg-gradient-primary {
+        background: linear-gradient(135deg, #0f3749, #0a5b75);
     }
     
     .mining-logo {
-        background-color: rgba(255,255,255,0.2);
-        width: 80px;
-        height: 80px;
+        background-color: rgba(255,255,255,0.25);
+        width: 85px;
+        height: 85px;
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
         margin: 0 auto;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        border: 2px solid rgba(255,255,255,0.3);
+    }
+    
+    .company-name {
+        color: #ffffff;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        font-size: 1.5rem;
+        letter-spacing: 0.5px;
+    }
+      .system-name {
+        color: rgba(255,255,255,0.9);
+        font-weight: 500;
+        text-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        font-size: 1.1rem;
+        letter-spacing: 0.3px;
+        animation: fadeInSlight 1.5s ease;
+    }
+    
+    .company-name {
+        color: #ffffff;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        font-size: 1.5rem;
+        letter-spacing: 0.5px;
+        animation: fadeInBright 1.5s ease;
+    }
+    
+    @@keyframes fadeInBright {
+        from { opacity: 0; transform: translateY(-10px); text-shadow: 0 0 10px rgba(255,255,255,0.8); }
+        to { opacity: 1; transform: translateY(0); text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+    }
+    
+    @@keyframes fadeInSlight {
+        from { opacity: 0; transform: translateY(5px); }
+        to { opacity: 1; transform: translateY(0); }
     }
     
     .form-control-lg {
