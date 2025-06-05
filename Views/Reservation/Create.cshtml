@@ -1,103 +1,265 @@
 @model VehicleReservationSystem.ViewModels.ReservationViewModel
 
 @{
-    ViewData["Title"] = "Create Reservation";
+    ViewData["Title"] = "Buat Reservasi Baru";
 }
 
-<h1>Create New Reservation</h1>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="mb-1">
+            <i class="bi bi-plus-circle text-primary me-2"></i>Buat Reservasi Kendaraan
+        </h1>
+        <p class="text-muted mb-0">
+            <i class="bi bi-info-circle me-1"></i>Isi formulir di bawah untuk membuat reservasi kendaraan operasional
+        </p>
+    </div>
+    <div>
+        <a asp-action="Index" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i>Kembali ke Daftar
+        </a>
+    </div>
+</div>
 
-<div class="card">
-    <div class="card-header">
-        <h5>Reservation Details</h5>
+<!-- Progress Steps -->
+<div class="card mb-4">
+    <div class="card-body">
+        <div class="row text-center">
+            <div class="col-3">
+                <div class="step-circle active">
+                    <i class="bi bi-person-fill"></i>
+                </div>
+                <small class="text-muted d-block mt-2">Informasi Pemohon</small>
+            </div>
+            <div class="col-3">
+                <div class="step-circle">
+                    <i class="bi bi-truck"></i>
+                </div>
+                <small class="text-muted d-block mt-2">Pilih Kendaraan</small>
+            </div>
+            <div class="col-3">
+                <div class="step-circle">
+                    <i class="bi bi-calendar-event"></i>
+                </div>
+                <small class="text-muted d-block mt-2">Jadwal & Tujuan</small>
+            </div>
+            <div class="col-3">
+                <div class="step-circle">
+                    <i class="bi bi-check-circle"></i>
+                </div>
+                <small class="text-muted d-block mt-2">Persetujuan</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card modern-card">
+    <div class="card-header bg-gradient-primary text-white">
+        <h5 class="mb-0">
+            <i class="bi bi-clipboard-data me-2"></i>Detail Reservasi
+        </h5>
     </div>
     <div class="card-body">
-        <form asp-action="Create" method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <form asp-action="Create" method="post" id="reservationForm">
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger d-none"></div>
             
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group mb-3">
-                        <label asp-for="RequesterId" class="control-label">Requester</label>
-                        <select asp-for="RequesterId" asp-items="Model.Users" class="form-select"></select>
-                        <span asp-validation-for="RequesterId" class="text-danger"></span>
+            <!-- Step 1: Requester Information -->
+            <div class="form-step active" id="step1">
+                <h6 class="text-primary mb-3">
+                    <i class="bi bi-person-badge me-2"></i>Informasi Pemohon
+                </h6>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            <label asp-for="RequesterId" class="form-label fw-medium">
+                                <i class="bi bi-person text-muted me-1"></i>Pemohon <span class="text-danger">*</span>
+                            </label>
+                            <select asp-for="RequesterId" asp-items="Model.Users" class="form-select form-select-modern">
+                                <option value="">-- Pilih Pemohon --</option>
+                            </select>
+                            <span asp-validation-for="RequesterId" class="text-danger small"></span>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            <label asp-for="NumberOfPassengers" class="form-label fw-medium">
+                                <i class="bi bi-people text-muted me-1"></i>Jumlah Penumpang <span class="text-danger">*</span>
+                            </label>
+                            <input asp-for="NumberOfPassengers" class="form-control form-control-modern" placeholder="Masukkan jumlah penumpang" />
+                            <span asp-validation-for="NumberOfPassengers" class="text-danger small"></span>
+                            <small class="text-muted">Termasuk pengemudi</small>
+                        </div>
                     </div>
                 </div>
                 
-                <div class="col-md-6">
-                    <div class="form-group mb-3">
-                        <label asp-for="VehicleId" class="control-label">Vehicle</label>
-                        <select asp-for="VehicleId" asp-items="Model.Vehicles" class="form-select"></select>
-                        <span asp-validation-for="VehicleId" class="text-danger"></span>
-                    </div>
+                <div class="form-group mb-3">
+                    <label asp-for="Purpose" class="form-label fw-medium">
+                        <i class="bi bi-clipboard-check text-muted me-1"></i>Tujuan Penggunaan <span class="text-danger">*</span>
+                    </label>
+                    <select asp-for="Purpose" class="form-select form-select-modern" onchange="handlePurposeChange()">
+                        <option value="">-- Pilih Tujuan --</option>
+                        <option value="Inspeksi Tambang">Inspeksi Tambang</option>
+                        <option value="Transportasi Karyawan">Transportasi Karyawan</option>
+                        <option value="Pengiriman Material">Pengiriman Material</option>
+                        <option value="Kunjungan Klien">Kunjungan Klien</option>
+                        <option value="Rapat Eksternal">Rapat Eksternal</option>
+                        <option value="Pengambilan Sample">Pengambilan Sample</option>
+                        <option value="Lainnya">Lainnya</option>
+                    </select>
+                    <span asp-validation-for="Purpose" class="text-danger small"></span>
+                </div>
+                
+                <div class="form-group mb-4" id="customPurposeDiv" style="display: none;">
+                    <label class="form-label fw-medium">
+                        <i class="bi bi-pencil text-muted me-1"></i>Jelaskan Tujuan Lainnya
+                    </label>
+                    <input type="text" class="form-control form-control-modern" id="customPurpose" placeholder="Jelaskan tujuan penggunaan kendaraan" />
+                </div>
+                
+                <div class="d-flex justify-content-end">
+                    <button type="button" class="btn btn-primary" onclick="nextStep(2)">
+                        Selanjutnya <i class="bi bi-arrow-right ms-1"></i>
+                    </button>
                 </div>
             </div>
             
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group mb-3">
-                        <label asp-for="DriverId" class="control-label">Driver</label>
-                        <select asp-for="DriverId" asp-items="Model.Drivers" class="form-select">
-                            <option value="">-- Select Driver --</option>
+            <!-- Step 2: Vehicle Selection -->
+            <div class="form-step" id="step2">
+                <h6 class="text-primary mb-3">
+                    <i class="bi bi-truck me-2"></i>Pilih Kendaraan & Pengemudi
+                </h6>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            <label asp-for="VehicleId" class="form-label fw-medium">
+                                <i class="bi bi-truck text-muted me-1"></i>Kendaraan <span class="text-danger">*</span>
+                            </label>
+                            <select asp-for="VehicleId" asp-items="Model.Vehicles" class="form-select form-select-modern" onchange="updateAvailableDrivers()">
+                                <option value="">-- Pilih Kendaraan --</option>
+                            </select>
+                            <span asp-validation-for="VehicleId" class="text-danger small"></span>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            <label asp-for="DriverId" class="form-label fw-medium">
+                                <i class="bi bi-person-gear text-muted me-1"></i>Pengemudi
+                            </label>
+                            <select asp-for="DriverId" asp-items="Model.Drivers" class="form-select form-select-modern">
+                                <option value="">-- Pilih Pengemudi --</option>
+                            </select>
+                            <span asp-validation-for="DriverId" class="text-danger small"></span>
+                            <small class="text-muted">Opsional - dapat ditentukan kemudian</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="d-flex justify-content-between">
+                    <button type="button" class="btn btn-outline-secondary" onclick="previousStep(1)">
+                        <i class="bi bi-arrow-left me-1"></i>Sebelumnya
+                    </button>
+                    <button type="button" class="btn btn-primary" onclick="nextStep(3)">
+                        Selanjutnya <i class="bi bi-arrow-right ms-1"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Step 3: Schedule & Destination -->
+            <div class="form-step" id="step3">
+                <h6 class="text-primary mb-3">
+                    <i class="bi bi-calendar-event me-2"></i>Jadwal & Tujuan
+                </h6>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            <label asp-for="StartDate" class="form-label fw-medium">
+                                <i class="bi bi-calendar-plus text-muted me-1"></i>Tanggal & Waktu Mulai <span class="text-danger">*</span>
+                            </label>
+                            <input asp-for="StartDate" class="form-control form-control-modern" type="datetime-local" />
+                            <span asp-validation-for="StartDate" class="text-danger small"></span>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            <label asp-for="EndDate" class="form-label fw-medium">
+                                <i class="bi bi-calendar-x text-muted me-1"></i>Tanggal & Waktu Selesai <span class="text-danger">*</span>
+                            </label>
+                            <input asp-for="EndDate" class="form-control form-control-modern" type="datetime-local" />
+                            <span asp-validation-for="EndDate" class="text-danger small"></span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group mb-4">
+                    <label asp-for="Destination" class="form-label fw-medium">
+                        <i class="bi bi-geo-alt text-muted me-1"></i>Tujuan / Lokasi <span class="text-danger">*</span>
+                    </label>
+                    <div class="input-group">
+                        <select class="form-select form-select-modern" id="destinationSelect" onchange="handleDestinationChange()">
+                            <option value="">-- Pilih Lokasi --</option>
+                            <option value="Kantor Pusat Jakarta">Kantor Pusat Jakarta</option>
+                            <option value="Kantor Cabang Surabaya">Kantor Cabang Surabaya</option>
+                            <option value="Site Tambang Weda Bay">Site Tambang Weda Bay</option>
+                            <option value="Site Tambang Pomalaa">Site Tambang Pomalaa</option>
+                            <option value="Site Tambang Kolaka">Site Tambang Kolaka</option>
+                            <option value="Site Tambang Morowali">Site Tambang Morowali</option>
+                            <option value="Site Tambang Obi Island">Site Tambang Obi Island</option>
+                            <option value="Site Tambang Gee">Site Tambang Gee</option>
+                            <option value="Lainnya">Lokasi Lainnya</option>
                         </select>
-                        <span asp-validation-for="DriverId" class="text-danger"></span>
+                        <input asp-for="Destination" class="form-control form-control-modern d-none" placeholder="Masukkan tujuan/lokasi" />
                     </div>
+                    <span asp-validation-for="Destination" class="text-danger small"></span>
                 </div>
                 
-                <div class="col-md-6">
-                    <div class="form-group mb-3">
-                        <label asp-for="NumberOfPassengers" class="control-label"></label>
-                        <input asp-for="NumberOfPassengers" class="form-control" />
-                        <span asp-validation-for="NumberOfPassengers" class="text-danger"></span>
-                    </div>
+                <div class="d-flex justify-content-between">
+                    <button type="button" class="btn btn-outline-secondary" onclick="previousStep(2)">
+                        <i class="bi bi-arrow-left me-1"></i>Sebelumnya
+                    </button>
+                    <button type="button" class="btn btn-primary" onclick="nextStep(4)">
+                        Selanjutnya <i class="bi bi-arrow-right ms-1"></i>
+                    </button>
                 </div>
             </div>
             
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group mb-3">
-                        <label asp-for="StartDate" class="control-label"></label>
-                        <input asp-for="StartDate" class="form-control" type="datetime-local" />
-                        <span asp-validation-for="StartDate" class="text-danger"></span>
-                    </div>
+            <!-- Step 4: Approval -->
+            <div class="form-step" id="step4">
+                <h6 class="text-primary mb-3">
+                    <i class="bi bi-person-check me-2"></i>Persetujuan
+                </h6>
+                
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle me-2"></i>
+                    <strong>Catatan:</strong> Reservasi memerlukan persetujuan dari minimal 2 pihak yang berwenang. Pilih penyetuju sesuai dengan kebijakan perusahaan.
                 </div>
                 
-                <div class="col-md-6">
-                    <div class="form-group mb-3">
-                        <label asp-for="EndDate" class="control-label"></label>
-                        <input asp-for="EndDate" class="form-control" type="datetime-local" />
-                        <span asp-validation-for="EndDate" class="text-danger"></span>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group mb-3">
-                        <label asp-for="Purpose" class="control-label"></label>
-                        <input asp-for="Purpose" class="form-control" />
-                        <span asp-validation-for="Purpose" class="text-danger"></span>
-                    </div>
+                <div class="form-group mb-4">
+                    <label asp-for="ApproverIds" class="form-label fw-medium">
+                        <i class="bi bi-people-fill text-muted me-1"></i>Penyetuju <span class="text-danger">*</span>
+                        <small class="text-muted">(Pilih minimal 2)</small>
+                    </label>
+                    <select asp-for="ApproverIds" asp-items="Model.Approvers" class="form-select form-select-modern" multiple size="5">
+                    </select>
+                    <span asp-validation-for="ApproverIds" class="text-danger small"></span>
+                    <small class="text-muted d-block mt-1">
+                        <i class="bi bi-lightbulb me-1"></i>
+                        Tahan tombol Ctrl untuk memilih beberapa penyetuju
+                    </small>
                 </div>
                 
-                <div class="col-md-6">
-                    <div class="form-group mb-3">
-                        <label asp-for="Destination" class="control-label"></label>
-                        <input asp-for="Destination" class="form-control" />
-                        <span asp-validation-for="Destination" class="text-danger"></span>
-                    </div>
+                <div class="d-flex justify-content-between">
+                    <button type="button" class="btn btn-outline-secondary" onclick="previousStep(3)">
+                        <i class="bi bi-arrow-left me-1"></i>Sebelumnya
+                    </button>
+                    <button type="submit" class="btn btn-success btn-lg px-4" id="submitBtn">
+                        <i class="bi bi-check-circle me-1"></i>Buat Reservasi
+                    </button>
                 </div>
-            </div>
-            
-            <div class="form-group mb-3">
-                <label asp-for="ApproverIds" class="control-label">Approvers (Select at least 2)</label>
-                <select asp-for="ApproverIds" asp-items="Model.Approvers" class="form-select" multiple size="4"></select>
-                <span asp-validation-for="ApproverIds" class="text-danger"></span>
-                <small class="text-muted">Hold Ctrl key to select multiple approvers</small>
-            </div>
-            
-            <div class="form-group">
-                <input type="submit" value="Create Reservation" class="btn btn-primary" />
-                <a asp-action="Index" class="btn btn-secondary">Back to List</a>
             </div>
         </form>
     </div>
@@ -105,20 +267,253 @@
 
 @section Scripts {
     <script>
+        let currentStep = 1;
+        
         $(document).ready(function() {
+            // Set minimum date to today
+            const now = new Date();
+            const minDateTime = now.toISOString().slice(0, 16);
+            $("#StartDate").attr('min', minDateTime);
+            $("#EndDate").attr('min', minDateTime);
+            
+            // Auto-calculate end date when start date changes
             $("#StartDate").change(function() {
-                var startDate = new Date($(this).val());
-                var endDate = new Date(startDate);
-                endDate.setHours(endDate.getHours() + 2);
+                const startDate = new Date($(this).val());
+                if (startDate) {
+                    const endDate = new Date(startDate);
+                    endDate.setHours(endDate.getHours() + 4); // Default 4 hours duration
+                    
+                    const year = endDate.getFullYear();
+                    const month = (endDate.getMonth() + 1).toString().padStart(2, '0');
+                    const day = endDate.getDate().toString().padStart(2, '0');
+                    const hours = endDate.getHours().toString().padStart(2, '0');
+                    const minutes = endDate.getMinutes().toString().padStart(2, '0');
+                    
+                    $("#EndDate").val(`${year}-${month}-${day}T${hours}:${minutes}`);
+                    $("#EndDate").attr('min', $(this).val());
+                }
+            });
+            
+            // Form validation
+            $("#reservationForm").on('submit', function(e) {
+                if (!validateCurrentStep()) {
+                    e.preventDefault();
+                    return false;
+                }
                 
-                var year = endDate.getFullYear();
-                var month = (endDate.getMonth() + 1).toString().padStart(2, '0');
-                var day = endDate.getDate().toString().padStart(2, '0');
-                var hours = endDate.getHours().toString().padStart(2, '0');
-                var minutes = endDate.getMinutes().toString().padStart(2, '0');
-                
-                $("#EndDate").val(`${year}-${month}-${day}T${hours}:${minutes}`);
+                // Show loading state
+                $("#submitBtn").html('<i class="bi bi-hourglass-split me-1"></i>Memproses...').prop('disabled', true);
             });
         });
+        
+        function nextStep(step) {
+            if (validateCurrentStep()) {
+                $(`#step${currentStep}`).removeClass('active');
+                $(`.step-circle:nth-child(${currentStep * 2 - 1})`).removeClass('active');
+                
+                currentStep = step;
+                $(`#step${currentStep}`).addClass('active');
+                $(`.step-circle:nth-child(${currentStep * 2 - 1})`).addClass('active');
+                
+                // Scroll to top
+                $('html, body').animate({ scrollTop: 0 }, 300);
+            }
+        }
+        
+        function previousStep(step) {
+            $(`#step${currentStep}`).removeClass('active');
+            $(`.step-circle:nth-child(${currentStep * 2 - 1})`).removeClass('active');
+            
+            currentStep = step;
+            $(`#step${currentStep}`).addClass('active');
+            $(`.step-circle:nth-child(${currentStep * 2 - 1})`).addClass('active');
+            
+            // Scroll to top
+            $('html, body').animate({ scrollTop: 0 }, 300);
+        }
+        
+        function validateCurrentStep() {
+            let isValid = true;
+            const currentStepElement = $(`#step${currentStep}`);
+            
+            // Clear previous validation
+            currentStepElement.find('.is-invalid').removeClass('is-invalid');
+            currentStepElement.find('.text-danger').hide();
+            
+            switch(currentStep) {
+                case 1:
+                    if (!$("#RequesterId").val()) {
+                        $("#RequesterId").addClass('is-invalid');
+                        isValid = false;
+                    }
+                    if (!$("#NumberOfPassengers").val() || $("#NumberOfPassengers").val() < 1) {
+                        $("#NumberOfPassengers").addClass('is-invalid');
+                        isValid = false;
+                    }
+                    if (!$("#Purpose").val()) {
+                        $("#Purpose").addClass('is-invalid');
+                        isValid = false;
+                    }
+                    break;
+                case 2:
+                    if (!$("#VehicleId").val()) {
+                        $("#VehicleId").addClass('is-invalid');
+                        isValid = false;
+                    }
+                    break;
+                case 3:
+                    if (!$("#StartDate").val()) {
+                        $("#StartDate").addClass('is-invalid');
+                        isValid = false;
+                    }
+                    if (!$("#EndDate").val()) {
+                        $("#EndDate").addClass('is-invalid');
+                        isValid = false;
+                    }
+                    if (!$("#Destination").val()) {
+                        $("#Destination").addClass('is-invalid');
+                        isValid = false;
+                    }
+                    // Validate dates
+                    if ($("#StartDate").val() && $("#EndDate").val()) {
+                        const start = new Date($("#StartDate").val());
+                        const end = new Date($("#EndDate").val());
+                        if (end <= start) {
+                            $("#EndDate").addClass('is-invalid');
+                            isValid = false;
+                            alert('Tanggal selesai harus setelah tanggal mulai');
+                        }
+                    }
+                    break;
+                case 4:
+                    const selectedApprovers = $("#ApproverIds").val();
+                    if (!selectedApprovers || selectedApprovers.length < 2) {
+                        $("#ApproverIds").addClass('is-invalid');
+                        isValid = false;
+                        alert('Pilih minimal 2 penyetuju');
+                    }
+                    break;
+            }
+            
+            if (!isValid) {
+                // Show validation errors
+                currentStepElement.find('.text-danger').show();
+            }
+            
+            return isValid;
+        }
+        
+        function handlePurposeChange() {
+            const purpose = $("#Purpose").val();
+            if (purpose === "Lainnya") {
+                $("#customPurposeDiv").show();
+                $("#customPurpose").prop('required', true);
+            } else {
+                $("#customPurposeDiv").hide();
+                $("#customPurpose").prop('required', false);
+                if (purpose) {
+                    $("#Purpose").val(purpose);
+                }
+            }
+        }
+        
+        function handleDestinationChange() {
+            const destination = $("#destinationSelect").val();
+            if (destination === "Lainnya") {
+                $("#destinationSelect").addClass('d-none');
+                $("#Destination").removeClass('d-none').val('').focus();
+            } else {
+                $("#Destination").val(destination);
+            }
+        }
+        
+        function updateAvailableDrivers() {
+            // This function can be enhanced to filter drivers based on selected vehicle
+            // For now, it's a placeholder for future enhancement
+            const vehicleId = $("#VehicleId").val();
+            if (vehicleId) {
+                // Could make an AJAX call to get available drivers for the selected vehicle
+                console.log('Selected vehicle:', vehicleId);
+            }
+        }
     </script>
+    
+    <style>
+        .form-step {
+            display: none;
+        }
+        
+        .form-step.active {
+            display: block;
+            animation: fadeIn 0.3s ease-in;
+        }
+        
+        @@keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .step-circle {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: #e9ecef;
+            color: #6c757d;
+            display: flex;
+            align-items: center;
+            justify-content-center;
+            margin: 0 auto;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+        
+        .step-circle.active {
+            background-color: var(--mining-primary);
+            color: white;
+            transform: scale(1.1);
+        }
+        
+        .form-control-modern,
+        .form-select-modern {
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 12px 16px;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control-modern:focus,
+        .form-select-modern:focus {
+            border-color: var(--mining-primary);
+            box-shadow: 0 0 0 0.2rem rgba(26, 54, 93, 0.25);
+        }
+        
+        .form-label {
+            color: #495057;
+            margin-bottom: 8px;
+        }
+        
+        .modern-card {
+            border: none;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+            border-radius: 12px;
+        }
+        
+        .bg-gradient-primary {
+            background: linear-gradient(135deg, var(--mining-primary), var(--mining-secondary));
+        }
+        
+        .is-invalid {
+            border-color: #dc3545 !important;
+            box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;
+        }
+        
+        .btn:hover {
+            transform: translateY(-1px);
+        }
+        
+        .alert {
+            border-left: 4px solid #0dcaf0;
+            border-radius: 8px;
+        }
+    </style>
 }

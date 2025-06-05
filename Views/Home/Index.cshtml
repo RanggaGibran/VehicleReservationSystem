@@ -1,34 +1,244 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Beranda";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome to Vehicle Reservation System</h1>
-    <p>A comprehensive system for managing vehicle reservations, approvals, and reporting.</p>
+<div class="hero-section mb-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h1 class="display-4 fw-bold text-mining-primary mb-3">
+                    <i class="bi bi-gem text-warning me-3"></i>
+                    Selamat Datang di Sistem Reservasi Kendaraan
+                </h1>
+                <p class="lead text-muted mb-4">
+                    PT Nikel Nusantara Mining - Solusi komprehensif untuk mengelola reservasi kendaraan, 
+                    persetujuan multi-level, dan pelaporan di seluruh lokasi tambang dan kantor.
+                </p>
+                <div class="d-flex gap-3 mb-4">
+                    <a asp-controller="Reservation" asp-action="Create" class="btn btn-primary btn-lg">
+                        <i class="bi bi-plus-circle me-2"></i>Buat Reservasi Baru
+                    </a>
+                    <a asp-controller="Dashboard" asp-action="Index" class="btn btn-outline-primary btn-lg">
+                        <i class="bi bi-speedometer2 me-2"></i>Lihat Dashboard
+                    </a>
+                </div>
+                <div class="d-flex align-items-center text-muted">
+                    <i class="bi bi-geo-alt me-2"></i>
+                    <small>Melayani 8 lokasi: Kantor Pusat Jakarta, Kantor Cabang Surabaya, dan 6 Lokasi Tambang</small>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="position-relative">
+                    <div class="mining-stats-card p-4 text-center bg-white rounded-4 shadow">
+                        <div class="d-flex justify-content-around mb-3">
+                            <div>
+                                <h3 class="text-mining-primary mb-0">8</h3>
+                                <small class="text-muted">Lokasi</small>
+                            </div>
+                            <div>
+                                <h3 class="text-mining-gold mb-0">150+</h3>
+                                <small class="text-muted">Kendaraan</small>
+                            </div>
+                            <div>
+                                <h3 class="text-success mb-0">24/7</h3>
+                                <small class="text-muted">Operasional</small>
+                            </div>
+                        </div>
+                        <hr>
+                        <p class="small text-muted mb-0">Sistem terintegrasi untuk efisiensi operasional tambang</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row g-4 mb-5">
+        <div class="col-lg-4 col-md-6">
+            <div class="card h-100 status-card">
+                <div class="card-body text-center p-4">
+                    <div class="feature-icon bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                        <i class="bi bi-calendar-check fs-4"></i>
+                    </div>
+                    <h5 class="card-title fw-bold">Kelola Reservasi</h5>
+                    <p class="card-text text-muted">
+                        Buat dan kelola reservasi kendaraan untuk berbagai keperluan operasional tambang, 
+                        transportasi karyawan, dan logistik material.
+                    </p>
+                    <div class="mt-auto">
+                        <a asp-controller="Reservation" asp-action="Index" class="btn btn-primary">
+                            <i class="bi bi-arrow-right me-1"></i>Kelola Reservasi
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4 col-md-6">
+            <div class="card h-100 status-card">
+                <div class="card-body text-center p-4">
+                    <div class="feature-icon bg-success text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                        <i class="bi bi-check-circle fs-4"></i>
+                    </div>
+                    <h5 class="card-title fw-bold">Proses Persetujuan</h5>
+                    <p class="card-text text-muted">
+                        Sistem persetujuan multi-level untuk memastikan penggunaan kendaraan sesuai 
+                        prosedur dan kebutuhan operasional perusahaan.
+                    </p>
+                    <div class="mt-auto">
+                        <a asp-controller="Approval" asp-action="Index" class="btn btn-success">
+                            <i class="bi bi-arrow-right me-1"></i>Kelola Persetujuan
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4 col-md-6">
+            <div class="card h-100 status-card">
+                <div class="card-body text-center p-4">
+                    <div class="feature-icon bg-info text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                        <i class="bi bi-graph-up fs-4"></i>
+                    </div>
+                    <h5 class="card-title fw-bold">Analisa & Laporan</h5>
+                    <p class="card-text text-muted">
+                        Dashboard komprehensif dan laporan berkala untuk monitoring penggunaan kendaraan, 
+                        konsumsi bahan bakar, dan efisiensi operasional.
+                    </p>
+                    <div class="mt-auto">
+                        <a asp-controller="Report" asp-action="Index" class="btn btn-info">
+                            <i class="bi bi-arrow-right me-1"></i>Lihat Laporan
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mining Locations Overview -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="bi bi-geo-alt me-2"></i>Lokasi Operasional PT Nikel Nusantara Mining
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-lg-3 col-md-6">
+                            <div class="location-item p-3 border rounded-3">
+                                <div class="d-flex align-items-center mb-2">
+                                    <i class="bi bi-building text-primary me-2"></i>
+                                    <strong>Kantor Pusat</strong>
+                                </div>
+                                <small class="text-muted">Jakarta - Koordinasi dan manajemen utama</small>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-6">
+                            <div class="location-item p-3 border rounded-3">
+                                <div class="d-flex align-items-center mb-2">
+                                    <i class="bi bi-building text-success me-2"></i>
+                                    <strong>Kantor Cabang</strong>
+                                </div>
+                                <small class="text-muted">Surabaya - Operasional regional</small>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="location-item p-3 border rounded-3">
+                                <div class="d-flex align-items-center mb-2">
+                                    <i class="bi bi-gem text-warning me-2"></i>
+                                    <strong>6 Lokasi Tambang</strong>
+                                </div>
+                                <small class="text-muted">
+                                    Tersebar di Sulawesi Tengah, Sulawesi Tenggara, Maluku Utara, Papua, dan Kalimantan Timur
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card bg-light">
+                <div class="card-body">
+                    <h6 class="card-title mb-3">
+                        <i class="bi bi-lightning me-2"></i>Aksi Cepat
+                    </h6>
+                    <div class="d-flex flex-wrap gap-2">
+                        <a asp-controller="Reservation" asp-action="Create" class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-plus me-1"></i>Reservasi Baru
+                        </a>
+                        <a asp-controller="Dashboard" asp-action="Index" class="btn btn-sm btn-outline-info">
+                            <i class="bi bi-speedometer2 me-1"></i>Dashboard
+                        </a>
+                        <a asp-controller="Report" asp-action="Index" class="btn btn-sm btn-outline-success">
+                            <i class="bi bi-file-earmark-excel me-1"></i>Unduh Laporan
+                        </a>
+                        <a asp-controller="Approval" asp-action="Index" class="btn btn-sm btn-outline-warning">
+                            <i class="bi bi-clock me-1"></i>Persetujuan Pending
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.hero-section {
+    background: linear-gradient(135deg, rgba(26, 54, 93, 0.05) 0%, rgba(246, 173, 85, 0.05) 100%);
+    padding: 3rem 0;
+    margin: -2rem -15px 0;
+}
+
+.mining-stats-card {
+    position: relative;
+    overflow: hidden;
+}
+
+.mining-stats-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, transparent, rgba(246, 173, 85, 0.1), transparent);
+    transform: rotate(45deg);
+    animation: shimmer 3s infinite;
+}
+
+@@keyframes shimmer {
+    0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+    100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+}
+
+.location-item {
+    transition: all 0.3s ease;
+    background: white;
+}
+
+.location-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+@@media (max-width: 768px) {
+    .hero-section {
+        padding: 2rem 0;
+    }
     
-    <div class="row mt-4">
-        <div class="col-md-4">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Manage Reservations</h5>
-                    <p class="card-text">Create and manage vehicle reservations across different locations.</p>
-                    <a asp-controller="Reservation" asp-action="Index" class="btn btn-primary">Go to Reservations</a>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Approve Requests</h5>
-                    <p class="card-text">Review and approve pending vehicle reservation requests.</p>
-                    <a asp-controller="Approval" asp-action="Index" class="btn btn-success">Go to Approvals</a>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">View Reports</h5>
+    .display-4 {
+        font-size: 2rem;
+    }
+}
+</style>
                     <p class="card-text">Generate and export reports for vehicle usage.</p>
                     <a asp-controller="Report" asp-action="Index" class="btn btn-info">Go to Reports</a>
                 </div>

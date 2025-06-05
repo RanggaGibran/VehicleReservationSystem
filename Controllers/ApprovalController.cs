@@ -23,11 +23,13 @@ namespace VehicleReservationSystem.Controllers
             _context = context;
             _userManager = userManager;
             _approvalService = approvalService;
-        }
-
-        public async Task<IActionResult> Index()
+        }        public async Task<IActionResult> Index()
         {
             var currentUser = await _userManager.GetUserAsync(User);
+            if (currentUser == null)
+            {
+                return Challenge();
+            }
             
             var pendingApprovals = await _context.Approvals
                 .Include(a => a.Reservation)
@@ -56,22 +58,23 @@ namespace VehicleReservationSystem.Controllers
             if (approval == null)
             {
                 return NotFound();
-            }
-
-            var currentUser = await _userManager.GetUserAsync(User);
-            if (approval.ApproverId != currentUser.Id)
+            }            var currentUser = await _userManager.GetUserAsync(User);
+            if (currentUser == null || approval.ApproverId != currentUser.Id)
             {
                 return Forbid();
             }
 
             return View(approval);
-        }
-
-        [HttpPost]
+        }        [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Approve(int id, string comments)
         {
             var currentUser = await _userManager.GetUserAsync(User);
+            if (currentUser == null)
+            {
+                return Challenge();
+            }
+            
             await _approvalService.ApproveReservation(id, currentUser.Id, comments);
             return RedirectToAction(nameof(Index));
         }
@@ -81,6 +84,11 @@ namespace VehicleReservationSystem.Controllers
         public async Task<IActionResult> Reject(int id, string comments)
         {
             var currentUser = await _userManager.GetUserAsync(User);
+            if (currentUser == null)
+            {
+                return Challenge();
+            }
+            
             await _approvalService.RejectReservation(id, currentUser.Id, comments);
             return RedirectToAction(nameof(Index));
         }

@@ -27,11 +27,14 @@ namespace VehicleReservationSystem.Controllers
             _userManager = userManager;
             _reservationService = reservationService;
             _approvalService = approvalService;
-        }
-
-        public async Task<IActionResult> Index()
+        }        public async Task<IActionResult> Index()
         {
             var currentUser = await _userManager.GetUserAsync(User);
+            if (currentUser == null)
+            {
+                return Challenge();
+            }
+            
             var isAdmin = await _userManager.IsInRoleAsync(currentUser, "Admin");
 
             if (isAdmin)
@@ -138,6 +141,37 @@ namespace VehicleReservationSystem.Controllers
                     }).ToList());
 
             return View(model);
+        }        [HttpGet]
+        public async Task<IActionResult> Details(int id)
+        {
+            var reservation = await _context.Reservations
+                .Include(r => r.Vehicle)
+                .Include(r => r.Driver)
+                .Include(r => r.Requester)
+                .Include(r => r.Approvals)
+                .ThenInclude(a => a.Approver)
+                .FirstOrDefaultAsync(r => r.Id == id);
+
+            if (reservation == null)
+            {
+                return NotFound();
+            }
+
+            // Check authorization - users can only view their own reservations unless they're admin
+            var currentUser = await _userManager.GetUserAsync(User);
+            if (currentUser == null)
+            {
+                return Challenge();
+            }
+            
+            var isAdmin = await _userManager.IsInRoleAsync(currentUser, "Admin");
+            
+            if (!isAdmin && reservation.RequesterId != currentUser.Id)
+            {
+                return Forbid();
+            }
+
+            return View(reservation);
         }
     }
 }

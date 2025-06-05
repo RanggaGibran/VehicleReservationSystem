@@ -1,0 +1,380 @@
+@model VehicleReservationSystem.Models.Reservation
+
+@{
+    ViewData["Title"] = "Detail Reservasi";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="mb-1">
+            <i class="bi bi-info-circle text-primary me-2"></i>Detail Reservasi #@Model.Id.ToString("D4")
+        </h1>
+        <p class="text-muted mb-0">
+            <i class="bi bi-calendar-check me-1"></i>Informasi lengkap reservasi kendaraan
+        </p>
+    </div>
+    <div class="d-flex gap-2">
+        <a asp-action="Index" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i>Kembali ke Daftar
+        </a>
+        @if (Model.Status == "Pending")
+        {
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">
+                <i class="bi bi-pencil me-1"></i>Edit
+            </a>
+        }
+    </div>
+</div>
+
+<!-- Reservation Status Card -->
+<div class="row g-4 mb-4">
+    <div class="col-12">        <div class="card border-0 shadow-sm">
+            @{
+                var headerClass = Model.Status switch
+                {
+                    "Approved" => "bg-success",
+                    "Pending" => "bg-warning",
+                    "Rejected" => "bg-danger",
+                    "Completed" => "bg-info",
+                    _ => "bg-secondary"
+                };
+            }
+            <div class="card-header @headerClass text-white">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        @{
+                            var statusIcon = Model.Status switch
+                            {
+                                "Approved" => "bi-check-circle",
+                                "Pending" => "bi-clock-history",
+                                "Rejected" => "bi-x-circle",
+                                "Completed" => "bi-check2-all",
+                                _ => "bi-question-circle"
+                            };
+                            var statusText = Model.Status switch
+                            {
+                                "Approved" => "Disetujui",
+                                "Pending" => "Menunggu Persetujuan",
+                                "Rejected" => "Ditolak",
+                                "Completed" => "Selesai",
+                                _ => Model.Status
+                            };
+                        }
+                        <i class="bi @statusIcon me-2"></i>Status: @statusText
+                    </h5>
+                    <span class="badge bg-light text-dark fs-6">
+                        Dibuat: @Model.RequestDate.ToString("dd/MM/yyyy HH:mm")
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Main Details -->
+<div class="row g-4">
+    <!-- Left Column - Basic Information -->
+    <div class="col-lg-6">
+        <div class="card modern-card h-100">
+            <div class="card-header bg-gradient-primary text-white">
+                <h5 class="mb-0">
+                    <i class="bi bi-info-circle me-2"></i>Informasi Dasar
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-12">
+                        <div class="detail-item">
+                            <label class="fw-medium text-muted mb-1">
+                                <i class="bi bi-person me-1"></i>Pemohon
+                            </label>
+                            <div class="d-flex align-items-center">
+                                <div class="avatar-circle bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
+                                    @Model.Requester.FullName.Substring(0, 1).ToUpper()
+                                </div>
+                                <div>
+                                    <div class="fw-medium">@Model.Requester.FullName</div>
+                                    <small class="text-muted">@Model.Requester.Email</small>
+                                    @if (!string.IsNullOrEmpty(Model.Requester.Position))
+                                    {
+                                        <br><small class="text-muted">@Model.Requester.Position</small>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-12">
+                        <hr class="my-3">
+                        <div class="detail-item">
+                            <label class="fw-medium text-muted mb-1">
+                                <i class="bi bi-truck me-1"></i>Kendaraan
+                            </label>
+                            <div class="d-flex align-items-center">
+                                <div class="feature-icon bg-info text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
+                                    <i class="bi bi-truck"></i>
+                                </div>
+                                <div>
+                                    <div class="fw-medium">@Model.Vehicle.Brand @Model.Vehicle.Model</div>
+                                    <small class="text-muted">@Model.Vehicle.RegistrationNumber</small>
+                                    <br><small class="badge bg-secondary">@Model.Vehicle.VehicleType.Name</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-12">
+                        <hr class="my-3">
+                        <div class="detail-item">
+                            <label class="fw-medium text-muted mb-1">
+                                <i class="bi bi-person-gear me-1"></i>Pengemudi
+                            </label>
+                            @if (Model.Driver != null)
+                            {
+                                <div class="d-flex align-items-center">
+                                    <div class="avatar-circle bg-success text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
+                                        @Model.Driver.Name.Substring(0, 1).ToUpper()
+                                    </div>
+                                    <div>
+                                        <div class="fw-medium">@Model.Driver.Name</div>                                        <small class="text-muted">@Model.Driver.LicenseNumber</small>
+                                        @if (!string.IsNullOrEmpty(Model.Driver.PhoneNumber))
+                                        {
+                                            <br><small class="text-muted">@Model.Driver.PhoneNumber</small>
+                                        }
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="text-muted fst-italic">
+                                    <i class="bi bi-dash-circle me-1"></i>Belum ditentukan
+                                </div>
+                            }
+                        </div>
+                    </div>
+                    
+                    <div class="col-12">
+                        <hr class="my-3">
+                        <div class="detail-item">
+                            <label class="fw-medium text-muted mb-1">
+                                <i class="bi bi-people me-1"></i>Jumlah Penumpang
+                            </label>
+                            <div class="fs-5 fw-medium">
+                                <span class="badge bg-info fs-6">@Model.NumberOfPassengers orang</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Right Column - Schedule & Purpose -->
+    <div class="col-lg-6">
+        <div class="card modern-card h-100">
+            <div class="card-header bg-gradient-primary text-white">
+                <h5 class="mb-0">
+                    <i class="bi bi-calendar-event me-2"></i>Jadwal & Tujuan
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <div class="detail-item">
+                            <label class="fw-medium text-muted mb-1">
+                                <i class="bi bi-calendar-plus me-1"></i>Tanggal & Waktu Mulai
+                            </label>
+                            <div class="fw-medium">@Model.StartDate.ToString("dd MMMM yyyy")</div>
+                            <small class="text-muted">@Model.StartDate.ToString("HH:mm") WIB</small>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="detail-item">
+                            <label class="fw-medium text-muted mb-1">
+                                <i class="bi bi-calendar-x me-1"></i>Tanggal & Waktu Selesai
+                            </label>
+                            <div class="fw-medium">@Model.EndDate.ToString("dd MMMM yyyy")</div>
+                            <small class="text-muted">@Model.EndDate.ToString("HH:mm") WIB</small>
+                        </div>
+                    </div>
+                    
+                    <div class="col-12">
+                        <hr class="my-3">
+                        <div class="detail-item">
+                            <label class="fw-medium text-muted mb-1">
+                                <i class="bi bi-clock me-1"></i>Durasi
+                            </label>
+                            @{
+                                var duration = Model.EndDate.Subtract(Model.StartDate);
+                                var durationText = duration.TotalDays >= 1 
+                                    ? $"{(int)duration.TotalDays} hari {duration.Hours} jam"
+                                    : $"{(int)duration.TotalHours} jam {duration.Minutes} menit";
+                            }
+                            <div class="fs-5 fw-medium">
+                                <span class="badge bg-warning text-dark fs-6">@durationText</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-12">
+                        <hr class="my-3">
+                        <div class="detail-item">
+                            <label class="fw-medium text-muted mb-1">
+                                <i class="bi bi-clipboard-check me-1"></i>Tujuan Penggunaan
+                            </label>
+                            <div class="fw-medium">@Model.Purpose</div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-12">
+                        <hr class="my-3">
+                        <div class="detail-item">
+                            <label class="fw-medium text-muted mb-1">
+                                <i class="bi bi-geo-alt me-1"></i>Tujuan/Lokasi
+                            </label>
+                            <div class="fw-medium">@Model.Destination</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Approval History -->
+@if (Model.Approvals.Any())
+{
+    <div class="row g-4 mt-2">
+        <div class="col-12">
+            <div class="card modern-card">
+                <div class="card-header bg-gradient-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-clipboard-check me-2"></i>Riwayat Persetujuan
+                    </h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th class="border-0 fw-semibold">Level</th>
+                                    <th class="border-0 fw-semibold">Penyetuju</th>
+                                    <th class="border-0 fw-semibold">Status</th>
+                                    <th class="border-0 fw-semibold">Tanggal</th>
+                                    <th class="border-0 fw-semibold">Komentar</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var approval in Model.Approvals.OrderBy(a => a.Level))
+                                {
+                                    <tr>
+                                        <td class="align-middle">
+                                            @{
+                                                var levelClass = approval.Level == 1 ? "bg-danger" : approval.Level == 2 ? "bg-warning" : "bg-info";
+                                                var levelIcon = approval.Level == 1 ? "bi-1-circle" : approval.Level == 2 ? "bi-2-circle" : "bi-3-circle";
+                                            }
+                                            <span class="badge @levelClass d-flex align-items-center gap-1" style="width: fit-content;">
+                                                <i class="bi @levelIcon"></i>
+                                                Level @approval.Level
+                                            </span>
+                                        </td>
+                                        <td class="align-middle">
+                                            <div class="d-flex align-items-center">
+                                                <div class="avatar-circle bg-secondary text-white rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px; font-size: 12px;">
+                                                    @approval.Approver.FullName.Substring(0, 1).ToUpper()
+                                                </div>
+                                                <div>
+                                                    <div class="fw-medium">@approval.Approver.FullName</div>
+                                                    <small class="text-muted">@approval.Approver.Position</small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="align-middle">
+                                            @{
+                                                var approvalStatusClass = approval.Status switch
+                                                {
+                                                    "Approved" => "bg-success",
+                                                    "Rejected" => "bg-danger",
+                                                    _ => "bg-warning"
+                                                };
+                                                var approvalStatusText = approval.Status switch
+                                                {
+                                                    "Approved" => "Disetujui",
+                                                    "Rejected" => "Ditolak",
+                                                    _ => "Menunggu"
+                                                };
+                                                var approvalStatusIcon = approval.Status switch
+                                                {
+                                                    "Approved" => "bi-check-circle",
+                                                    "Rejected" => "bi-x-circle",
+                                                    _ => "bi-clock-history"
+                                                };
+                                            }
+                                            <span class="badge @approvalStatusClass d-flex align-items-center gap-1" style="width: fit-content;">
+                                                <i class="bi @approvalStatusIcon"></i>
+                                                @approvalStatusText
+                                            </span>
+                                        </td>                        <td class="align-middle">
+                            @if (approval.ActionDate.HasValue)
+                            {
+                                <div>
+                                    <div class="fw-medium">@approval.ActionDate.Value.ToString("dd/MM/yyyy")</div>
+                                    <small class="text-muted">@approval.ActionDate.Value.ToString("HH:mm")</small>
+                                </div>
+                            }
+                            else
+                            {
+                                <span class="text-muted fst-italic">-</span>
+                            }
+                        </td>
+                                        <td class="align-middle">
+                                            @if (!string.IsNullOrEmpty(approval.Comments))
+                                            {
+                                                <div class="text-break" style="max-width: 200px;">
+                                                    @approval.Comments
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted fst-italic">-</span>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<style>
+    .detail-item {
+        margin-bottom: 1rem;
+    }
+    
+    .modern-card {
+        border: none;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+        border-radius: 12px;
+    }
+    
+    .bg-gradient-primary {
+        background: linear-gradient(135deg, var(--mining-primary), var(--mining-secondary));
+    }
+    
+    .avatar-circle {
+        font-weight: 600;
+    }
+    
+    .feature-icon {
+        font-size: 1rem;
+    }
+    
+    hr {
+        border-color: rgba(0,0,0,0.1);
+    }
+</style>

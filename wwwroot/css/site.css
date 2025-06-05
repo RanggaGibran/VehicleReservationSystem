@@ -1,5 +1,20 @@
+/* Mining Company Professional Theme */
+:root {
+  --mining-primary: #1a365d;
+  --mining-secondary: #2d3748;
+  --mining-accent: #f6ad55;
+  --mining-success: #38a169;
+  --mining-warning: #d69e2e;
+  --mining-danger: #e53e3e;
+  --mining-info: #3182ce;
+  --mining-light: #f7fafc;
+  --mining-dark: #1a202c;
+  --mining-gold: #d4af37;
+}
+
 html {
   font-size: 14px;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
 @media (min-width: 768px) {
@@ -8,23 +23,244 @@ html {
   }
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
-}
-
 body {
-  margin-bottom: 60px;
+  background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+  color: var(--mining-dark);
+  line-height: 1.6;
+  padding-top: 80px;
 }
 
-.footer {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  white-space: nowrap;
-  line-height: 60px;
+/* Navigation Styles */
+.mining-navbar {
+  background: linear-gradient(135deg, var(--mining-primary) 0%, var(--mining-secondary) 100%);
+  box-shadow: 0 2px 10px rgba(26, 54, 93, 0.3);
+  padding: 0.75rem 0;
 }
+
+.brand-text {
+  line-height: 1.2;
+}
+
+.brand-main {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: white;
+}
+
+.brand-sub {
+  font-size: 0.8rem;
+  color: var(--mining-accent);
+  font-weight: 400;
+}
+
+.navbar-nav .nav-link {
+  color: rgba(255, 255, 255, 0.9) !important;
+  font-weight: 500;
+  padding: 0.5rem 1rem !important;
+  border-radius: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.navbar-nav .nav-link:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: var(--mining-accent) !important;
+  transform: translateY(-1px);
+}
+
+/* Main Content */
+.main-content {
+  min-height: calc(100vh - 160px);
+  padding: 2rem 0;
+}
+
+/* Cards and Components */
+.card {
+  border: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.card-header {
+  background: linear-gradient(135deg, var(--mining-primary) 0%, var(--mining-secondary) 100%);
+  color: white;
+  border-radius: 12px 12px 0 0 !important;
+  border: none;
+  font-weight: 600;
+}
+
+/* Buttons */
+.btn {
+  border-radius: 8px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  border: none;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--mining-primary) 0%, var(--mining-info) 100%);
+  color: white;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, var(--mining-info) 0%, var(--mining-primary) 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(49, 130, 206, 0.4);
+}
+
+.btn-success {
+  background: linear-gradient(135deg, var(--mining-success) 0%, #48bb78 100%);
+}
+
+.btn-warning {
+  background: linear-gradient(135deg, var(--mining-warning) 0%, var(--mining-accent) 100%);
+}
+
+.btn-danger {
+  background: linear-gradient(135deg, var(--mining-danger) 0%, #f56565 100%);
+}
+
+.btn-info {
+  background: linear-gradient(135deg, var(--mining-info) 0%, #4299e1 100%);
+}
+
+/* Status Cards */
+.status-card {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.7) 100%);
+  border-left: 4px solid var(--mining-accent);
+  transition: all 0.3s ease;
+}
+
+.status-card:hover {
+  border-left-width: 8px;
+  transform: translateX(4px);
+}
+
+/* Tables */
+.table {
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.table thead th {
+  background: var(--mining-primary);
+  color: white;
+  border: none;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+}
+
+.table tbody tr:hover {
+  background-color: rgba(26, 54, 93, 0.05);
+}
+
+/* Form Controls */
+.form-control, .form-select {
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 0.75rem;
+  transition: all 0.3s ease;
+}
+
+.form-control:focus, .form-select:focus {
+  border-color: var(--mining-accent);
+  box-shadow: 0 0 0 0.2rem rgba(212, 175, 55, 0.25);
+}
+
+.form-label {
+  font-weight: 600;
+  color: var(--mining-secondary);
+  margin-bottom: 0.5rem;
+}
+
+/* Badges */
+.badge {
+  font-weight: 500;
+  padding: 0.5rem 0.75rem;
+  border-radius: 20px;
+}
+
+/* Footer */
+.mining-footer {
+  background: linear-gradient(135deg, var(--mining-dark) 0%, var(--mining-secondary) 100%);
+  padding: 1.5rem 0;
+  margin-top: auto;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .main-content {
+    padding: 1rem 0;
+  }
+  
+  .brand-main {
+    font-size: 0.9rem;
+  }
+  
+  .brand-sub {
+    font-size: 0.7rem;
+  }
+  
+  .navbar-nav .nav-link {
+    padding: 0.5rem !important;
+  }
+}
+
+/* Mining-specific colors for status indicators */
+.text-mining-primary { color: var(--mining-primary) !important; }
+.text-mining-gold { color: var(--mining-gold) !important; }
+.bg-mining-primary { background-color: var(--mining-primary) !important; }
+.bg-mining-gold { background-color: var(--mining-gold) !important; }
+
+/* Animation for loading states */
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.loading { animation: pulse 2s infinite; }
+
+/* Focus and accessibility improvements */
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.2rem rgba(212, 175, 55, 0.5);
+}
+
+/* DataTables customization */
+.dataTables_wrapper .dataTables_length,
+.dataTables_wrapper .dataTables_filter,
+.dataTables_wrapper .dataTables_info,
+.dataTables_wrapper .dataTables_paginate {
+  margin: 1rem 0;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.current {
+  background: var(--mining-primary) !important;
+  border-color: var(--mining-primary) !important;
+}
+
+/* Chart containers */
+.chart-container {
+  position: relative;
+  height: 300px;
+  width: 100%;
+}
+
+/* Alert customization */
+.alert {
+  border: none;
+  border-radius: 8px;
+  border-left: 4px solid;
+}
+
+.alert-info { border-left-color: var(--mining-info); }
+.alert-success { border-left-color: var(--mining-success); }
+.alert-warning { border-left-color: var(--mining-warning); }
+.alert-danger { border-left-color: var(--mining-danger); }

@@ -17,10 +17,8 @@ namespace VehicleReservationSystem.Controllers
         {
             _userManager = userManager;
             _signInManager = signInManager;
-        }
-
-        [HttpGet]
-        public IActionResult Login(string returnUrl = null)
+        }        [HttpGet]
+        public IActionResult Login(string? returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
             return View();
@@ -28,7 +26,7 @@ namespace VehicleReservationSystem.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(LoginViewModel model, string returnUrl = null)
+        public async Task<IActionResult> Login(LoginViewModel model, string? returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
             if (ModelState.IsValid)

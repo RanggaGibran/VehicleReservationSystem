@@ -1,45 +1,228 @@
 @model IEnumerable<VehicleReservationSystem.Models.Approval>
 
 @{
-    ViewData["Title"] = "Pending Approvals";
+    ViewData["Title"] = "Persetujuan Reservasi";
 }
 
-<h1>Pending Approvals</h1>
-
-<div class="card">
-    <div class="card-header">
-        <h5>Approval Requests</h5>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="mb-1">
+            <i class="bi bi-clipboard-check text-primary me-2"></i>Persetujuan Reservasi Kendaraan
+        </h1>
+        <p class="text-muted mb-0">
+            <i class="bi bi-exclamation-triangle me-1"></i>Tinjau dan proses permintaan persetujuan reservasi kendaraan
+        </p>
     </div>
-    <div class="card-body">
+    <div>
+        <button class="btn btn-outline-primary btn-sm" onclick="refreshApprovals()">
+            <i class="bi bi-arrow-clockwise me-1"></i>Refresh
+        </button>
+    </div>
+</div>
+
+<!-- Priority Stats -->
+<div class="row g-3 mb-4">
+    <div class="col-lg-3 col-md-6">
+        <div class="card stats-card h-100 border-start border-danger border-4">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="flex-grow-1">
+                        <h3 class="text-danger mb-1">@Model.Count(a => a.Level == 1)</h3>
+                        <h6 class="text-muted mb-0">Level 1 - Prioritas Tinggi</h6>
+                        <small class="text-muted">Persetujuan pertama</small>
+                    </div>
+                    <div class="feature-icon bg-danger text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 45px; height: 45px;">
+                        <i class="bi bi-exclamation-triangle"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6">
+        <div class="card stats-card h-100 border-start border-warning border-4">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="flex-grow-1">
+                        <h3 class="text-warning mb-1">@Model.Count(a => a.Level == 2)</h3>
+                        <h6 class="text-muted mb-0">Level 2 - Prioritas Sedang</h6>
+                        <small class="text-muted">Persetujuan kedua</small>
+                    </div>
+                    <div class="feature-icon bg-warning text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 45px; height: 45px;">
+                        <i class="bi bi-exclamation-circle"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6">
+        <div class="card stats-card h-100 border-start border-info border-4">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="flex-grow-1">
+                        <h3 class="text-info mb-1">@Model.Count()</h3>
+                        <h6 class="text-muted mb-0">Total Menunggu</h6>
+                        <small class="text-muted">Semua level persetujuan</small>
+                    </div>
+                    <div class="feature-icon bg-info text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 45px; height: 45px;">
+                        <i class="bi bi-hourglass-split"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6">
+        <div class="card stats-card h-100 border-start border-success border-4">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="flex-grow-1">
+                        <h3 class="text-success mb-1">@Model.Where(a => DateTime.Now.Subtract(a.Reservation.CreatedAt).TotalHours < 24).Count()</h3>
+                        <h6 class="text-muted mb-0">Baru (< 24 jam)</h6>
+                        <small class="text-muted">Memerlukan perhatian</small>
+                    </div>
+                    <div class="feature-icon bg-success text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 45px; height: 45px;">
+                        <i class="bi bi-clock-history"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card modern-card">
+    <div class="card-header bg-gradient-primary text-white">
+        <div class="d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">
+                <i class="bi bi-list-check me-2"></i>Daftar Permintaan Persetujuan
+            </h5>
+            <div class="d-flex gap-2">
+                <select class="form-select form-select-sm text-dark" style="width: 180px;" id="levelFilter" onchange="filterApprovals()">
+                    <option value="">Semua Level</option>
+                    <option value="1">Level 1 - Prioritas Tinggi</option>
+                    <option value="2">Level 2 - Prioritas Sedang</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="card-body p-0">
         @if (Model.Any())
         {
             <div class="table-responsive">
-                <table class="table table-striped table-hover">
-                    <thead>
+                <table class="table table-hover mb-0" id="approvalsTable">
+                    <thead class="table-light">
                         <tr>
-                            <th>ID</th>
-                            <th>Requester</th>
-                            <th>Vehicle</th>
-                            <th>Start Date</th>
-                            <th>End Date</th>
-                            <th>Purpose</th>
-                            <th>Approval Level</th>
-                            <th>Actions</th>
+                            <th class="border-0 fw-semibold">
+                                <i class="bi bi-hash text-muted me-1"></i>ID Reservasi
+                            </th>
+                            <th class="border-0 fw-semibold">
+                                <i class="bi bi-person text-muted me-1"></i>Pemohon
+                            </th>
+                            <th class="border-0 fw-semibold">
+                                <i class="bi bi-truck text-muted me-1"></i>Kendaraan
+                            </th>
+                            <th class="border-0 fw-semibold">
+                                <i class="bi bi-calendar-event text-muted me-1"></i>Jadwal
+                            </th>
+                            <th class="border-0 fw-semibold">
+                                <i class="bi bi-clipboard-data text-muted me-1"></i>Tujuan
+                            </th>
+                            <th class="border-0 fw-semibold">
+                                <i class="bi bi-layers text-muted me-1"></i>Level
+                            </th>
+                            <th class="border-0 fw-semibold">
+                                <i class="bi bi-clock text-muted me-1"></i>Waktu
+                            </th>
+                            <th class="border-0 fw-semibold">
+                                <i class="bi bi-gear text-muted me-1"></i>Aksi
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var item in Model)
+                        @foreach (var item in Model.OrderBy(a => a.Level).ThenBy(a => a.Reservation.CreatedAt))
                         {
-                            <tr>
-                                <td>@item.Reservation.Id</td>
-                                <td>@item.Reservation.Requester.FullName</td>
-                                <td>@item.Reservation.Vehicle.Brand @item.Reservation.Vehicle.Model (@item.Reservation.Vehicle.RegistrationNumber)</td>
-                                <td>@item.Reservation.StartDate.ToString("dd MMM yyyy HH:mm")</td>
-                                <td>@item.Reservation.EndDate.ToString("dd MMM yyyy HH:mm")</td>
-                                <td>@item.Reservation.Purpose</td>
-                                <td>Level @item.Level</td>
-                                <td>
-                                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-primary btn-sm">Review</a>
+                            var isUrgent = DateTime.Now.Subtract(item.Reservation.CreatedAt).TotalHours > 48;
+                            var isNew = DateTime.Now.Subtract(item.Reservation.CreatedAt).TotalHours < 24;
+                            
+                            <tr class="approval-row @(isUrgent ? "table-warning" : "") @(isNew ? "table-info" : "")">
+                                <td class="align-middle">
+                                    <div class="d-flex align-items-center">
+                                        <span class="badge bg-primary font-monospace me-2">#@item.Reservation.Id.ToString("D4")</span>
+                                        @if (isUrgent)
+                                        {
+                                            <i class="bi bi-exclamation-triangle text-warning" title="Mendesak (>48 jam)"></i>
+                                        }
+                                        else if (isNew)
+                                        {
+                                            <i class="bi bi-star-fill text-info" title="Baru (<24 jam)"></i>
+                                        }
+                                    </div>
+                                </td>
+                                <td class="align-middle">
+                                    <div class="d-flex align-items-center">
+                                        <div class="avatar-circle bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px; font-size: 12px;">
+                                            @item.Reservation.Requester.FullName.Substring(0, 1).ToUpper()
+                                        </div>
+                                        <div>
+                                            <div class="fw-medium">@item.Reservation.Requester.FullName</div>
+                                            <small class="text-muted">@item.Reservation.Requester.Email</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="align-middle">
+                                    <div>
+                                        <div class="fw-medium">@item.Reservation.Vehicle.Brand @item.Reservation.Vehicle.Model</div>
+                                        <small class="text-muted">@item.Reservation.Vehicle.RegistrationNumber</small>
+                                    </div>
+                                </td>
+                                <td class="align-middle">
+                                    <div>
+                                        <div class="fw-medium">@item.Reservation.StartDate.ToString("dd/MM/yyyy")</div>
+                                        <small class="text-muted">
+                                            @item.Reservation.StartDate.ToString("HH:mm") - @item.Reservation.EndDate.ToString("HH:mm")
+                                        </small>
+                                        @if (item.Reservation.StartDate.Date != item.Reservation.EndDate.Date)
+                                        {
+                                            <br><small class="text-warning">s/d @item.Reservation.EndDate.ToString("dd/MM/yyyy")</small>
+                                        }
+                                    </div>
+                                </td>
+                                <td class="align-middle">
+                                    <div>
+                                        <div class="fw-medium text-truncate" style="max-width: 120px;" title="@item.Reservation.Purpose">
+                                            @item.Reservation.Purpose
+                                        </div>
+                                        <small class="text-muted text-truncate d-block" style="max-width: 120px;" title="@item.Reservation.Destination">
+                                            @item.Reservation.Destination
+                                        </small>
+                                    </div>
+                                </td>
+                                <td class="align-middle">
+                                    @{
+                                        var levelClass = item.Level == 1 ? "bg-danger" : item.Level == 2 ? "bg-warning" : "bg-info";
+                                        var levelIcon = item.Level == 1 ? "bi-1-circle" : item.Level == 2 ? "bi-2-circle" : "bi-3-circle";
+                                        var priorityText = item.Level == 1 ? "Tinggi" : item.Level == 2 ? "Sedang" : "Rendah";
+                                    }
+                                    <span class="badge @levelClass d-flex align-items-center gap-1" style="width: fit-content;">
+                                        <i class="bi @levelIcon"></i>
+                                        Level @item.Level
+                                    </span>
+                                    <small class="text-muted d-block">@priorityText</small>
+                                </td>
+                                <td class="align-middle">
+                                    @{
+                                        var timeAgo = DateTime.Now.Subtract(item.Reservation.CreatedAt);
+                                        var timeText = timeAgo.TotalDays >= 1 ? $"{(int)timeAgo.TotalDays} hari" : 
+                                                      timeAgo.TotalHours >= 1 ? $"{(int)timeAgo.TotalHours} jam" : 
+                                                      $"{(int)timeAgo.TotalMinutes} menit";
+                                    }
+                                    <small class="text-muted">@timeText yang lalu</small>
+                                    <br><small class="text-muted">@item.Reservation.CreatedAt.ToString("dd/MM HH:mm")</small>
+                                </td>
+                                <td class="align-middle">
+                                    <div class="d-flex gap-1">
+                                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-success" title="Tinjau & Setujui">
+                                            <i class="bi bi-eye-fill me-1"></i>Tinjau
+                                        </a>
+                                    </div>
                                 </td>
                             </tr>
                         }
@@ -49,9 +232,162 @@
         }
         else
         {
-            <div class="alert alert-info">
-                You have no pending approval requests.
+            <div class="text-center py-5">
+                <i class="bi bi-check-circle-fill display-1 text-success"></i>
+                <h5 class="text-muted mt-3">Tidak ada permintaan persetujuan</h5>
+                <p class="text-muted">Semua reservasi telah diproses atau belum ada permintaan baru.</p>
+                <a asp-controller="Reservation" asp-action="Index" class="btn btn-primary">
+                    <i class="bi bi-list-ul me-1"></i>Lihat Semua Reservasi
+                </a>
             </div>
         }
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        function filterApprovals() {
+            const levelFilter = document.getElementById('levelFilter').value;
+            const rows = document.querySelectorAll('#approvalsTable tbody .approval-row');
+            
+            rows.forEach(row => {
+                const levelBadge = row.querySelector('.badge');
+                const levelText = levelBadge ? levelBadge.textContent.trim() : '';
+                
+                const matchesLevel = !levelFilter || levelText.includes(`Level ${levelFilter}`);
+                
+                if (matchesLevel) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+        
+        function refreshApprovals() {
+            const refreshBtn = document.querySelector('[onclick="refreshApprovals()"]');
+            const originalText = refreshBtn.innerHTML;
+            
+            refreshBtn.innerHTML = '<i class="bi bi-arrow-clockwise me-1 spin"></i>Memuat...';
+            refreshBtn.disabled = true;
+            
+            setTimeout(() => {
+                location.reload();
+            }, 500);
+        }
+        
+        // Auto-refresh every 60 seconds for approvals
+        setInterval(() => {
+            const pendingCount = document.querySelectorAll('.approval-row').length;
+            if (pendingCount > 0) {
+                const lastRefresh = localStorage.getItem('lastApprovalRefresh');
+                const now = new Date().getTime();
+                if (!lastRefresh || (now - parseInt(lastRefresh)) > 60000) {
+                    localStorage.setItem('lastApprovalRefresh', now.toString());
+                    // Show notification instead of auto-refresh to avoid disrupting user
+                    showNotification('Tersedia pembaruan data persetujuan', 'info');
+                }
+            }
+        }, 60000);
+        
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
+            notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999; max-width: 400px;';
+            notification.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.parentNode.removeChild(notification);
+                }
+            }, 5000);
+        }
+        
+        // Initialize tooltips
+        document.addEventListener('DOMContentLoaded', function() {
+            const tooltips = document.querySelectorAll('[title]');
+            tooltips.forEach(tooltip => {
+                new bootstrap.Tooltip(tooltip);
+            });
+            
+            // Highlight urgent items
+            const urgentRows = document.querySelectorAll('.table-warning');
+            urgentRows.forEach(row => {
+                row.style.animation = 'pulse 2s infinite';
+            });
+        });
+    </script>
+    
+    <style>
+        .spin {
+            animation: spin 1s linear infinite;
+        }
+        
+        @@keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        @@keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 193, 7, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(255, 193, 7, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 193, 7, 0); }
+        }
+        
+        .approval-row {
+            transition: all 0.2s ease;
+        }
+        
+        .approval-row:hover {
+            background-color: var(--bs-gray-50) !important;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .avatar-circle {
+            font-weight: 600;
+            font-size: 0.75rem;
+        }
+        
+        .stats-card {
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0,0,0,0.1);
+        }
+        
+        .stats-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+        
+        .modern-card {
+            border: none;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-radius: 8px;
+        }
+        
+        .bg-gradient-primary {
+            background: linear-gradient(135deg, var(--mining-primary), var(--mining-secondary));
+        }
+        
+        .table th {
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .table-warning {
+            background-color: rgba(255, 193, 7, 0.1) !important;
+            border-left: 4px solid #ffc107;
+        }
+        
+        .table-info {
+            background-color: rgba(13, 202, 240, 0.1) !important;
+            border-left: 4px solid #0dcaf0;
+        }
+    </style>
+}

@@ -1,51 +1,171 @@
 @model VehicleReservationSystem.ViewModels.ReportViewModel
 
 @{
-    ViewData["Title"] = "Vehicle Reservation Reports";
+    ViewData["Title"] = "Laporan Reservasi Kendaraan";
 }
 
-<h1>Vehicle Reservation Reports</h1>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="mb-1">
+            <i class="bi bi-bar-chart text-primary me-2"></i>Laporan Reservasi Kendaraan
+        </h1>
+        <p class="text-muted mb-0">
+            <i class="bi bi-file-earmark-spreadsheet me-1"></i>Analisis dan laporan penggunaan kendaraan operasional pertambangan
+        </p>
+    </div>
+    <div>
+        <button class="btn btn-outline-primary btn-sm" onclick="generateQuickReport()">
+            <i class="bi bi-lightning me-1"></i>Laporan Cepat
+        </button>
+    </div>
+</div>
 
-<div class="card mb-4">
-    <div class="card-header">
-        <h5>Report Filters</h5>
+<!-- Quick Stats -->
+@if (Model.ReportData != null && Model.ReportData.Any())
+{
+    <div class="row g-3 mb-4">
+        <div class="col-lg-3 col-md-6">
+            <div class="card stats-card h-100 border-start border-primary border-4">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <h3 class="text-primary mb-1">@Model.ReportData.Count</h3>
+                            <h6 class="text-muted mb-0">Total Reservasi</h6>
+                            <small class="text-muted">Periode laporan</small>
+                        </div>
+                        <div class="feature-icon bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 45px; height: 45px;">
+                            <i class="bi bi-calendar-check"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="card stats-card h-100 border-start border-success border-4">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <h3 class="text-success mb-1">@Model.ReportData.Sum(r => r.Duration).ToString("F0")</h3>
+                            <h6 class="text-muted mb-0">Total Jam Operasional</h6>
+                            <small class="text-muted">Semua kendaraan</small>
+                        </div>
+                        <div class="feature-icon bg-success text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 45px; height: 45px;">
+                            <i class="bi bi-clock"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="card stats-card h-100 border-start border-info border-4">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <h3 class="text-info mb-1">@Model.ReportData.Select(r => r.VehicleRegistration).Distinct().Count()</h3>
+                            <h6 class="text-muted mb-0">Kendaraan Digunakan</h6>
+                            <small class="text-muted">Periode laporan</small>
+                        </div>
+                        <div class="feature-icon bg-info text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 45px; height: 45px;">
+                            <i class="bi bi-truck"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="card stats-card h-100 border-start border-warning border-4">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <h3 class="text-warning mb-1">@((Model.ReportData.Sum(r => r.Duration) / Model.ReportData.Count).ToString("F1"))</h3>
+                            <h6 class="text-muted mb-0">Rata-rata Durasi</h6>
+                            <small class="text-muted">Jam per reservasi</small>
+                        </div>
+                        <div class="feature-icon bg-warning text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 45px; height: 45px;">
+                            <i class="bi bi-speedometer"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<div class="card modern-card mb-4">
+    <div class="card-header bg-gradient-primary text-white">
+        <h5 class="mb-0">
+            <i class="bi bi-funnel me-2"></i>Filter Laporan
+        </h5>
     </div>
     <div class="card-body">
-        <form asp-action="Generate" method="post">
-            <div class="row">
-                <div class="col-md-3">
-                    <div class="form-group mb-3">
-                        <label asp-for="StartDate" class="control-label"></label>
-                        <input asp-for="StartDate" class="form-control" type="date" />
-                        <span asp-validation-for="StartDate" class="text-danger"></span>
+        <form asp-action="Generate" method="post" id="reportForm">
+            <div class="row g-3">
+                <div class="col-lg-3 col-md-6">
+                    <div class="form-group">
+                        <label asp-for="StartDate" class="form-label fw-medium">
+                            <i class="bi bi-calendar-plus text-muted me-1"></i>Tanggal Mulai <span class="text-danger">*</span>
+                        </label>
+                        <input asp-for="StartDate" class="form-control form-control-modern" type="date" required />
+                        <span asp-validation-for="StartDate" class="text-danger small"></span>
                     </div>
                 </div>
-                <div class="col-md-3">
-                    <div class="form-group mb-3">
-                        <label asp-for="EndDate" class="control-label"></label>
-                        <input asp-for="EndDate" class="form-control" type="date" />
-                        <span asp-validation-for="EndDate" class="text-danger"></span>
+                <div class="col-lg-3 col-md-6">
+                    <div class="form-group">
+                        <label asp-for="EndDate" class="form-label fw-medium">
+                            <i class="bi bi-calendar-x text-muted me-1"></i>Tanggal Selesai <span class="text-danger">*</span>
+                        </label>
+                        <input asp-for="EndDate" class="form-control form-control-modern" type="date" required />
+                        <span asp-validation-for="EndDate" class="text-danger small"></span>
                     </div>
                 </div>
-                <div class="col-md-3">
-                    <div class="form-group mb-3">
-                        <label asp-for="LocationId" class="control-label"></label>
-                        <select asp-for="LocationId" asp-items="Model.Locations" class="form-select">
-                            <option value="">-- All Locations --</option>
+                <div class="col-lg-3 col-md-6">
+                    <div class="form-group">
+                        <label asp-for="LocationId" class="form-label fw-medium">
+                            <i class="bi bi-geo-alt text-muted me-1"></i>Lokasi Operasional
+                        </label>
+                        <select asp-for="LocationId" asp-items="Model.Locations" class="form-select form-select-modern">
+                            <option value="">-- Semua Lokasi --</option>
                         </select>
                     </div>
                 </div>
-                <div class="col-md-3">
-                    <div class="form-group mb-3">
-                        <label asp-for="VehicleTypeId" class="control-label"></label>
-                        <select asp-for="VehicleTypeId" asp-items="Model.VehicleTypes" class="form-select">
-                            <option value="">-- All Vehicle Types --</option>
+                <div class="col-lg-3 col-md-6">
+                    <div class="form-group">
+                        <label asp-for="VehicleTypeId" class="form-label fw-medium">
+                            <i class="bi bi-truck text-muted me-1"></i>Jenis Kendaraan
+                        </label>
+                        <select asp-for="VehicleTypeId" asp-items="Model.VehicleTypes" class="form-select form-select-modern">
+                            <option value="">-- Semua Jenis --</option>
                         </select>
                     </div>
                 </div>
             </div>
-            <div class="form-group">
-                <button type="submit" class="btn btn-primary">Generate Report</button>
+            
+            <!-- Quick Filter Buttons -->
+            <div class="row mt-3">
+                <div class="col-12">
+                    <label class="form-label fw-medium text-muted">Filter Cepat:</label>
+                    <div class="btn-group me-2" role="group">
+                        <button type="button" class="btn btn-outline-secondary btn-sm" onclick="setDateRange(7)">7 Hari</button>
+                        <button type="button" class="btn btn-outline-secondary btn-sm" onclick="setDateRange(30)">30 Hari</button>
+                        <button type="button" class="btn btn-outline-secondary btn-sm" onclick="setDateRange(90)">3 Bulan</button>
+                        <button type="button" class="btn btn-outline-secondary btn-sm" onclick="setDateRange(365)">1 Tahun</button>
+                    </div>
+                    <button type="button" class="btn btn-outline-info btn-sm" onclick="setCurrentMonth()">Bulan Ini</button>
+                    <button type="button" class="btn btn-outline-warning btn-sm" onclick="setPreviousMonth()">Bulan Lalu</button>
+                </div>
+            </div>
+            
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-search me-1"></i>Generate Laporan
+                        </button>
+                        <button type="reset" class="btn btn-outline-secondary" onclick="resetFilters()">
+                            <i class="bi bi-x-circle me-1"></i>Reset Filter
+                        </button>
+                    </div>
+                </div>
             </div>
         </form>
     </div>
@@ -53,59 +173,154 @@
 
 @if (Model.ReportData != null && Model.ReportData.Any())
 {
-    <div class="card">
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <h5>Reservation Report (@Model.StartDate.ToString("yyyy-MM-dd") to @Model.EndDate.ToString("yyyy-MM-dd"))</h5>
-            <form asp-action="ExportToExcel" method="post">
-                <input type="hidden" name="startDate" value="@Model.StartDate.ToString("yyyy-MM-dd")" />
-                <input type="hidden" name="endDate" value="@Model.EndDate.ToString("yyyy-MM-dd")" />
-                <input type="hidden" name="locationId" value="@Model.LocationId" />
-                <input type="hidden" name="vehicleTypeId" value="@Model.VehicleTypeId" />
-                <button type="submit" class="btn btn-success">
-                    <i class="bi bi-file-earmark-excel"></i> Export to Excel
-                </button>
-            </form>
+    <div class="card modern-card">
+        <div class="card-header bg-gradient-primary text-white">
+            <div class="d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">
+                    <i class="bi bi-table me-2"></i>Data Laporan Reservasi
+                    <small class="ms-2">(@Model.StartDate.ToString("dd/MM/yyyy") - @Model.EndDate.ToString("dd/MM/yyyy"))</small>
+                </h5>
+                <form asp-action="ExportToExcel" method="post">
+                    <input type="hidden" name="startDate" value="@Model.StartDate.ToString("yyyy-MM-dd")" />
+                    <input type="hidden" name="endDate" value="@Model.EndDate.ToString("yyyy-MM-dd")" />
+                    <input type="hidden" name="locationId" value="@Model.LocationId" />
+                    <input type="hidden" name="vehicleTypeId" value="@Model.VehicleTypeId" />
+                    <button type="submit" class="btn btn-success btn-sm">
+                        <i class="bi bi-file-earmark-excel me-1"></i>Export Excel
+                    </button>
+                </form>
+            </div>
         </div>
-        <div class="card-body">
+        <div class="card-body p-0">
             <div class="table-responsive">
-                <table class="table table-striped table-hover" id="reportTable">
-                    <thead>
+                <table class="table table-hover mb-0" id="reportTable">
+                    <thead class="table-light">
                         <tr>
-                            <th>ID</th>
-                            <th>Vehicle</th>
-                            <th>Type</th>
-                            <th>Location</th>
-                            <th>Requester</th>
-                            <th>Driver</th>
-                            <th>Start Date</th>
-                            <th>End Date</th>
-                            <th>Duration (hrs)</th>
-                            <th>Purpose</th>
-                            <th>Destination</th>
-                            <th>Status</th>
+                            <th class="border-0 fw-semibold">
+                                <i class="bi bi-hash text-muted me-1"></i>ID
+                            </th>
+                            <th class="border-0 fw-semibold">
+                                <i class="bi bi-truck text-muted me-1"></i>Kendaraan
+                            </th>
+                            <th class="border-0 fw-semibold">
+                                <i class="bi bi-tag text-muted me-1"></i>Jenis
+                            </th>
+                            <th class="border-0 fw-semibold">
+                                <i class="bi bi-geo-alt text-muted me-1"></i>Lokasi
+                            </th>
+                            <th class="border-0 fw-semibold">
+                                <i class="bi bi-person text-muted me-1"></i>Pemohon
+                            </th>
+                            <th class="border-0 fw-semibold">
+                                <i class="bi bi-person-gear text-muted me-1"></i>Pengemudi
+                            </th>
+                            <th class="border-0 fw-semibold">
+                                <i class="bi bi-calendar-event text-muted me-1"></i>Jadwal
+                            </th>
+                            <th class="border-0 fw-semibold">
+                                <i class="bi bi-clock text-muted me-1"></i>Durasi
+                            </th>
+                            <th class="border-0 fw-semibold">
+                                <i class="bi bi-clipboard-data text-muted me-1"></i>Tujuan
+                            </th>
+                            <th class="border-0 fw-semibold">
+                                <i class="bi bi-flag text-muted me-1"></i>Status
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach (var item in Model.ReportData)
                         {
-                            <tr>
-                                <td>@item.ReservationId</td>
-                                <td>@item.VehicleRegistration</td>
-                                <td>@item.VehicleType</td>
-                                <td>@item.Location (@item.Region)</td>
-                                <td>@item.RequesterName (@item.RequesterDepartment)</td>
-                                <td>@(item.DriverName ?? "Not Assigned")</td>
-                                <td>@item.StartDate.ToString("yyyy-MM-dd HH:mm")</td>
-                                <td>@item.EndDate.ToString("yyyy-MM-dd HH:mm")</td>
-                                <td>@item.Duration.ToString("F1")</td>
-                                <td>@item.Purpose</td>
-                                <td>@item.Destination</td>
-                                <td>
-                                    <span class="badge @(item.Status == "Approved" ? "bg-success" : 
-                                                     item.Status == "Pending" ? "bg-warning" : 
-                                                     item.Status == "Rejected" ? "bg-danger" : 
-                                                     item.Status == "Completed" ? "bg-info" : "bg-secondary")">
-                                        @item.Status
+                            <tr class="report-row">
+                                <td class="align-middle">
+                                    <span class="badge bg-light text-dark font-monospace">#@item.ReservationId.ToString("D4")</span>
+                                </td>
+                                <td class="align-middle">
+                                    <div>
+                                        <div class="fw-medium">@item.VehicleRegistration</div>
+                                        <small class="text-muted">@item.VehicleType</small>
+                                    </div>
+                                </td>
+                                <td class="align-middle">
+                                    <span class="badge bg-secondary">@item.VehicleType</span>
+                                </td>
+                                <td class="align-middle">
+                                    <div>
+                                        <div class="fw-medium">@item.Location</div>
+                                        <small class="text-muted">@item.Region</small>
+                                    </div>
+                                </td>
+                                <td class="align-middle">
+                                    <div>
+                                        <div class="fw-medium">@item.RequesterName</div>
+                                        <small class="text-muted">@item.RequesterDepartment</small>
+                                    </div>
+                                </td>
+                                <td class="align-middle">
+                                    @if (!string.IsNullOrEmpty(item.DriverName))
+                                    {
+                                        <span class="badge bg-success">@item.DriverName</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted fst-italic">Belum ditentukan</span>
+                                    }
+                                </td>
+                                <td class="align-middle">
+                                    <div>
+                                        <div class="fw-medium">@item.StartDate.ToString("dd/MM/yyyy")</div>
+                                        <small class="text-muted">
+                                            @item.StartDate.ToString("HH:mm") - @item.EndDate.ToString("HH:mm")
+                                        </small>
+                                        @if (item.StartDate.Date != item.EndDate.Date)
+                                        {
+                                            <br><small class="text-warning">s/d @item.EndDate.ToString("dd/MM/yyyy")</small>
+                                        }
+                                    </div>
+                                </td>
+                                <td class="align-middle">
+                                    <span class="badge bg-info">@item.Duration.ToString("F1") jam</span>
+                                </td>
+                                <td class="align-middle">
+                                    <div>
+                                        <div class="fw-medium text-truncate" style="max-width: 120px;" title="@item.Purpose">
+                                            @item.Purpose
+                                        </div>
+                                        <small class="text-muted text-truncate d-block" style="max-width: 120px;" title="@item.Destination">
+                                            @item.Destination
+                                        </small>
+                                    </div>
+                                </td>
+                                <td class="align-middle">
+                                    @{
+                                        var statusClass = item.Status switch
+                                        {
+                                            "Approved" => "bg-success",
+                                            "Pending" => "bg-warning",
+                                            "Rejected" => "bg-danger",
+                                            "Completed" => "bg-info",
+                                            _ => "bg-secondary"
+                                        };
+                                        var statusText = item.Status switch
+                                        {
+                                            "Approved" => "Disetujui",
+                                            "Pending" => "Menunggu",
+                                            "Rejected" => "Ditolak",
+                                            "Completed" => "Selesai",
+                                            _ => item.Status
+                                        };
+                                        var statusIcon = item.Status switch
+                                        {
+                                            "Approved" => "bi-check-circle",
+                                            "Pending" => "bi-clock-history",
+                                            "Rejected" => "bi-x-circle",
+                                            "Completed" => "bi-check2-all",
+                                            _ => "bi-question-circle"
+                                        };
+                                    }
+                                    <span class="badge @statusClass d-flex align-items-center gap-1" style="width: fit-content;">
+                                        <i class="bi @statusIcon"></i>
+                                        @statusText
                                     </span>
                                 </td>
                             </tr>
@@ -113,58 +328,104 @@
                     </tbody>
                 </table>
             </div>
-        </div>
-        <div class="card-footer">
-            <div class="row">
-                <div class="col">
-                    <p>Total Reservations: <strong>@Model.ReportData.Count</strong></p>
+        </div>        <div class="card-footer bg-light">
+            <div class="row g-3">
+                <div class="col-lg-4">
+                    <div class="text-center">
+                        <h5 class="text-primary mb-1">@Model.ReportData.Count</h5>
+                        <small class="text-muted">Total Reservasi</small>
+                    </div>
                 </div>
-                <div class="col">
-                    <p>Total Duration: <strong>@Model.ReportData.Sum(r => r.Duration).ToString("F1") hours</strong></p>
+                <div class="col-lg-4">
+                    <div class="text-center">
+                        <h5 class="text-success mb-1">@Model.ReportData.Sum(r => r.Duration).ToString("F1")</h5>
+                        <small class="text-muted">Total Jam Operasional</small>
+                    </div>
                 </div>
-                <div class="col">
-                    <p>By Status: 
-                        @foreach (var statusGroup in Model.ReportData.GroupBy(r => r.Status))
-                        {
-                            <span class="badge @(statusGroup.Key == "Approved" ? "bg-success" : 
-                                              statusGroup.Key == "Pending" ? "bg-warning" : 
-                                              statusGroup.Key == "Rejected" ? "bg-danger" : 
-                                              statusGroup.Key == "Completed" ? "bg-info" : "bg-secondary")">
-                                @statusGroup.Key: @statusGroup.Count()
-                            </span>
-                            <text>&nbsp;</text>
-                        }
-                    </p>
+                <div class="col-lg-4">
+                    <div class="text-center">
+                        <h6 class="mb-2 text-muted">Berdasarkan Status:</h6>
+                        <div class="d-flex flex-wrap gap-1 justify-content-center">
+                            @foreach (var statusGroup in Model.ReportData.GroupBy(r => r.Status))
+                            {
+                                var statusClass = statusGroup.Key switch
+                                {
+                                    "Approved" => "bg-success",
+                                    "Pending" => "bg-warning",
+                                    "Rejected" => "bg-danger", 
+                                    "Completed" => "bg-info",
+                                    _ => "bg-secondary"
+                                };
+                                var statusText = statusGroup.Key switch
+                                {
+                                    "Approved" => "Disetujui",
+                                    "Pending" => "Menunggu",
+                                    "Rejected" => "Ditolak",
+                                    "Completed" => "Selesai",
+                                    _ => statusGroup.Key
+                                };
+                                <span class="badge @statusClass">
+                                    @statusText: @statusGroup.Count()
+                                </span>
+                            }
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="card mt-4">
-        <div class="card-header">
-            <h5>Report Visualizations</h5>
+    <!-- Visualizations -->
+    <div class="card modern-card mt-4">
+        <div class="card-header bg-gradient-primary text-white">
+            <h5 class="mb-0">
+                <i class="bi bi-bar-chart-line me-2"></i>Visualisasi Data Laporan
+            </h5>
         </div>
         <div class="card-body">
-            <div class="row">
-                <div class="col-md-6">
+            <div class="row g-4">
+                <div class="col-lg-6">
+                    <div class="text-center mb-3">
+                        <h6 class="text-muted">Distribusi Status Reservasi</h6>
+                    </div>
                     <div class="chart-container" style="position: relative; height:300px;">
                         <canvas id="reservationStatusChart"></canvas>
                     </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-lg-6">
+                    <div class="text-center mb-3">
+                        <h6 class="text-muted">5 Kendaraan Paling Sering Digunakan</h6>
+                    </div>
                     <div class="chart-container" style="position: relative; height:300px;">
                         <canvas id="vehicleUsageChart"></canvas>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
+            <div class="row g-4 mt-2">
+                <div class="col-lg-6">
+                    <div class="text-center mb-3">
+                        <h6 class="text-muted">Penggunaan Per Lokasi</h6>
+                    </div>
+                    <div class="chart-container" style="position: relative; height:300px;">
+                        <canvas id="locationUsageChart"></canvas>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="text-center mb-3">
+                        <h6 class="text-muted">Tren Harian (30 Hari Terakhir)</h6>
+                    </div>
+                    <div class="chart-container" style="position: relative; height:300px;">
+                        <canvas id="dailyTrendChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>    </div>
 }
 else if (Model.ReportData != null && !Model.ReportData.Any())
 {
     <div class="alert alert-info">
-        <h4><i class="bi bi-info-circle"></i> No Results Found</h4>
-        <p>No reservation data found for the selected criteria. Please try different filters.</p>
+        <h4><i class="bi bi-info-circle"></i> Tidak Ada Data</h4>
+        <p>Tidak ada data reservasi yang ditemukan untuk kriteria yang dipilih. Silakan coba filter yang berbeda.</p>
     </div>
 }
 
@@ -216,89 +477,180 @@ else if (Model.ReportData != null && !Model.ReportData.Any())
                 }
                 
                 return true;
-            });
-        });        // Status Chart
-        var statusCtx = document.getElementById('reservationStatusChart').getContext('2d');
+            });        });
+
+        // Initialize charts if data exists
         @if (Model.ReportData?.Any() == true)
         {
-            <text>var statusData = @Json.Serialize(Model.ReportData.GroupBy(r => r.Status)
-                .Select(g => new { Status = g.Key, Count = g.Count() })
-                .ToList());</text>
-        }
-        else
-        {
-            <text>var statusData = [];</text>
-        }
-            
-        new Chart(statusCtx, {
-            type: 'pie',
-            data: {
-                labels: statusData.map(x => x.Status),
-                datasets: [{
-                    data: statusData.map(x => x.Count),
-                    backgroundColor: [
-                        'rgba(40, 167, 69, 0.7)',  // green - approved
-                        'rgba(255, 193, 7, 0.7)',  // yellow - pending
-                        'rgba(220, 53, 69, 0.7)',  // red - rejected
-                        'rgba(23, 162, 184, 0.7)', // cyan - completed
-                        'rgba(108, 117, 125, 0.7)' // gray - other
-                    ],
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    title: {
-                        display: true,
-                        text: 'Reservation Status Distribution'
+            <text>
+            // Status Chart
+            var statusCtx = document.getElementById('reservationStatusChart')?.getContext('2d');
+            if (statusCtx) {
+                var statusData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.ReportData.GroupBy(r => r.Status)
+                    .Select(g => new { Status = g.Key, Count = g.Count() })
+                    .ToList()));
+                    
+                new Chart(statusCtx, {
+                    type: 'pie',
+                    data: {
+                        labels: statusData.map(x => x.status),
+                        datasets: [{
+                            data: statusData.map(x => x.count),
+                            backgroundColor: [
+                                'rgba(40, 167, 69, 0.7)',  // green - approved
+                                'rgba(255, 193, 7, 0.7)',  // yellow - pending
+                                'rgba(220, 53, 69, 0.7)',  // red - rejected
+                                'rgba(23, 162, 184, 0.7)', // cyan - completed
+                                'rgba(108, 117, 125, 0.7)' // gray - other
+                            ],
+                            borderWidth: 1
+                        }]
                     },
-                    legend: {
-                        position: 'right',
-                    }
-                }
-            }
-        });
-        
-        // Vehicle Usage Chart
-        var vehicleCtx = document.getElementById('vehicleUsageChart').getContext('2d');
-        var vehicleData = @Json.Serialize(Model.ReportData.GroupBy(r => r.VehicleRegistration)
-            .Select(g => new { Vehicle = g.Key, Count = g.Count() })
-            .OrderByDescending(x => x.Count)
-            .Take(5)
-            .ToList());
-            
-        new Chart(vehicleCtx, {
-            type: 'bar',
-            data: {
-                labels: vehicleData.map(x => x.Vehicle),
-                datasets: [{
-                    label: 'Usage Count',
-                    data: vehicleData.map(x => x.Count),
-                    backgroundColor: 'rgba(54, 162, 235, 0.5)',
-                    borderColor: 'rgba(54, 162, 235, 1)',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    title: {
-                        display: true,
-                        text: 'Top 5 Most Used Vehicles'
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
-                            precision: 0
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Distribusi Status Reservasi'
+                            },
+                            legend: {
+                                position: 'right',
+                            }
                         }
                     }
-                }
+                });
             }
-        });
+            
+            // Vehicle Usage Chart
+            var vehicleCtx = document.getElementById('vehicleUsageChart')?.getContext('2d');
+            if (vehicleCtx) {
+                var vehicleData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.ReportData.GroupBy(r => r.VehicleRegistration)
+                    .Select(g => new { Vehicle = g.Key, Count = g.Count() })
+                    .OrderByDescending(x => x.Count)
+                    .Take(5)
+                    .ToList()));
+                    
+                new Chart(vehicleCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: vehicleData.map(x => x.vehicle),
+                        datasets: [{
+                            label: 'Jumlah Penggunaan',
+                            data: vehicleData.map(x => x.count),
+                            backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: '5 Kendaraan Paling Sering Digunakan'
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    precision: 0
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Location Usage Chart
+            var locationCtx = document.getElementById('locationUsageChart')?.getContext('2d');
+            if (locationCtx) {
+                var locationData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.ReportData.GroupBy(r => r.Location)
+                    .Select(g => new { Location = g.Key, Count = g.Count() })
+                    .OrderByDescending(x => x.Count)
+                    .ToList()));
+                    
+                new Chart(locationCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: locationData.map(x => x.location),
+                        datasets: [{
+                            data: locationData.map(x => x.count),
+                            backgroundColor: [
+                                'rgba(255, 99, 132, 0.7)',
+                                'rgba(54, 162, 235, 0.7)',
+                                'rgba(255, 205, 86, 0.7)',
+                                'rgba(75, 192, 192, 0.7)',
+                                'rgba(153, 102, 255, 0.7)',
+                                'rgba(255, 159, 64, 0.7)',
+                                'rgba(199, 199, 199, 0.7)',
+                                'rgba(83, 102, 255, 0.7)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Penggunaan Per Lokasi'
+                            },
+                            legend: {
+                                position: 'right',
+                            }
+                        }
+                    }
+                });
+            }
+            </text>
+        }
     </script>
 }
+
+<script>
+        // Date range helper functions
+        function setDateRange(days) {
+            var endDate = new Date();
+            var startDate = new Date();
+            startDate.setDate(endDate.getDate() - days);
+            
+            document.getElementById('StartDate').value = startDate.toISOString().split('T')[0];
+            document.getElementById('EndDate').value = endDate.toISOString().split('T')[0];
+        }
+
+        function setCurrentMonth() {
+            var now = new Date();
+            var startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+            var endDate = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+            
+            document.getElementById('StartDate').value = startDate.toISOString().split('T')[0];
+            document.getElementById('EndDate').value = endDate.toISOString().split('T')[0];
+        }
+
+        function setPreviousMonth() {
+            var now = new Date();
+            var startDate = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+            var endDate = new Date(now.getFullYear(), now.getMonth(), 0);
+            
+            document.getElementById('StartDate').value = startDate.toISOString().split('T')[0];
+            document.getElementById('EndDate').value = endDate.toISOString().split('T')[0];
+        }
+
+        function resetFilters() {
+            document.getElementById('reportForm').reset();
+            var defaultStartDate = new Date();
+            defaultStartDate.setMonth(defaultStartDate.getMonth() - 1);
+            document.getElementById('StartDate').value = defaultStartDate.toISOString().split('T')[0];
+            document.getElementById('EndDate').value = new Date().toISOString().split('T')[0];
+        }
+
+        function generateQuickReport() {
+            // Set filters for last 30 days and submit
+            setDateRange(30);
+            document.getElementById('reportForm').submit();
+        }
+    </script>
