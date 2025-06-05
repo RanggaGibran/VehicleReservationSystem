@@ -500,6 +500,9 @@
             
             // Initialize driver option visual state
             selectDriverOption('no-driver');
+            
+            // Initialize form
+            initializeForm();
         });
           // Enhanced Vehicle preview function
         function showVehiclePreview(select) {
@@ -767,134 +770,113 @@
             }
         }
         
-        function handlePurposeChange() {
-            const purpose = $("#Purpose").val();
-            if (purpose === "Lainnya") {
-                $("#customPurposeDiv").show();
-                $("#customPurpose").prop('required', true);
-            } else {
-                $("#customPurposeDiv").hide();
-                $("#customPurpose").prop('required', false);
-                if (purpose) {
-                    $("#Purpose").val(purpose);
+        // Auto-calculate end date when start date changes
+        function handleStartDateChange() {
+            const startDate = $("#StartDate").val();
+            const endDate = $("#EndDate").val();
+            
+            if (startDate && !endDate) {
+                // Auto-set end date to 1 day after start date as default
+                const start = new Date(startDate);
+                start.setDate(start.getDate() + 1);
+                start.setHours(17, 0, 0, 0); // Set to 5 PM
+                
+                const endDateTime = start.toISOString().slice(0, 16);
+                $("#EndDate").val(endDateTime);
+            }
+            
+            // Clear validation error if exists
+            $("#StartDate").removeClass('is-invalid');
+            $("#StartDate").siblings('.text-danger').addClass('d-none');
+        }
+        
+        // Validate end date when it changes
+        function handleEndDateChange() {
+            const startDate = $("#StartDate").val();
+            const endDate = $("#EndDate").val();
+            
+            if (startDate && endDate) {
+                const start = new Date(startDate);
+                const end = new Date(endDate);
+                
+                if (end <= start) {
+                    $("#EndDate").addClass('is-invalid');
+                    showInlineError('EndDate', 'Tanggal selesai harus setelah tanggal mulai');
+                } else {
+                    $("#EndDate").removeClass('is-invalid');
+                    $("#EndDate").siblings('.text-danger').addClass('d-none');
                 }
             }
         }
         
-        function handleDestinationChange() {
-            const destination = $("#destinationSelect").val();
-            if (destination === "Lainnya") {
-                $("#destinationSelect").addClass('d-none');
-                $("#Destination").removeClass('d-none').val('').focus();
-            } else {
-                $("#Destination").val(destination);
-                $("#destinationSelect").removeClass('d-none');
-                $("#Destination").addClass('d-none');
-            }
-        }
-    </script>
-}
-
-            // Update selected vehicle display
-            const parsed = parseVehicleText(unescape(text));
-            $("#selectedVehicleInfo").html(`
-                <p class="mb-1"><strong>Nama:</strong> ${parsed.name}</p>
-                <p class="mb-1"><strong>No. Registrasi:</strong> ${parsed.registration}</p>
-                <p class="mb-0"><strong>Tipe:</strong> ${parsed.type}</p>
-            `);
-            $("#selectedVehicleDisplay").removeClass("d-none");
+        // Enhanced form initialization
+        function initializeForm() {
+            // Set minimum date for start date to today
+            const today = new Date();
+            const minDate = today.toISOString().slice(0, 16);
+            $("#StartDate").attr('min', minDate);
             
-            // Trigger driver update if necessary
-            updateAvailableDrivers();
-        }
-
-        function loadDriverCards() {
-            const driverSelect = $("#DriverId");
-            const container = $("#driverCardsContainer");
-            container.empty();
-
-            if (driverSelect.children('option').length <= 1) { // <=1 because of "-- Pilih Pengemudi --"
-                 container.html('<div class="alert alert-secondary"><i class="bi bi-person-badge me-2"></i>Tidak ada data pengemudi atau belum dimuat. Anda dapat melanjutkan tanpa memilih pengemudi.</div>');
-                return;
-            }
+            // Initialize approver count
+            updateApproverCount();
             
-            let hasAvailableDrivers = false;
-            driverSelect.children('option').each(function() {
-                if ($(this).val() === "") return; // Skip placeholder
-
-                hasAvailableDrivers = true;
-                const driverValue = $(this).val();
-                const driverText = $(this).text(); // Name of the driver
-
-                const cardHtml = `
-                    <div class="col-md-6 col-lg-4 mb-3">
-                        <div class="card driver-card h-100" data-value="${driverValue}" onclick="selectDriver('${driverValue}', '${escape(driverText)}')">
-                            <div class="card-body text-center">
-                                <i class="bi bi-person-circle fs-1 text-primary mb-2"></i>
-                                <h6 class="card-title mb-1">${driverText}</h6>
-                                <p class="card-text small text-muted">Lisensi: Tersedia</p>
-                                 <input class="form-check-input visually-hidden" type="radio" name="driverSelection" id="driver_${driverValue}" value="${driverValue}">
-                            </div>
-                        </div>
-                    </div>`;
-                container.append(cardHtml);
+            // Set default driver option
+            selectDriverOption('no-driver');
+            
+            // Add change event listeners
+            $("#StartDate").on('change', handleStartDateChange);
+            $("#EndDate").on('change', handleEndDateChange);
+            
+            // Add input validation clearing
+            $('input, select, textarea').on('input change', function() {
+                $(this).removeClass('is-invalid');
+                $(this).siblings('.text-danger').addClass('d-none');
             });
-             if (!hasAvailableDrivers) {
-                container.html('<div class="alert alert-secondary"><i class="bi bi-person-badge me-2"></i>Tidak ada pengemudi yang tersedia saat ini. Anda dapat melanjutkan tanpa memilih pengemudi.</div>');
-            }
-
-            // Ensure container is a row for proper column layout
-            if (!container.hasClass('row')) {
-                container.addClass('row');
-            }
-        }
-
-        function selectDriver(value, text) {
-            const driverSelect = $("#DriverId");
-            driverSelect.val(value).change();
-
-            // Update radio button
-            $(`input[name="driverSelection"]`).prop('checked', false);
-            $(`#driver_${value}`).prop('checked', true);
-
-
-            $(".driver-card").removeClass("selected-card border-info shadow-sm");
-            $(`.driver-card[data-value="${value}"]`).addClass("selected-card border-info shadow-sm");
             
-            $("#selectedDriverInfo").html(`<p class="mb-0"><strong>Nama:</strong> ${unescape(text)}</p>`);
-            $("#selectedDriverDisplay").removeClass("d-none");
-            $("#noDriverOption").prop("checked", false); // Uncheck "no driver" if a driver is selected
-        }
-
-        function selectNoDriver() {
-            const driverSelect = $("#DriverId");
-            driverSelect.val("").change(); // Clear driver selection
-
-            // Update radio button
-            $(`input[name="driverSelection"]`).prop('checked', false);
-            $("#noDriverOption").prop("checked", true);
-
-            $(".driver-card").removeClass("selected-card border-info shadow-sm");
-            $("#selectedDriverDisplay").addClass("d-none");
+            console.log('Create Reservation form initialized successfully');
         }
         
-        function updateVehicleDisplay() {
-            // This function is largely handled by selectVehicle now.
-            // It can be kept for legacy or if specific non-card updates are needed.
-            const selectedVehicleVal = $("#VehicleId").val();
-            if (!selectedVehicleVal) {
-                $("#selectedVehicleDisplay").addClass("d-none");
+        // Enhanced destination selection with validation
+        function handleDestinationChange() {
+            const destination = $("#destinationSelect").val();
+            const destinationInput = $("#Destination");
+            
+            if (destination === "Lainnya") {
+                $("#destinationSelect").addClass('d-none');
+                destinationInput.removeClass('d-none').val('').focus();
+                destinationInput.attr('placeholder', 'Masukkan tujuan/lokasi khusus');
+            } else if (destination) {
+                destinationInput.val(destination);
+                $("#destinationSelect").removeClass('d-none');
+                destinationInput.addClass('d-none');
+                // Clear validation error
+                destinationInput.removeClass('is-invalid');
+                destinationInput.siblings('.text-danger').addClass('d-none');
+            } else {
+                destinationInput.val('');
+                $("#destinationSelect").removeClass('d-none');
+                destinationInput.addClass('d-none');
             }
-            // The rest of the logic is in selectVehicle
-        }        // Ensure updateAvailableDrivers is defined, even if it's a placeholder
-        function updateAvailableDrivers() {
-            const vehicleId = $("#VehicleId").val();
-            console.log('Selected vehicle for driver filtering (if implemented):', vehicleId);
-            // Placeholder: In a real scenario, this would filter drivers.
-            // For now, we assume all drivers loaded are potentially available or
-            // the backend handles compatibility.
-            // If you were to filter, you'd call loadDriverCards() again,
-            // perhaps with a parameter or by modifying the #DriverId select options first.
+        }
+        
+        // Enhanced purpose selection
+        function handlePurposeChange() {
+            const purpose = $("#Purpose").val();
+            const customPurposeDiv = $("#customPurposeDiv");
+            const customPurpose = $("#customPurpose");
+            
+            if (purpose === "Lainnya") {
+                customPurposeDiv.removeClass('d-none').hide().slideDown(300);
+                customPurpose.prop('required', true).focus();
+            } else {
+                customPurposeDiv.slideUp(300, function() {
+                    $(this).addClass('d-none');
+                });
+                customPurpose.prop('required', false).val('');
+                
+                // Clear validation error for Purpose
+                $("#Purpose").removeClass('is-invalid');
+                $("#Purpose").siblings('.text-danger').addClass('d-none');
+            }
         }
     </script>
 }
