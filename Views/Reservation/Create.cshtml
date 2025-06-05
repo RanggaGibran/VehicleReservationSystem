@@ -5,8 +5,16 @@
 }
 
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <div>
-        <h1 class="mb-1">
+    <d                                <!-- No Driver Option -->
+                                <div class="no-driver-option mt-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="driverSelection" id="noDriverOption" value="" checked onclick="selectNoDriver()">
+                                        <label class="form-check-label" for="noDriverOption">
+                                            <strong>Tentukan pengemudi nanti</strong>
+                                            <br><small class="text-muted">Pengemudi akan ditentukan oleh admin setelah reservasi disetujui</small>
+                                        </label>
+                                    </div>
+                                </div>   <h1 class="mb-1">
             <i class="bi bi-plus-circle text-primary me-2"></i>Buat Reservasi Kendaraan
         </h1>
         <p class="text-muted mb-0">
@@ -123,36 +131,93 @@
                     </button>
                 </div>
             </div>
-            
-            <!-- Step 2: Vehicle Selection -->
+              <!-- Step 2: Vehicle Selection -->
             <div class="form-step" id="step2">
                 <h6 class="text-primary mb-3">
                     <i class="bi bi-truck me-2"></i>Pilih Kendaraan & Pengemudi
                 </h6>
                 
                 <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group mb-3">
+                    <div class="col-12">
+                        <div class="form-group mb-4">
                             <label asp-for="VehicleId" class="form-label fw-medium">
-                                <i class="bi bi-truck text-muted me-1"></i>Kendaraan <span class="text-danger">*</span>
+                                <i class="bi bi-truck text-muted me-1"></i>Pilih Kendaraan <span class="text-danger">*</span>
                             </label>
-                            <select asp-for="VehicleId" asp-items="Model.Vehicles" class="form-select form-select-modern" onchange="updateAvailableDrivers()">
-                                <option value="">-- Pilih Kendaraan --</option>
-                            </select>
+                            <div class="vehicle-selection-container">
+                                <select asp-for="VehicleId" asp-items="Model.Vehicles" class="form-select form-select-modern d-none" onchange="updateVehicleDisplay(); updateAvailableDrivers()">
+                                    <option value="">-- Pilih Kendaraan --</option>
+                                </select>
+                                
+                                <!-- Custom Vehicle Cards Display -->
+                                <div class="vehicle-cards-container" id="vehicleCardsContainer">
+                                    <div class="alert alert-info">
+                                        <i class="bi bi-info-circle me-2"></i>
+                                        <strong>Memuat data kendaraan...</strong> Pastikan database telah diinisialisasi dengan data kendaraan.
+                                    </div>
+                                </div>
+                                
+                                <!-- Selected Vehicle Display -->
+                                <div class="selected-vehicle-display d-none" id="selectedVehicleDisplay">
+                                    <div class="card border-success">
+                                        <div class="card-header bg-success text-white">
+                                            <h6 class="mb-0">
+                                                <i class="bi bi-check-circle me-1"></i>Kendaraan Terpilih
+                                            </h6>
+                                        </div>
+                                        <div class="card-body" id="selectedVehicleInfo">
+                                            <!-- Vehicle info will be populated by JavaScript -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             <span asp-validation-for="VehicleId" class="text-danger small"></span>
                         </div>
                     </div>
                     
-                    <div class="col-md-6">
+                    <div class="col-12">
                         <div class="form-group mb-3">
                             <label asp-for="DriverId" class="form-label fw-medium">
-                                <i class="bi bi-person-gear text-muted me-1"></i>Pengemudi
+                                <i class="bi bi-person-gear text-muted me-1"></i>Pilih Pengemudi
+                                <small class="text-muted">(Opsional - dapat ditentukan kemudian)</small>
                             </label>
-                            <select asp-for="DriverId" asp-items="Model.Drivers" class="form-select form-select-modern">
-                                <option value="">-- Pilih Pengemudi --</option>
-                            </select>
+                            <div class="driver-selection-container">
+                                <select asp-for="DriverId" asp-items="Model.Drivers" class="form-select form-select-modern d-none">
+                                    <option value="">-- Pilih Pengemudi --</option>
+                                </select>
+                                
+                                <!-- Custom Driver Cards Display -->
+                                <div class="driver-cards-container" id="driverCardsContainer">
+                                    <div class="alert alert-info">
+                                        <i class="bi bi-info-circle me-2"></i>
+                                        <strong>Memuat data pengemudi...</strong> Pastikan database telah diinisialisasi dengan data pengemudi.
+                                    </div>
+                                </div>
+                                
+                                <!-- Selected Driver Display -->
+                                <div class="selected-driver-display d-none" id="selectedDriverDisplay">
+                                    <div class="card border-info">
+                                        <div class="card-header bg-info text-white">
+                                            <h6 class="mb-0">
+                                                <i class="bi bi-check-circle me-1"></i>Pengemudi Terpilih
+                                            </h6>
+                                        </div>
+                                        <div class="card-body" id="selectedDriverInfo">
+                                            <!-- Driver info will be populated by JavaScript -->
+                                        </div>
+                                    </div>
+                                </div>
+                                  <!-- No Driver Option -->
+                                <div class="no-driver-option mt-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="driverSelection" id="noDriverOption" value="" onclick="selectNoDriver()">
+                                        <label class="form-check-label" for="noDriverOption">
+                                            <strong>Tentukan pengemudi nanti</strong>
+                                            <br><small class="text-muted">Pengemudi akan ditentukan oleh admin setelah reservasi disetujui</small>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
                             <span asp-validation-for="DriverId" class="text-danger small"></span>
-                            <small class="text-muted">Opsional - dapat ditentukan kemudian</small>
                         </div>
                     </div>
                 </div>
@@ -426,8 +491,7 @@
                 $("#Destination").val(destination);
             }
         }
-        
-        function updateAvailableDrivers() {
+          function updateAvailableDrivers() {
             // This function can be enhanced to filter drivers based on selected vehicle
             // For now, it's a placeholder for future enhancement
             const vehicleId = $("#VehicleId").val();
@@ -436,9 +500,285 @@
                 console.log('Selected vehicle:', vehicleId);
             }
         }
+        
+        // Load vehicle and driver data on page load
+        $(document).ready(function() {
+            loadVehicleCards();
+            loadDriverCards();
+        });
+        
+        function loadVehicleCards() {
+            const vehicles = [];
+            const vehicleSelect = $("#VehicleId");
+            
+            // Extract vehicle data from the existing select options
+            vehicleSelect.find('option').each(function() {
+                if ($(this).val()) {
+                    vehicles.push({
+                        id: $(this).val(),
+                        text: $(this).text()
+                    });
+                }
+            });
+            
+            if (vehicles.length === 0) {
+                $("#vehicleCardsContainer").html(`
+                    <div class="alert alert-warning">
+                        <i class="bi bi-exclamation-triangle me-2"></i>
+                        <strong>Tidak ada kendaraan tersedia.</strong> Pastikan data kendaraan telah diinisialisasi di database.
+                    </div>
+                `);
+                return;
+            }
+            
+            let vehicleCardsHTML = '<div class="row g-3">';
+              vehicles.forEach(function(vehicle) {
+                // Parse vehicle info - improved parsing for better display
+                let vehicleInfo, location, brand, model, registration, vehicleType;
+                
+                // Handle format: "Brand Model (Registration) - Location - Type"
+                const mainParts = vehicle.text.split(' - ');
+                
+                if (mainParts.length >= 2) {
+                    const vehiclePart = mainParts[0];
+                    location = mainParts[1] || 'Lokasi tidak diketahui';
+                    vehicleType = mainParts[2] || 'Kendaraan Operasional';
+                    
+                    // Extract registration from parentheses
+                    const regMatch = vehiclePart.match(/\(([^)]+)\)/);
+                    registration = regMatch ? regMatch[1] : 'N/A';
+                    
+                    // Extract brand and model (everything before the registration)
+                    const nameAndModel = vehiclePart.replace(/\s*\([^)]+\)/, '').trim();
+                    const nameParts = nameAndModel.split(' ');
+                    brand = nameParts[0] || 'Unknown';
+                    model = nameParts.slice(1).join(' ') || 'Model';
+                } else {
+                    // Fallback parsing
+                    vehicleInfo = vehicle.text;
+                    location = 'Lokasi tidak diketahui';
+                    brand = 'Kendaraan';
+                    model = 'Operasional';
+                    registration = 'N/A';
+                    vehicleType = 'Umum';
+                }
+                
+                // Determine vehicle icon based on type or name
+                let vehicleIcon = 'bi-truck';
+                const lowerText = vehicle.text.toLowerCase();
+                if (lowerText.includes('bus') || lowerText.includes('mikrolet')) {
+                    vehicleIcon = 'bi-bus-front';
+                } else if (lowerText.includes('pickup') || lowerText.includes('hilux')) {
+                    vehicleIcon = 'bi-truck';
+                } else if (lowerText.includes('sedan') || lowerText.includes('avanza')) {
+                    vehicleIcon = 'bi-car-front';
+                } else if (lowerText.includes('excavator') || lowerText.includes('dump')) {
+                    vehicleIcon = 'bi-truck';
+                }
+                
+                vehicleCardsHTML += `
+                    <div class="col-md-6 col-lg-4">
+                        <div class="vehicle-card card h-100" data-vehicle-id="${vehicle.id}" onclick="selectVehicle('${vehicle.id}', '${vehicle.text.replace(/'/g, "\\'")}')">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <div class="vehicle-icon">
+                                        <i class="bi ${vehicleIcon} text-primary fs-1"></i>
+                                    </div>
+                                    <div class="vehicle-status">
+                                        <span class="badge bg-success">
+                                            <i class="bi bi-check-circle me-1"></i>Tersedia
+                                        </span>
+                                    </div>
+                                </div>
+                                <h6 class="card-title mb-2 text-dark">${brand} ${model}</h6>
+                                <div class="vehicle-details">
+                                    <p class="mb-1">
+                                        <small class="text-muted">
+                                            <i class="bi bi-card-text me-1"></i>
+                                            <strong>Plat:</strong> ${registration}
+                                        </small>
+                                    </p>
+                                    <p class="mb-1">
+                                        <small class="text-muted">
+                                            <i class="bi bi-geo-alt me-1"></i>
+                                            <strong>Lokasi:</strong> ${location}
+                                        </small>
+                                    </p>
+                                    <p class="mb-0">
+                                        <small class="text-muted">
+                                            <i class="bi bi-tag me-1"></i>
+                                            <strong>Tipe:</strong> ${vehicleType}
+                                        </small>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            vehicleCardsHTML += '</div>';
+            $("#vehicleCardsContainer").html(vehicleCardsHTML);
+        }
+        
+        function loadDriverCards() {
+            const drivers = [];
+            const driverSelect = $("#DriverId");
+            
+            // Extract driver data from the existing select options
+            driverSelect.find('option').each(function() {
+                if ($(this).val()) {
+                    drivers.push({
+                        id: $(this).val(),
+                        text: $(this).text()
+                    });
+                }
+            });
+            
+            let driverCardsHTML = '<div class="row g-3">';
+            
+            if (drivers.length > 0) {
+                drivers.forEach(function(driver) {
+                    // Parse driver info (assuming format: "Name - License Type")
+                    const parts = driver.text.split(' - ');
+                    const driverName = parts[0] || driver.text;
+                    const licenseType = parts[1] || 'SIM A';
+                      driverCardsHTML += `
+                        <div class="col-md-6 col-lg-4">
+                            <div class="driver-card card h-100" data-driver-id="${driver.id}" onclick="selectDriver('${driver.id}', '${driver.text}')">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <div class="driver-icon">
+                                            <i class="bi bi-person-circle text-info fs-2"></i>
+                                        </div>
+                                        <div class="driver-status">
+                                            <span class="badge bg-success">Tersedia</span>
+                                        </div>
+                                    </div>
+                                    <div class="form-check position-absolute" style="top: 10px; left: 10px;">
+                                        <input class="form-check-input driver-radio" type="radio" name="driverSelection" value="${driver.id}" id="driver_${driver.id}">
+                                    </div>
+                                    <h6 class="card-title mb-1">${driverName}</h6>
+                                    <p class="card-text">
+                                        <small class="text-muted">
+                                            <i class="bi bi-credit-card me-1"></i>Lisensi: ${licenseType}
+                                        </small>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+            
+            driverCardsHTML += '</div>';
+            $("#driverCardsContainer").html(driverCardsHTML);
+        }
+        
+        function selectVehicle(vehicleId, vehicleText) {
+            // Update the hidden select
+            $("#VehicleId").val(vehicleId);
+            
+            // Update visual selection
+            $(".vehicle-card").removeClass('selected');
+            $(`.vehicle-card[data-vehicle-id="${vehicleId}"]`).addClass('selected');
+            
+            // Show selected vehicle display
+            const parts = vehicleText.split(' - ');
+            const vehicleInfo = parts[0] || vehicleText;
+            const location = parts[1] || 'Lokasi tidak diketahui';
+            
+            const vehicleParts = vehicleInfo.split(' (');
+            const nameAndModel = vehicleParts[0] || vehicleInfo;
+            const registration = vehicleParts[1] ? vehicleParts[1].replace(')', '') : 'N/A';
+            
+            $("#selectedVehicleInfo").html(`
+                <div class="d-flex align-items-center">
+                    <i class="bi bi-truck text-success fs-3 me-3"></i>
+                    <div>
+                        <h6 class="mb-1">${nameAndModel}</h6>
+                        <small class="text-muted">
+                            <i class="bi bi-card-text me-1"></i>Plat: ${registration} | 
+                            <i class="bi bi-geo-alt me-1"></i>Lokasi: ${location}
+                        </small>
+                    </div>
+                </div>
+            `);
+            
+            $("#selectedVehicleDisplay").removeClass('d-none');
+            
+            // Update available drivers based on selected vehicle
+            updateAvailableDrivers();
+        }
+          function selectDriver(driverId, driverText) {
+            // Update the hidden select
+            $("#DriverId").val(driverId);
+            
+            // Update visual selection
+            $(".driver-card").removeClass('selected');
+            $(`.driver-card[data-driver-id="${driverId}"]`).addClass('selected');
+            
+            // Update radio button
+            $(`#driver_${driverId}`).prop('checked', true);
+            
+            // Show selected driver display
+            const parts = driverText.split(' - ');
+            const driverName = parts[0] || driverText;
+            const licenseType = parts[1] || 'SIM A';
+            
+            $("#selectedDriverInfo").html(`
+                <div class="d-flex align-items-center">
+                    <i class="bi bi-person-circle text-info fs-3 me-3"></i>
+                    <div>
+                        <h6 class="mb-1">${driverName}</h6>
+                        <small class="text-muted">
+                            <i class="bi bi-credit-card me-1"></i>Lisensi: ${licenseType}
+                        </small>
+                    </div>
+                </div>
+            `);
+            
+            $("#selectedDriverDisplay").removeClass('d-none');
+        }
+          function selectNoDriver() {
+            // Clear driver selection
+            $("#DriverId").val('');
+            $(".driver-card").removeClass('selected');
+            $("#selectedDriverDisplay").addClass('d-none');
+            
+            // Check "no driver" option
+            $("#noDriverOption").prop('checked', true);
+            
+            // Uncheck all driver radio buttons
+            $(".driver-radio").prop('checked', false);
+        }
+          // Handle no driver option selection
+        $("#noDriverOption").change(function() {
+            if ($(this).is(':checked')) {
+                selectNoDriver();
+            }
+        });
+        
+        // Handle driver radio button clicks
+        $(document).on('change', '.driver-radio', function() {
+            if ($(this).is(':checked')) {
+                const driverId = $(this).val();
+                const driverCard = $(`.driver-card[data-driver-id="${driverId}"]`);
+                const driverText = driverCard.find('.card-title').text() + ' - SIM A'; // Simplified for now
+                selectDriver(driverId, driverText);
+            }
+        });
     </script>
-    
-    <style>
+      <style>
+        :root {
+            --mining-primary: #1a365d;
+            --mining-secondary: #2d5a87;
+            --mining-accent: #0ea5e9;
+            --mining-success: #16a34a;
+            --mining-warning: #f59e0b;
+            --mining-danger: #dc2626;
+        }
+        
         .form-step {
             display: none;
         }
@@ -510,10 +850,119 @@
         .btn:hover {
             transform: translateY(-1px);
         }
-        
-        .alert {
+          .alert {
             border-left: 4px solid #0dcaf0;
             border-radius: 8px;
+        }
+          /* Vehicle and Driver Card Styles */
+        .vehicle-card,
+        .driver-card {
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            position: relative;
+        }
+        
+        .vehicle-card:hover,
+        .driver-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+            border-color: var(--mining-primary);
+        }
+        
+        .vehicle-card.selected,
+        .driver-card.selected {
+            border-color: var(--mining-primary);
+            background-color: rgba(26, 54, 93, 0.05);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(26, 54, 93, 0.2);
+        }
+        
+        .vehicle-card.selected .vehicle-icon i,
+        .driver-card.selected .driver-icon i {
+            color: var(--mining-primary) !important;
+        }
+        
+        .driver-card .form-check {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 50%;
+            padding: 5px;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .driver-card .form-check-input {
+            margin: 0;
+        }
+        
+        .vehicle-selection-container,
+        .driver-selection-container {
+            margin-bottom: 1rem;
+        }
+        
+        .selected-vehicle-display,
+        .selected-driver-display {
+            margin-top: 1rem;
+            animation: fadeIn 0.4s ease-in;
+        }
+        
+        .no-driver-option {
+            border-top: 1px solid #e9ecef;
+            padding-top: 1rem;
+        }
+        
+        .no-driver-option .form-check {
+            padding: 1rem;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .no-driver-option .form-check:hover {
+            border-color: #6c757d;
+            background-color: #f8f9fa;
+        }
+        
+        .no-driver-option .form-check-input:checked ~ .form-check-label {
+            color: var(--mining-primary);
+            font-weight: 500;
+        }
+        
+        .vehicle-icon,
+        .driver-icon {
+            margin-bottom: 0.5rem;
+        }
+        
+        .vehicle-status,
+        .driver-status {
+            font-size: 0.75rem;
+        }
+        
+        .card-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .badge {
+            font-size: 0.7rem;
+            padding: 0.25rem 0.5rem;
+        }
+        
+        /* Responsive adjustments */
+        @@media (max-width: 768px) {
+            .vehicle-card,
+            .driver-card {
+                margin-bottom: 1rem;
+            }
+            
+            .col-md-6.col-lg-4 {
+                margin-bottom: 1rem;
+            }
         }
     </style>
 }

@@ -327,117 +327,415 @@ namespace VehicleReservationSystem.Data
 
                 context.VehicleTypes.AddRange(vehicleTypes);
                 await context.SaveChangesAsync();
-            }
-
-            // Seed Drivers if not already seeded
+            }            // Seed Drivers if not already seeded
             if (!context.Drivers.Any())
             {
                 var locations = await context.Locations.ToListAsync();
                 var drivers = new List<Driver>
                 {
                     new Driver {
-                        Name = "John Smith",
-                        LicenseNumber = "DRV-123456",
+                        Name = "Budi Hartono",
+                        LicenseNumber = "DRV-001-JKT",
                         LicenseExpiry = DateTime.Today.AddYears(2),
                         PhoneNumber = "081234567890",
-                        Email = "john.smith@example.com",
-                        Address = "123 Driver Street",
-                        LocationId = locations.First(l => l.Type == "Headquarters").Id,
+                        Email = "budi.hartono@ptnikel.com",
+                        Address = "Jl. Kebon Jeruk No. 45, Jakarta Barat",
+                        LocationId = locations.First(l => l.Type == "HeadOffice").Id,
                         IsAvailable = true
                     },
                     new Driver {
-                        Name = "Alice Johnson",
-                        LicenseNumber = "DRV-234567",
+                        Name = "Siti Nurhaliza",
+                        LicenseNumber = "DRV-002-JKT",
                         LicenseExpiry = DateTime.Today.AddYears(3),
                         PhoneNumber = "082345678901",
-                        Email = "alice.johnson@example.com",
-                        Address = "456 Driver Avenue",
-                        LocationId = locations.First(l => l.Type == "Branch").Id,
+                        Email = "siti.nurhaliza@ptnikel.com",
+                        Address = "Jl. Mangga Dua No. 78, Jakarta Utara",
+                        LocationId = locations.First(l => l.Type == "HeadOffice").Id,
                         IsAvailable = true
                     },
                     new Driver {
-                        Name = "Robert Chen",
-                        LicenseNumber = "DRV-345678",
+                        Name = "Ahmad Fauzi",
+                        LicenseNumber = "DRV-003-SBY",
                         LicenseExpiry = DateTime.Today.AddYears(1),
                         PhoneNumber = "083456789012",
-                        Email = "robert.chen@example.com",
-                        Address = "789 Driver Boulevard",
-                        LocationId = locations.First(l => l.Type == "Mine").Id,
+                        Email = "ahmad.fauzi@ptnikel.com",
+                        Address = "Jl. Diponegoro No. 123, Surabaya",
+                        LocationId = locations.First(l => l.Type == "BranchOffice").Id,
+                        IsAvailable = true
+                    },
+                    new Driver {
+                        Name = "Rizky Pratama",
+                        LicenseNumber = "DRV-004-MLT",
+                        LicenseExpiry = DateTime.Today.AddYears(2),
+                        PhoneNumber = "084567890123",
+                        Email = "rizky.pratama@ptnikel.com",
+                        Address = "Perumahan Tambang Block A No. 12, Morowali",
+                        LocationId = locations.First(l => l.MineCode == "NI-SULUT-A").Id,
+                        IsAvailable = true
+                    },
+                    new Driver {
+                        Name = "Maya Indira",
+                        LicenseNumber = "DRV-005-MLT",
+                        LicenseExpiry = DateTime.Today.AddYears(4),
+                        PhoneNumber = "085678901234",
+                        Email = "maya.indira@ptnikel.com",
+                        Address = "Perumahan Tambang Block B No. 8, Morowali",
+                        LocationId = locations.First(l => l.MineCode == "NI-SULUT-B").Id,
+                        IsAvailable = true
+                    },
+                    new Driver {
+                        Name = "Eko Widodo",
+                        LicenseNumber = "DRV-006-KLK",
+                        LicenseExpiry = DateTime.Today.AddYears(3),
+                        PhoneNumber = "086789012345",
+                        Email = "eko.widodo@ptnikel.com",
+                        Address = "Desa Pomalaa RT 03 RW 02, Kolaka",
+                        LocationId = locations.First(l => l.MineCode == "NI-SULTRA-C").Id,
+                        IsAvailable = true
+                    },
+                    new Driver {
+                        Name = "Dewi Sartika",
+                        LicenseNumber = "DRV-007-MLU",
+                        LicenseExpiry = DateTime.Today.AddYears(2),
+                        PhoneNumber = "087890123456",
+                        Email = "dewi.sartika@ptnikel.com",
+                        Address = "Komplek Tambang Weda Bay No. 15, Halmahera",
+                        LocationId = locations.First(l => l.MineCode == "NI-MALUT-D").Id,
+                        IsAvailable = true
+                    },
+                    new Driver {
+                        Name = "Joko Susilo",
+                        LicenseNumber = "DRV-008-PNG",
+                        LicenseExpiry = DateTime.Today.AddYears(1),
+                        PhoneNumber = "088901234567",
+                        Email = "joko.susilo@ptnikel.com",
+                        Address = "Perumahan Timika Indah No. 22, Papua",
+                        LocationId = locations.First(l => l.MineCode == "NI-PAPUA-E").Id,
+                        IsAvailable = true
+                    },
+                    new Driver {
+                        Name = "Ratna Sari",
+                        LicenseNumber = "DRV-009-KLT",
+                        LicenseExpiry = DateTime.Today.AddYears(3),
+                        PhoneNumber = "089012345678",
+                        Email = "ratna.sari@ptnikel.com",
+                        Address = "Desa Sangkulirang RT 01 RW 03, Kutai Timur",
+                        LocationId = locations.First(l => l.MineCode == "NI-KALTIM-F").Id,
+                        IsAvailable = true
+                    },
+                    new Driver {
+                        Name = "Hendra Gunawan",
+                        LicenseNumber = "DRV-010-JKT",
+                        LicenseExpiry = DateTime.Today.AddYears(2),
+                        PhoneNumber = "090123456789",
+                        Email = "hendra.gunawan@ptnikel.com",
+                        Address = "Jl. Cilandak Raya No. 67, Jakarta Selatan",
+                        LocationId = locations.First(l => l.Type == "HeadOffice").Id,
                         IsAvailable = true
                     }
                 };
 
                 context.Drivers.AddRange(drivers);
                 await context.SaveChangesAsync();
-            }
-            if (!context.Vehicles.Any())
+            }            if (!context.Vehicles.Any())
             {
                 var locations = await context.Locations.ToListAsync();
                 var vehicleTypes = await context.VehicleTypes.ToListAsync();
                 
                 var vehicles = new List<Vehicle>
                 {
+                    // Vehicles for Head Office Jakarta
                     new Vehicle {
-                        RegistrationNumber = "B 1234 ABC",
+                        RegistrationNumber = "B 1234 NNM",
                         Brand = "Toyota",
-                        Model = "Avanza",
+                        Model = "Camry Hybrid",
+                        Year = 2023,
+                        VehicleTypeId = vehicleTypes.First(vt => vt.Name == "Sedan Executive").Id,
+                        LocationId = locations.First(l => l.Type == "HeadOffice").Id,
+                        IsCompanyOwned = true,
+                        RentalCompany = "",
+                        IsAvailable = true,
+                        Status = "Active",
+                        Mileage = 15000,
+                        FuelType = "Bensin",
+                        FuelCapacity = 60,
+                        Notes = "Kendaraan eksekutif untuk direksi"
+                    },
+                    new Vehicle {
+                        RegistrationNumber = "B 2345 NNM",
+                        Brand = "Mitsubishi",
+                        Model = "Pajero Sport",
                         Year = 2022,
                         VehicleTypeId = vehicleTypes.First(vt => vt.Name == "SUV").Id,
-                        LocationId = locations.First(l => l.Type == "Headquarters").Id,
+                        LocationId = locations.First(l => l.Type == "HeadOffice").Id,
                         IsCompanyOwned = true,
                         RentalCompany = "",
                         IsAvailable = true,
-                        Status = "Operational"
+                        Status = "Active",
+                        Mileage = 25000,
+                        FuelType = "Solar",
+                        FuelCapacity = 68,
+                        Notes = "SUV untuk keperluan operasional kantor pusat"
                     },
                     new Vehicle {
-                        RegistrationNumber = "B 2345 BCD",
-                        Brand = "Mitsubishi",
-                        Model = "Pajero",
-                        Year = 2021,
-                        VehicleTypeId = vehicleTypes.First(vt => vt.Name == "SUV").Id,
-                        LocationId = locations.First(l => l.Type == "Branch").Id,
-                        IsCompanyOwned = true,
-                        RentalCompany = "",
-                        IsAvailable = true,
-                        Status = "Operational"
-                    },
-                    new Vehicle {
-                        RegistrationNumber = "B 3456 CDE",
+                        RegistrationNumber = "B 3456 NNM",
                         Brand = "Toyota",
-                        Model = "Hilux",
-                        Year = 2023,
-                        VehicleTypeId = vehicleTypes.First(vt => vt.Name == "Pickup").Id,
-                        LocationId = locations.First(l => l.Name == "Mine Site 1").Id,
+                        Model = "Hiace Commuter",
+                        Year = 2021,
+                        VehicleTypeId = vehicleTypes.First(vt => vt.Name == "Minibus").Id,
+                        LocationId = locations.First(l => l.Type == "HeadOffice").Id,
                         IsCompanyOwned = true,
                         RentalCompany = "",
                         IsAvailable = true,
-                        Status = "Operational"
+                        Status = "Active",
+                        Mileage = 45000,
+                        FuelType = "Solar",
+                        FuelCapacity = 70,
+                        Notes = "Minibus untuk transportasi karyawan"
+                    },
+                    
+                    // Vehicles for Branch Office Surabaya
+                    new Vehicle {
+                        RegistrationNumber = "L 4567 NNM",
+                        Brand = "Honda",
+                        Model = "CR-V",
+                        Year = 2022,
+                        VehicleTypeId = vehicleTypes.First(vt => vt.Name == "SUV").Id,
+                        LocationId = locations.First(l => l.Type == "BranchOffice").Id,
+                        IsCompanyOwned = true,
+                        RentalCompany = "",
+                        IsAvailable = true,
+                        Status = "Active",
+                        Mileage = 30000,
+                        FuelType = "Bensin",
+                        FuelCapacity = 58,
+                        Notes = "SUV untuk kebutuhan operasional cabang Surabaya"
                     },
                     new Vehicle {
-                        RegistrationNumber = "B 4567 DEF",
+                        RegistrationNumber = "L 5678 NNM",
+                        Brand = "Toyota",
+                        Model = "Hilux Double Cabin",
+                        Year = 2023,
+                        VehicleTypeId = vehicleTypes.First(vt => vt.Name == "Pickup Double Cabin").Id,
+                        LocationId = locations.First(l => l.Type == "BranchOffice").Id,
+                        IsCompanyOwned = true,
+                        RentalCompany = "",
+                        IsAvailable = true,
+                        Status = "Active",
+                        Mileage = 18000,
+                        FuelType = "Solar",
+                        FuelCapacity = 80,
+                        Notes = "Pickup untuk transportasi barang dan personel"
+                    },
+                    
+                    // Mining Site Vehicles - Morowali (Site A)
+                    new Vehicle {
+                        RegistrationNumber = "DT 6789 NNM",
+                        Brand = "Mitsubishi",
+                        Model = "Canter",
+                        Year = 2021,
+                        VehicleTypeId = vehicleTypes.First(vt => vt.Name == "Truk Colt Diesel").Id,
+                        LocationId = locations.First(l => l.MineCode == "NI-SULUT-A").Id,
+                        IsCompanyOwned = true,
+                        RentalCompany = "",
+                        IsAvailable = true,
+                        Status = "Active",
+                        Mileage = 75000,
+                        FuelType = "Solar",
+                        FuelCapacity = 100,
+                        Notes = "Truk ringan untuk distribusi supplies tambang"
+                    },
+                    new Vehicle {
+                        RegistrationNumber = "DT 7890 NNM",
+                        Brand = "Toyota",
+                        Model = "Coaster",
+                        Year = 2020,
+                        VehicleTypeId = vehicleTypes.First(vt => vt.Name == "Bus Medium").Id,
+                        LocationId = locations.First(l => l.MineCode == "NI-SULUT-A").Id,
+                        IsCompanyOwned = true,
+                        RentalCompany = "",
+                        IsAvailable = true,
+                        Status = "Active",
+                        Mileage = 120000,
+                        FuelType = "Solar",
+                        FuelCapacity = 90,
+                        Notes = "Bus medium untuk transportasi karyawan ke lokasi tambang"
+                    },
+                    
+                    // Mining Site Vehicles - Morowali (Site B)
+                    new Vehicle {
+                        RegistrationNumber = "DT 8901 NNM",
                         Brand = "Hino",
                         Model = "Dutro",
-                        Year = 2020,
-                        VehicleTypeId = vehicleTypes.First(vt => vt.Name == "Truck").Id,
-                        LocationId = locations.First(l => l.Name == "Mine Site 2").Id,
+                        Year = 2022,
+                        VehicleTypeId = vehicleTypes.First(vt => vt.Name == "Truk Colt Diesel").Id,
+                        LocationId = locations.First(l => l.MineCode == "NI-SULUT-B").Id,
                         IsCompanyOwned = false,
-                        RentalCompany = "PT Rental Kendaraan",
+                        RentalCompany = "PT Sewa Kendaraan Tambang",
                         RentalStartDate = DateTime.Today.AddMonths(-6),
                         RentalEndDate = DateTime.Today.AddMonths(6),
+                        RentalCostPerDay = 850000,
                         IsAvailable = true,
-                        Status = "Operational"
+                        Status = "Active",
+                        Mileage = 55000,
+                        FuelType = "Solar",
+                        FuelCapacity = 100,
+                        Notes = "Truk rental untuk operasional tambang"
                     },
                     new Vehicle {
-                        RegistrationNumber = "B 5678 EFG",
-                        Brand = "Isuzu",
-                        Model = "Elf",
+                        RegistrationNumber = "DT 9012 NNM",
+                        Brand = "Mercedes-Benz",
+                        Model = "Sprinter",
                         Year = 2021,
-                        VehicleTypeId = vehicleTypes.First(vt => vt.Name == "Van").Id,
-                        LocationId = locations.First(l => l.Name == "Mine Site 3").Id,
+                        VehicleTypeId = vehicleTypes.First(vt => vt.Name == "Ambulance").Id,
+                        LocationId = locations.First(l => l.MineCode == "NI-SULUT-B").Id,
                         IsCompanyOwned = true,
                         RentalCompany = "",
                         IsAvailable = true,
-                        Status = "Operational"
+                        Status = "Active",
+                        Mileage = 35000,
+                        FuelType = "Solar",
+                        FuelCapacity = 75,
+                        Notes = "Ambulance untuk keadaan darurat di lokasi tambang"
+                    },
+                    
+                    // Mining Site Vehicles - Kolaka (Site C)
+                    new Vehicle {
+                        RegistrationNumber = "DT 0123 NNM",
+                        Brand = "Mitsubishi",
+                        Model = "Fuso Fighter",
+                        Year = 2020,
+                        VehicleTypeId = vehicleTypes.First(vt => vt.Name == "Truk Fuso").Id,
+                        LocationId = locations.First(l => l.MineCode == "NI-SULTRA-C").Id,
+                        IsCompanyOwned = true,
+                        RentalCompany = "",
+                        IsAvailable = true,
+                        Status = "Active",
+                        Mileage = 95000,
+                        FuelType = "Solar",
+                        FuelCapacity = 200,
+                        Notes = "Truk medium untuk transportasi equipment tambang"
+                    },
+                    new Vehicle {
+                        RegistrationNumber = "DT 1234 NNM",
+                        Brand = "Toyota",
+                        Model = "Fortuner",
+                        Year = 2023,
+                        VehicleTypeId = vehicleTypes.First(vt => vt.Name == "SUV").Id,
+                        LocationId = locations.First(l => l.MineCode == "NI-SULTRA-C").Id,
+                        IsCompanyOwned = true,
+                        RentalCompany = "",
+                        IsAvailable = true,
+                        Status = "Active",
+                        Mileage = 12000,
+                        FuelType = "Solar",
+                        FuelCapacity = 80,
+                        Notes = "SUV untuk supervisor dan manajer tambang"
+                    },
+                    
+                    // Mining Site Vehicles - Halmahera (Site D)
+                    new Vehicle {
+                        RegistrationNumber = "DE 2345 NNM",
+                        Brand = "Isuzu",
+                        Model = "Giga",
+                        Year = 2019,
+                        VehicleTypeId = vehicleTypes.First(vt => vt.Name == "Truk Trailer").Id,
+                        LocationId = locations.First(l => l.MineCode == "NI-MALUT-D").Id,
+                        IsCompanyOwned = true,
+                        RentalCompany = "",
+                        IsAvailable = true,
+                        Status = "Active",
+                        Mileage = 180000,
+                        FuelType = "Solar",
+                        FuelCapacity = 300,
+                        Notes = "Truk trailer untuk transportasi heavy equipment"
+                    },
+                    new Vehicle {
+                        RegistrationNumber = "DE 3456 NNM",
+                        Brand = "Toyota",
+                        Model = "Dyna",
+                        Year = 2021,
+                        VehicleTypeId = vehicleTypes.First(vt => vt.Name == "Pickup Single Cabin").Id,
+                        LocationId = locations.First(l => l.MineCode == "NI-MALUT-D").Id,
+                        IsCompanyOwned = true,
+                        RentalCompany = "",
+                        IsAvailable = true,
+                        Status = "Active",
+                        Mileage = 48000,
+                        FuelType = "Solar",
+                        FuelCapacity = 60,
+                        Notes = "Pickup untuk transportasi barang ringan"
+                    },
+                    
+                    // Mining Site Vehicles - Papua (Site E)
+                    new Vehicle {
+                        RegistrationNumber = "PA 4567 NNM",
+                        Brand = "Mercedes-Benz",
+                        Model = "Atego",
+                        Year = 2022,
+                        VehicleTypeId = vehicleTypes.First(vt => vt.Name == "Fire Truck").Id,
+                        LocationId = locations.First(l => l.MineCode == "NI-PAPUA-E").Id,
+                        IsCompanyOwned = true,
+                        RentalCompany = "",
+                        IsAvailable = true,
+                        Status = "Active",
+                        Mileage = 22000,
+                        FuelType = "Solar",
+                        FuelCapacity = 150,
+                        Notes = "Fire truck untuk pemadam kebakaran di lokasi tambang"
+                    },
+                    new Vehicle {
+                        RegistrationNumber = "PA 5678 NNM",
+                        Brand = "Toyota",
+                        Model = "Land Cruiser",
+                        Year = 2021,
+                        VehicleTypeId = vehicleTypes.First(vt => vt.Name == "SUV").Id,
+                        LocationId = locations.First(l => l.MineCode == "NI-PAPUA-E").Id,
+                        IsCompanyOwned = true,
+                        RentalCompany = "",
+                        IsAvailable = true,
+                        Status = "Active",
+                        Mileage = 68000,
+                        FuelType = "Solar",
+                        FuelCapacity = 93,
+                        Notes = "Land Cruiser untuk medan berat Papua"
+                    },
+                    
+                    // Mining Site Vehicles - Kalimantan (Site F)
+                    new Vehicle {
+                        RegistrationNumber = "KT 6789 NNM",
+                        Brand = "Hino",
+                        Model = "Ranger",
+                        Year = 2020,
+                        VehicleTypeId = vehicleTypes.First(vt => vt.Name == "Bus Besar").Id,
+                        LocationId = locations.First(l => l.MineCode == "NI-KALTIM-F").Id,
+                        IsCompanyOwned = false,
+                        RentalCompany = "PT Trans Kalimantan",
+                        RentalStartDate = DateTime.Today.AddMonths(-12),
+                        RentalEndDate = DateTime.Today.AddMonths(12),
+                        RentalCostPerDay = 1200000,
+                        IsAvailable = true,
+                        Status = "Active",
+                        Mileage = 145000,
+                        FuelType = "Solar",
+                        FuelCapacity = 250,
+                        Notes = "Bus besar rental untuk transportasi massal karyawan"
+                    },
+                    new Vehicle {
+                        RegistrationNumber = "KT 7890 NNM",
+                        Brand = "Mitsubishi",
+                        Model = "Outlander",
+                        Year = 2023,
+                        VehicleTypeId = vehicleTypes.First(vt => vt.Name == "SUV").Id,
+                        LocationId = locations.First(l => l.MineCode == "NI-KALTIM-F").Id,
+                        IsCompanyOwned = true,
+                        RentalCompany = "",
+                        IsAvailable = true,
+                        Status = "Active",
+                        Mileage = 8500,
+                        FuelType = "Bensin",
+                        FuelCapacity = 63,
+                        Notes = "SUV untuk manajemen site Kalimantan"
                     }
                 };
 
