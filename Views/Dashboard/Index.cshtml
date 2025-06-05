@@ -1,0 +1,274 @@
+@model VehicleReservationSystem.ViewModels.DashboardViewModel
+
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<h1>Dashboard</h1>
+
+<div class="row">
+    <div class="col-md-3">
+        <div class="card bg-primary text-white mb-4">
+            <div class="card-body">
+                <h4>@Model.TotalVehicles</h4>
+                <h6>Total Vehicles</h6>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-success text-white mb-4">
+            <div class="card-body">
+                <h4>@Model.AvailableVehicles</h4>
+                <h6>Available Vehicles</h6>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-warning text-white mb-4">
+            <div class="card-body">
+                <h4>@Model.PendingReservations</h4>
+                <h6>Pending Reservations</h6>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-info text-white mb-4">
+            <div class="card-body">
+                <h4>@Model.ActiveReservations</h4>
+                <h6>Active Reservations</h6>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>Vehicle Usage</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="vehicleUsageChart"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>Reservation Status</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="reservationStatusChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>Fuel Consumption (Last 6 Months)</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="fuelConsumptionChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>Recent Reservations</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Requester</th>
+                                <th>Vehicle</th>
+                                <th>Start Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.RecentReservations)
+                            {
+                                <tr>
+                                    <td>@item.Id</td>
+                                    <td>@item.Requester.FullName</td>
+                                    <td>@item.Vehicle.RegistrationNumber</td>
+                                    <td>@item.StartDate.ToString("dd MMM yyyy")</td>
+                                    <td>
+                                        <span class="badge @(item.Status == "Approved" ? "bg-success" : 
+                                                          item.Status == "Pending" ? "bg-warning" : 
+                                                          item.Status == "Rejected" ? "bg-danger" : 
+                                                          item.Status == "Completed" ? "bg-info" : "bg-secondary")">
+                                            @item.Status
+                                        </span>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>Upcoming Vehicle Services</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Vehicle</th>
+                                <th>Service Type</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.UpcomingServices)
+                            {
+                                <tr>
+                                    <td>@item.Vehicle.RegistrationNumber</td>
+                                    <td>@item.ServiceType</td>
+                                    <td>@item.ScheduleDate.ToString("dd MMM yyyy")</td>
+                                    <td>
+                                        <span class="badge @(item.Status == "Scheduled" ? "bg-primary" : 
+                                                           item.Status == "Completed" ? "bg-success" : "bg-secondary")">
+                                            @item.Status
+                                        </span>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Load chart data from API endpoints
+        $(document).ready(function() {
+            // Vehicle Usage Chart
+            $.getJSON('@Url.Action("GetVehicleUsageData")', function(data) {
+                var ctx = document.getElementById('vehicleUsageChart').getContext('2d');
+                var chart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: data.labels,
+                        datasets: [{
+                            label: 'Usage Count',
+                            data: data.data,
+                            backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                precision: 0
+                            }
+                        }
+                    }
+                });
+            });
+
+            // Reservation Status Chart
+            $.getJSON('@Url.Action("GetReservationStatusData")', function(data) {
+                var ctx = document.getElementById('reservationStatusChart').getContext('2d');
+                var chart = new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                        labels: data.labels,
+                        datasets: [{
+                            data: data.data,
+                            backgroundColor: [
+                                'rgba(255, 99, 132, 0.5)',
+                                'rgba(54, 162, 235, 0.5)',
+                                'rgba(255, 206, 86, 0.5)',
+                                'rgba(75, 192, 192, 0.5)'
+                            ],
+                            borderColor: [
+                                'rgba(255, 99, 132, 1)',
+                                'rgba(54, 162, 235, 1)',
+                                'rgba(255, 206, 86, 1)',
+                                'rgba(75, 192, 192, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    }
+                });
+            });
+
+            // Fuel Consumption Chart
+            $.getJSON('@Url.Action("GetFuelConsumptionData")', function(data) {
+                var ctx = document.getElementById('fuelConsumptionChart').getContext('2d');
+                var chart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: data.labels,
+                        datasets: [
+                            {
+                                label: 'Liters',
+                                data: data.litersData,
+                                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                borderColor: 'rgba(75, 192, 192, 1)',
+                                borderWidth: 2,
+                                fill: false
+                            },
+                            {
+                                label: 'Cost',
+                                data: data.costData,
+                                backgroundColor: 'rgba(255, 159, 64, 0.2)',
+                                borderColor: 'rgba(255, 159, 64, 1)',
+                                borderWidth: 2,
+                                fill: false,
+                                yAxisID: 'y1'
+                            }
+                        ]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                position: 'left',
+                                title: {
+                                    display: true,
+                                    text: 'Liters'
+                                }
+                            },
+                            y1: {
+                                beginAtZero: true,
+                                position: 'right',
+                                title: {
+                                    display: true,
+                                    text: 'Cost'
+                                },
+                                grid: {
+                                    drawOnChartArea: false
+                                }
+                            }
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+}

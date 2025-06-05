@@ -1,0 +1,124 @@
+@model VehicleReservationSystem.ViewModels.ReservationViewModel
+
+@{
+    ViewData["Title"] = "Create Reservation";
+}
+
+<h1>Create New Reservation</h1>
+
+<div class="card">
+    <div class="card-header">
+        <h5>Reservation Details</h5>
+    </div>
+    <div class="card-body">
+        <form asp-action="Create" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group mb-3">
+                        <label asp-for="RequesterId" class="control-label">Requester</label>
+                        <select asp-for="RequesterId" asp-items="Model.Users" class="form-select"></select>
+                        <span asp-validation-for="RequesterId" class="text-danger"></span>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="form-group mb-3">
+                        <label asp-for="VehicleId" class="control-label">Vehicle</label>
+                        <select asp-for="VehicleId" asp-items="Model.Vehicles" class="form-select"></select>
+                        <span asp-validation-for="VehicleId" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group mb-3">
+                        <label asp-for="DriverId" class="control-label">Driver</label>
+                        <select asp-for="DriverId" asp-items="Model.Drivers" class="form-select">
+                            <option value="">-- Select Driver --</option>
+                        </select>
+                        <span asp-validation-for="DriverId" class="text-danger"></span>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="form-group mb-3">
+                        <label asp-for="NumberOfPassengers" class="control-label"></label>
+                        <input asp-for="NumberOfPassengers" class="form-control" />
+                        <span asp-validation-for="NumberOfPassengers" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group mb-3">
+                        <label asp-for="StartDate" class="control-label"></label>
+                        <input asp-for="StartDate" class="form-control" type="datetime-local" />
+                        <span asp-validation-for="StartDate" class="text-danger"></span>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="form-group mb-3">
+                        <label asp-for="EndDate" class="control-label"></label>
+                        <input asp-for="EndDate" class="form-control" type="datetime-local" />
+                        <span asp-validation-for="EndDate" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group mb-3">
+                        <label asp-for="Purpose" class="control-label"></label>
+                        <input asp-for="Purpose" class="form-control" />
+                        <span asp-validation-for="Purpose" class="text-danger"></span>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="form-group mb-3">
+                        <label asp-for="Destination" class="control-label"></label>
+                        <input asp-for="Destination" class="form-control" />
+                        <span asp-validation-for="Destination" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group mb-3">
+                <label asp-for="ApproverIds" class="control-label">Approvers (Select at least 2)</label>
+                <select asp-for="ApproverIds" asp-items="Model.Approvers" class="form-select" multiple size="4"></select>
+                <span asp-validation-for="ApproverIds" class="text-danger"></span>
+                <small class="text-muted">Hold Ctrl key to select multiple approvers</small>
+            </div>
+            
+            <div class="form-group">
+                <input type="submit" value="Create Reservation" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            $("#StartDate").change(function() {
+                var startDate = new Date($(this).val());
+                var endDate = new Date(startDate);
+                endDate.setHours(endDate.getHours() + 2);
+                
+                var year = endDate.getFullYear();
+                var month = (endDate.getMonth() + 1).toString().padStart(2, '0');
+                var day = endDate.getDate().toString().padStart(2, '0');
+                var hours = endDate.getHours().toString().padStart(2, '0');
+                var minutes = endDate.getMinutes().toString().padStart(2, '0');
+                
+                $("#EndDate").val(`${year}-${month}-${day}T${hours}:${minutes}`);
+            });
+        });
+    </script>
+}

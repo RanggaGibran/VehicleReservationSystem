@@ -1,0 +1,299 @@
+@model VehicleReservationSystem.ViewModels.ReportViewModel
+
+@{
+    ViewData["Title"] = "Vehicle Reservation Reports";
+}
+
+<h1>Vehicle Reservation Reports</h1>
+
+<div class="card mb-4">
+    <div class="card-header">
+        <h5>Report Filters</h5>
+    </div>
+    <div class="card-body">
+        <form asp-action="Generate" method="post">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group mb-3">
+                        <label asp-for="StartDate" class="control-label"></label>
+                        <input asp-for="StartDate" class="form-control" type="date" />
+                        <span asp-validation-for="StartDate" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group mb-3">
+                        <label asp-for="EndDate" class="control-label"></label>
+                        <input asp-for="EndDate" class="form-control" type="date" />
+                        <span asp-validation-for="EndDate" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group mb-3">
+                        <label asp-for="LocationId" class="control-label"></label>
+                        <select asp-for="LocationId" asp-items="Model.Locations" class="form-select">
+                            <option value="">-- All Locations --</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group mb-3">
+                        <label asp-for="VehicleTypeId" class="control-label"></label>
+                        <select asp-for="VehicleTypeId" asp-items="Model.VehicleTypes" class="form-select">
+                            <option value="">-- All Vehicle Types --</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">Generate Report</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@if (Model.ReportData != null && Model.ReportData.Any())
+{
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5>Reservation Report (@Model.StartDate.ToString("yyyy-MM-dd") to @Model.EndDate.ToString("yyyy-MM-dd"))</h5>
+            <form asp-action="ExportToExcel" method="post">
+                <input type="hidden" name="startDate" value="@Model.StartDate.ToString("yyyy-MM-dd")" />
+                <input type="hidden" name="endDate" value="@Model.EndDate.ToString("yyyy-MM-dd")" />
+                <input type="hidden" name="locationId" value="@Model.LocationId" />
+                <input type="hidden" name="vehicleTypeId" value="@Model.VehicleTypeId" />
+                <button type="submit" class="btn btn-success">
+                    <i class="bi bi-file-earmark-excel"></i> Export to Excel
+                </button>
+            </form>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover" id="reportTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Vehicle</th>
+                            <th>Type</th>
+                            <th>Location</th>
+                            <th>Requester</th>
+                            <th>Driver</th>
+                            <th>Start Date</th>
+                            <th>End Date</th>
+                            <th>Duration (hrs)</th>
+                            <th>Purpose</th>
+                            <th>Destination</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.ReportData)
+                        {
+                            <tr>
+                                <td>@item.ReservationId</td>
+                                <td>@item.VehicleRegistration</td>
+                                <td>@item.VehicleType</td>
+                                <td>@item.Location (@item.Region)</td>
+                                <td>@item.RequesterName (@item.RequesterDepartment)</td>
+                                <td>@(item.DriverName ?? "Not Assigned")</td>
+                                <td>@item.StartDate.ToString("yyyy-MM-dd HH:mm")</td>
+                                <td>@item.EndDate.ToString("yyyy-MM-dd HH:mm")</td>
+                                <td>@item.Duration.ToString("F1")</td>
+                                <td>@item.Purpose</td>
+                                <td>@item.Destination</td>
+                                <td>
+                                    <span class="badge @(item.Status == "Approved" ? "bg-success" : 
+                                                     item.Status == "Pending" ? "bg-warning" : 
+                                                     item.Status == "Rejected" ? "bg-danger" : 
+                                                     item.Status == "Completed" ? "bg-info" : "bg-secondary")">
+                                        @item.Status
+                                    </span>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card-footer">
+            <div class="row">
+                <div class="col">
+                    <p>Total Reservations: <strong>@Model.ReportData.Count</strong></p>
+                </div>
+                <div class="col">
+                    <p>Total Duration: <strong>@Model.ReportData.Sum(r => r.Duration).ToString("F1") hours</strong></p>
+                </div>
+                <div class="col">
+                    <p>By Status: 
+                        @foreach (var statusGroup in Model.ReportData.GroupBy(r => r.Status))
+                        {
+                            <span class="badge @(statusGroup.Key == "Approved" ? "bg-success" : 
+                                              statusGroup.Key == "Pending" ? "bg-warning" : 
+                                              statusGroup.Key == "Rejected" ? "bg-danger" : 
+                                              statusGroup.Key == "Completed" ? "bg-info" : "bg-secondary")">
+                                @statusGroup.Key: @statusGroup.Count()
+                            </span>
+                            <text>&nbsp;</text>
+                        }
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mt-4">
+        <div class="card-header">
+            <h5>Report Visualizations</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="chart-container" style="position: relative; height:300px;">
+                        <canvas id="reservationStatusChart"></canvas>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="chart-container" style="position: relative; height:300px;">
+                        <canvas id="vehicleUsageChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+else if (Model.ReportData != null && !Model.ReportData.Any())
+{
+    <div class="alert alert-info">
+        <h4><i class="bi bi-info-circle"></i> No Results Found</h4>
+        <p>No reservation data found for the selected criteria. Please try different filters.</p>
+    </div>
+}
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Enhance the report table with sortable columns and search functionality
+            if ($('#reportTable').length) {
+                $('#reportTable').DataTable({
+                    "paging": true,
+                    "ordering": true,
+                    "info": true,
+                    "searching": true,
+                    "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+                    "order": [[0, "desc"]],
+                    "responsive": true
+                });
+            }
+
+            // Set initial dates if empty
+            if (!$("#StartDate").val()) {
+                var defaultStartDate = new Date();
+                defaultStartDate.setMonth(defaultStartDate.getMonth() - 1);
+                $("#StartDate").val(defaultStartDate.toISOString().split('T')[0]);
+            }
+            
+            if (!$("#EndDate").val()) {
+                var defaultEndDate = new Date();
+                $("#EndDate").val(defaultEndDate.toISOString().split('T')[0]);
+            }
+            
+            // Validate date range
+            $("form").submit(function(e) {
+                var startDate = new Date($("#StartDate").val());
+                var endDate = new Date($("#EndDate").val());
+                
+                if (startDate > endDate) {
+                    e.preventDefault();
+                    alert("Start date cannot be later than end date");
+                    return false;
+                }
+                
+                // Limit to maximum of 365 days range
+                var daysDiff = Math.round((endDate - startDate) / (1000 * 60 * 60 * 24));
+                if (daysDiff > 365) {
+                    e.preventDefault();
+                    alert("Date range cannot exceed 365 days");
+                    return false;
+                }
+                
+                return true;
+            });
+        });
+
+        // Status Chart
+        var statusCtx = document.getElementById('reservationStatusChart').getContext('2d');
+        var statusData = @Json.Serialize(Model.ReportData.GroupBy(r => r.Status)
+            .Select(g => new { Status = g.Key, Count = g.Count() })
+            .ToList());
+            
+        new Chart(statusCtx, {
+            type: 'pie',
+            data: {
+                labels: statusData.map(x => x.Status),
+                datasets: [{
+                    data: statusData.map(x => x.Count),
+                    backgroundColor: [
+                        'rgba(40, 167, 69, 0.7)',  // green - approved
+                        'rgba(255, 193, 7, 0.7)',  // yellow - pending
+                        'rgba(220, 53, 69, 0.7)',  // red - rejected
+                        'rgba(23, 162, 184, 0.7)', // cyan - completed
+                        'rgba(108, 117, 125, 0.7)' // gray - other
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Reservation Status Distribution'
+                    },
+                    legend: {
+                        position: 'right',
+                    }
+                }
+            }
+        });
+        
+        // Vehicle Usage Chart
+        var vehicleCtx = document.getElementById('vehicleUsageChart').getContext('2d');
+        var vehicleData = @Json.Serialize(Model.ReportData.GroupBy(r => r.VehicleRegistration)
+            .Select(g => new { Vehicle = g.Key, Count = g.Count() })
+            .OrderByDescending(x => x.Count)
+            .Take(5)
+            .ToList());
+            
+        new Chart(vehicleCtx, {
+            type: 'bar',
+            data: {
+                labels: vehicleData.map(x => x.Vehicle),
+                datasets: [{
+                    label: 'Usage Count',
+                    data: vehicleData.map(x => x.Count),
+                    backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Top 5 Most Used Vehicles'
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            precision: 0
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+}

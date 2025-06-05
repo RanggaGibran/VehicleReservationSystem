@@ -1,0 +1,87 @@
+@model VehicleReservationSystem.Models.Approval
+
+@{
+    ViewData["Title"] = "Approval Details";
+}
+
+<h1>Approval Details</h1>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>Reservation Information</h5>
+            </div>
+            <div class="card-body">
+                <dl class="row">
+                    <dt class="col-sm-4">Reservation ID:</dt>
+                    <dd class="col-sm-8">@Model.Reservation.Id</dd>
+
+                    <dt class="col-sm-4">Requester:</dt>
+                    <dd class="col-sm-8">@Model.Reservation.Requester.FullName (@Model.Reservation.Requester.Department)</dd>
+
+                    <dt class="col-sm-4">Vehicle:</dt>
+                    <dd class="col-sm-8">@Model.Reservation.Vehicle.Brand @Model.Reservation.Vehicle.Model (@Model.Reservation.Vehicle.RegistrationNumber)</dd>
+
+                    <dt class="col-sm-4">Driver:</dt>
+                    <dd class="col-sm-8">@(Model.Reservation.Driver?.Name ?? "Not Assigned")</dd>
+
+                    <dt class="col-sm-4">Request Date:</dt>
+                    <dd class="col-sm-8">@Model.Reservation.RequestDate.ToString("dd MMMM yyyy HH:mm")</dd>
+
+                    <dt class="col-sm-4">Start Date:</dt>
+                    <dd class="col-sm-8">@Model.Reservation.StartDate.ToString("dd MMMM yyyy HH:mm")</dd>
+
+                    <dt class="col-sm-4">End Date:</dt>
+                    <dd class="col-sm-8">@Model.Reservation.EndDate.ToString("dd MMMM yyyy HH:mm")</dd>
+
+                    <dt class="col-sm-4">Duration:</dt>
+                    <dd class="col-sm-8">@((Model.Reservation.EndDate - Model.Reservation.StartDate).TotalHours.ToString("F1")) hours</dd>
+
+                    <dt class="col-sm-4">Purpose:</dt>
+                    <dd class="col-sm-8">@Model.Reservation.Purpose</dd>
+
+                    <dt class="col-sm-4">Destination:</dt>
+                    <dd class="col-sm-8">@Model.Reservation.Destination</dd>
+
+                    <dt class="col-sm-4">Passengers:</dt>
+                    <dd class="col-sm-8">@Model.Reservation.NumberOfPassengers</dd>
+
+                    <dt class="col-sm-4">Status:</dt>
+                    <dd class="col-sm-8">
+                        <span class="badge @(Model.Reservation.Status == "Approved" ? "bg-success" : 
+                                         Model.Reservation.Status == "Pending" ? "bg-warning" : 
+                                         Model.Reservation.Status == "Rejected" ? "bg-danger" : "bg-secondary")">
+                            @Model.Reservation.Status
+                        </span>
+                    </dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>Approval Decision (Level @Model.Level)</h5>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    <div class="form-group mb-3">
+                        <label for="comments">Comments:</label>
+                        <textarea id="comments" name="comments" class="form-control" rows="4" required></textarea>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <button type="submit" asp-action="Approve" asp-route-id="@Model.Id" class="btn btn-success">
+                            <i class="bi bi-check-circle"></i> Approve
+                        </button>
+                        <button type="submit" asp-action="Reject" asp-route-id="@Model.Id" class="btn btn-danger">
+                            <i class="bi bi-x-circle"></i> Reject
+                        </button>
+                        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

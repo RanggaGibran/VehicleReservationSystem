@@ -1,0 +1,38 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome to Vehicle Reservation System</h1>
+    <p>A comprehensive system for managing vehicle reservations, approvals, and reporting.</p>
+    
+    <div class="row mt-4">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Manage Reservations</h5>
+                    <p class="card-text">Create and manage vehicle reservations across different locations.</p>
+                    <a asp-controller="Reservation" asp-action="Index" class="btn btn-primary">Go to Reservations</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Approve Requests</h5>
+                    <p class="card-text">Review and approve pending vehicle reservation requests.</p>
+                    <a asp-controller="Approval" asp-action="Index" class="btn btn-success">Go to Approvals</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">View Reports</h5>
+                    <p class="card-text">Generate and export reports for vehicle usage.</p>
+                    <a asp-controller="Report" asp-action="Index" class="btn btn-info">Go to Reports</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
