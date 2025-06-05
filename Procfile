@@ -1,1 +1,1 @@
-web: cd bin/publish/; ./VehicleReservationSystem --urls http://0.0.0.0:$PORT
+web: cd bin/Release/; ./VehicleReservationSystem --urls http://0.0.0.0:$PORT
