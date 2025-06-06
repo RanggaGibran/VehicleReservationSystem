@@ -460,111 +460,99 @@
     </div>
 </div>
 
-@section Scripts {
-    <script>
-        // Global variables
-        let currentStep = 1;
-
-        // --- GLOBAL FUNCTIONS ---
-        function handlePurposeChange() {
-            const purposeSelect = document.getElementById('Purpose');
-            const customPurposeDiv = document.getElementById('customPurposeDiv');
-            if (purposeSelect && customPurposeDiv) {
-                if (purposeSelect.value === 'Lainnya') {
-                    customPurposeDiv.style.display = 'block';
-                    const customInput = document.getElementById('customPurpose');
-                    if (customInput) customInput.required = true;
-                } else {
-                    customPurposeDiv.style.display = 'none';
-                    const customInput = document.getElementById('customPurpose');
-                    if (customInput) {
-                        customInput.required = false;
-                        customInput.value = '';
-                    }
-                }
-            }
-        }
-
-        function nextStep(step) {
-            if (!validateCurrentStep()) {
-                return false;
-            }
-            updateStepCircle(currentStep, false, true);
-            currentStep = step;
-            updateStepCircle(currentStep, true, false);
-            $('.form-step').removeClass('active').hide();
-            $('#step' + step).addClass('active').show();
-            return true;
-        }
-
-        function previousStep(step) {
-            updateStepCircle(currentStep, false, false);
-            currentStep = step;
-            updateStepCircle(currentStep, true, false);
-            $('.form-step').removeClass('active').hide();
-            $('#step' + step).addClass('active').show();
-        }
-
-        function updateStepCircle(stepNum, isActive, isCompleted) {
-            const circle = $('#stepCircle' + stepNum);
-            if (!circle.length) return;
-            circle.removeClass('active completed pulse-animation');
-            if (isCompleted) {
-                circle.addClass('completed');
-                circle.find('i').removeClass().addClass('bi bi-check-lg');
-            } else if (isActive) {
-                circle.addClass('active pulse-animation');
+<script>
+    window.handlePurposeChange = function() {
+        const purposeSelect = document.getElementById('Purpose');
+        const customPurposeDiv = document.getElementById('customPurposeDiv');
+        if (purposeSelect && customPurposeDiv) {
+            if (purposeSelect.value === 'Lainnya') {
+                customPurposeDiv.style.display = 'block';
+                const customInput = document.getElementById('customPurpose');
+                if (customInput) customInput.required = true;
             } else {
-                const originalIcons = {
-                    1: 'bi-person-fill',
-                    2: 'bi-truck',
-                    3: 'bi-calendar-event',
-                    4: 'bi-check-circle'
-                };
-                circle.find('i').removeClass().addClass('bi ' + originalIcons[stepNum]);
-            }
-        }
-
-        function validateCurrentStep() {
-            let isValid = true;
-            const step = currentStep;
-            $('.is-invalid').removeClass('is-invalid');
-            $('.text-danger').addClass('d-none');
-            if (step === 1) {
-                const requesterId = $('#RequesterId').val();
-                const passengers = $('#NumberOfPassengers').val();
-                const purpose = $('#Purpose').val();
-                if (!requesterId) isValid = false;
-                if (!passengers || passengers < 1 || passengers > 50) isValid = false;
-                if (!purpose) isValid = false;
-                if (purpose === 'Lainnya') {
-                    const customPurpose = $('#customPurpose').val();
-                    if (!customPurpose || customPurpose.trim().length < 5) isValid = false;
+                customPurposeDiv.style.display = 'none';
+                const customInput = document.getElementById('customPurpose');
+                if (customInput) {
+                    customInput.required = false;
+                    customInput.value = '';
                 }
-            } else if (step === 2) {
-                if (!$('#VehicleId').val()) isValid = false;
-            } else if (step === 3) {
-                if (!$('#StartDate').val() || !$('#EndDate').val() || !$('#Destination').val()) isValid = false;
-            } else if (step === 4) {
-                const selectedApprovers = $('.approver-checkbox:checked').length;
-                if (selectedApprovers < 2 || selectedApprovers > 4) isValid = false;
             }
-            return isValid;
         }
-
-        function initializeForm() {
-            currentStep = 1;
-            updateStepCircle(1, true, false);
-            $('.form-step').removeClass('active').hide();
-            $('#step1').addClass('active').show();
+    }
+    window.nextStep = function(step) {
+        if (!window.validateCurrentStep()) {
+            return false;
         }
-
-        // --- INIT CODE ---
-        $(document).ready(function() {
-            initializeForm();
-        });
-    </script>
-}
+        window.updateStepCircle(window.currentStep, false, true);
+        window.currentStep = step;
+        window.updateStepCircle(window.currentStep, true, false);
+        $('.form-step').removeClass('active').hide();
+        $('#step' + step).addClass('active').show();
+        return true;
+    }
+    window.previousStep = function(step) {
+        window.updateStepCircle(window.currentStep, false, false);
+        window.currentStep = step;
+        window.updateStepCircle(window.currentStep, true, false);
+        $('.form-step').removeClass('active').hide();
+        $('#step' + step).addClass('active').show();
+    }
+    window.updateStepCircle = function(stepNum, isActive, isCompleted) {
+        const circle = $('#stepCircle' + stepNum);
+        if (!circle.length) return;
+        circle.removeClass('active completed pulse-animation');
+        if (isCompleted) {
+            circle.addClass('completed');
+            circle.find('i').removeClass().addClass('bi bi-check-lg');
+        } else if (isActive) {
+            circle.addClass('active pulse-animation');
+        } else {
+            const originalIcons = {
+                1: 'bi-person-fill',
+                2: 'bi-truck',
+                3: 'bi-calendar-event',
+                4: 'bi-check-circle'
+            };
+            circle.find('i').removeClass().addClass('bi ' + originalIcons[stepNum]);
+        }
+    }
+    window.validateCurrentStep = function() {
+        let isValid = true;
+        const step = window.currentStep;
+        $('.is-invalid').removeClass('is-invalid');
+        $('.text-danger').addClass('d-none');
+        if (step === 1) {
+            const requesterId = $('#RequesterId').val();
+            const passengers = $('#NumberOfPassengers').val();
+            const purpose = $('#Purpose').val();
+            if (!requesterId) isValid = false;
+            if (!passengers || passengers < 1 || passengers > 50) isValid = false;
+            if (!purpose) isValid = false;
+            if (purpose === 'Lainnya') {
+                const customPurpose = $('#customPurpose').val();
+                if (!customPurpose || customPurpose.trim().length < 5) isValid = false;
+            }
+        } else if (step === 2) {
+            if (!$('#VehicleId').val()) isValid = false;
+        } else if (step === 3) {
+            if (!$('#StartDate').val() || !$('#EndDate').val() || !$('#Destination').val()) isValid = false;
+        } else if (step === 4) {
+            const selectedApprovers = $('.approver-checkbox:checked').length;
+            if (selectedApprovers < 2 || selectedApprovers > 4) isValid = false;
+        }
+        return isValid;
+    }
+    window.currentStep = 1;
+    window.initializeForm = function() {
+        window.currentStep = 1;
+        window.updateStepCircle(1, true, false);
+        $('.form-step').removeClass('active').hide();
+        $('#step1').addClass('active').show();
+    }
+    $(document).ready(function() {
+        window.initializeForm();
+    });
+</script>
 
 <style>
 /* Form Step Wizard Styles */
@@ -663,226 +651,6 @@
 }
 
 /* Step Circle Enhancements */
-.step-circle {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #e9ecef, #f8f9fa);
-    border: 3px solid #dee2e6;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #6c757d;
-    font-size: 1.5rem;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-    margin: 0 auto;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-}
-
-.step-circle::before {
-    content: '';
-    position: absolute;
-    top: -5px;
-    left: -5px;
-    right: -5px;
-    bottom: -5px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, var(--mining-primary), var(--mining-accent));
-    opacity: 0;
-    transition: all 0.4s ease;
-    z-index: -1;
-}
-
-.step-circle.active {
-    background: linear-gradient(135deg, var(--mining-primary), var(--mining-secondary));
-    border-color: var(--mining-primary);
-    color: white;
-    transform: scale(1.1);
-    box-shadow: 0 8px 25px rgba(26, 54, 93, 0.3);
-}
-
-.step-circle.active::before {
-    opacity: 1;
-    animation: ripple 2s infinite;
-}
-
-.step-circle.completed {
-    background: linear-gradient(135deg, var(--mining-success), #48bb78);
-    border-color: var(--mining-success);
-    color: white;
-    transform: scale(1.05);
-    box-shadow: 0 6px 20px rgba(56, 161, 105, 0.3);
-}
-
-@@keyframes ripple {
-    0% { transform: scale(1); opacity: 1; }
-    100% { transform: scale(1.4); opacity: 0; }
-}
-
-/* Progress Steps Container */
-.progress-steps {
-    position: relative;
-}
-
-.progress-steps::before {
-    content: '';
-    position: absolute;
-    top: 30px;
-    left: 12.5%;
-    right: 12.5%;
-    height: 3px;
-    background: linear-gradient(to right, #dee2e6, #dee2e6);
-    z-index: -1;
-    border-radius: 2px;
-}
-
-/* Modern Card Styling */
-.modern-card {
-    border: none;
-    border-radius: 1rem;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-    overflow: hidden;
-    transition: all 0.3s ease;
-}
-
-.modern-card:hover {
-    box-shadow: 0 8px 30px rgba(0,0,0,0.12);
-    transform: translateY(-2px);
-}
-
-.modern-card .card-header {
-    background: linear-gradient(135deg, var(--mining-primary), var(--mining-secondary));
-    border: none;
-    padding: 1.5rem;
-    border-radius: 0;
-}
-
-/* Form Controls Enhancement */
-.form-control-modern, .form-select-modern {
-    border: 2px solid #e9ecef;
-    border-radius: 0.75rem;
-    padding: 0.875rem 1.25rem;
-    font-size: 0.95rem;
-    transition: all 0.3s ease;
-    background: #ffffff;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-}
-
-.form-control-modern:focus, .form-select-modern:focus {
-    border-color: var(--mining-accent);
-    box-shadow: 0 0 0 0.25rem rgba(212, 175, 55, 0.15);
-    background-color: #fff;
-    transform: translateY(-1px);
-}
-
-.form-control-modern.is-invalid, .form-select-modern.is-invalid {
-    border-color: var(--mining-danger);
-    box-shadow: 0 0 0 0.25rem rgba(229, 62, 62, 0.15);
-    animation: shake 0.5s ease-in-out;
-}
-
-/* Button Enhancements */
-.btn {
-    border-radius: 0.75rem;
-    padding: 0.875rem 1.75rem;
-    font-weight: 600;
-    transition: all 0.3s ease;
-    border: none;
-    font-size: 0.95rem;
-}
-
-.btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
-}
-
-.btn-primary {
-    background: linear-gradient(135deg, var(--mining-primary), var(--mining-info));
-    color: white;
-    box-shadow: 0 4px 15px rgba(26, 54, 93, 0.3);
-}
-
-.btn-primary:hover {
-    background: linear-gradient(135deg, var(--mining-info), var(--mining-primary));
-    box-shadow: 0 6px 25px rgba(26, 54, 93, 0.4);
-}
-
-.btn-success {
-    background: linear-gradient(135deg, var(--mining-success), #48bb78);
-    color: white;
-    box-shadow: 0 4px 15px rgba(56, 161, 105, 0.3);
-}
-
-.btn-success:hover {
-    background: linear-gradient(135deg, #48bb78, var(--mining-success));
-    box-shadow: 0 6px 25px rgba(56, 161, 105, 0.4);
-}
-
-.btn-outline-secondary {
-    border: 2px solid var(--mining-secondary);
-    color: var(--mining-secondary);
-    background: transparent;
-}
-
-.btn-outline-secondary:hover {
-    background: var(--mining-secondary);
-    color: white;
-}
-
-/* Enhanced Animations and Effects */
-.pulse-animation {
-    animation: pulse 2s infinite;
-}
-
-@@keyframes pulse {
-    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(26, 54, 93, 0.4); }
-    70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(26, 54, 93, 0); }
-    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(26, 54, 93, 0); }
-}
-
-.shake-animation {
-    animation: shake 0.5s ease-in-out;
-}
-
-.btn-loading {
-    position: relative;
-    color: transparent !important;
-}
-
-.btn-loading::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 20px;
-    height: 20px;
-    margin: -10px 0 0 -10px;
-    border: 2px solid #ffffff;
-    border-radius: 50%;
-    border-top-color: transparent;
-    animation: spin 1s linear infinite;
-}
-
-@@keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-}
-
-/* Validation Alert Styles */
-.validation-alert {
-    border-left: 4px solid #dc3545;
-    margin-bottom: 1.5rem;
-    animation: slideDown 0.3s ease-out;
-}
-
-@@keyframes slideDown {
-    from { opacity: 0; transform: translateY(-10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-/* Enhanced Step Circle Styles */
 .step-circle {
     width: 60px;
     height: 60px;
