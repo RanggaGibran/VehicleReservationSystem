@@ -21,34 +21,32 @@
 </div>
 
 <!-- Progress Steps -->
-<div class="card mb-4 modern-card">
-    <div class="card-body py-4">
-        <div class="progress-steps">
-            <div class="row text-center position-relative">
-                <div class="col-3">
-                    <div class="step-circle active" id="stepCircle1">
-                        <i class="bi bi-person-fill"></i>
-                    </div>
-                    <small class="text-muted d-block mt-3 fw-medium">Informasi Pemohon</small>
+<div class="card mb-4">
+    <div class="card-body">
+        <div class="row text-center">
+            <div class="col-3">
+                <div class="step-circle active">
+                    <i class="bi bi-person-fill"></i>
                 </div>
-                <div class="col-3">
-                    <div class="step-circle" id="stepCircle2">
-                        <i class="bi bi-truck"></i>
-                    </div>
-                    <small class="text-muted d-block mt-3 fw-medium">Pilih Kendaraan</small>
+                <small class="text-muted d-block mt-2">Informasi Pemohon</small>
+            </div>
+            <div class="col-3">
+                <div class="step-circle">
+                    <i class="bi bi-truck"></i>
                 </div>
-                <div class="col-3">
-                    <div class="step-circle" id="stepCircle3">
-                        <i class="bi bi-calendar-event"></i>
-                    </div>
-                    <small class="text-muted d-block mt-3 fw-medium">Jadwal & Tujuan</small>
+                <small class="text-muted d-block mt-2">Pilih Kendaraan</small>
+            </div>
+            <div class="col-3">
+                <div class="step-circle">
+                    <i class="bi bi-calendar-event"></i>
                 </div>
-                <div class="col-3">
-                    <div class="step-circle" id="stepCircle4">
-                        <i class="bi bi-check-circle"></i>
-                    </div>
-                    <small class="text-muted d-block mt-3 fw-medium">Persetujuan</small>
+                <small class="text-muted d-block mt-2">Jadwal & Tujuan</small>
+            </div>
+            <div class="col-3">
+                <div class="step-circle">
+                    <i class="bi bi-check-circle"></i>
                 </div>
+                <small class="text-muted d-block mt-2">Persetujuan</small>
             </div>
         </div>
     </div>
@@ -344,101 +342,56 @@
                                 <span id="approversSelectedCount">0</span> / 2 minimum
                             </small>
                         </div>
-                    </div>                <!-- Enhanced Approvers Selection -->
-                <div class="form-group mb-4">
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <label class="form-label fw-medium mb-0">
-                            <i class="bi bi-people-fill text-muted me-2"></i>Pilih Penyetuju <span class="text-danger">*</span>
-                        </label>
-                        <div class="approver-progress-info">
-                            <div class="d-flex align-items-center gap-3">
-                                <div class="progress" style="width: 120px; height: 8px;">
-                                    <div class="progress-bar bg-danger" role="progressbar" style="width: 0%" id="approverProgressBar"></div>
-                                </div>
-                                <div class="text-center">
-                                    <small class="text-muted fw-medium">
-                                        <span id="approversSelectedCount" class="text-primary fw-bold">0</span> / <span class="text-success fw-bold">2</span> minimum
-                                    </small>
-                                </div>
-                            </div>
-                        </div>
                     </div>
-
-                    <!-- Approvers Grid -->
+                      <!-- Enhanced Approvers Checkboxes -->
                     <div class="approvers-container">
-                        <div class="row g-3">
-                            @if (Model.Approvers != null && Model.Approvers.Any())
+                        @if (Model.Approvers != null && Model.Approvers.Any())
+                        {
+                            @foreach (var approver in Model.Approvers)
                             {
-                                @foreach (var approver in Model.Approvers)
+                                if (!string.IsNullOrEmpty(approver.Value))
                                 {
-                                    if (!string.IsNullOrEmpty(approver.Value))
-                                    {
-                                        <div class="col-md-6">
-                                            <div class="approver-card" id="approverCard_@approver.Value">
-                                                <input class="form-check-input approver-checkbox d-none" type="checkbox" name="ApproverIds" value="@approver.Value" id="approver_@approver.Value">
-                                                <label class="form-check-label w-100 cursor-pointer" for="approver_@approver.Value">
-                                                    <div class="d-flex align-items-center">
-                                                        <div class="approver-avatar me-3">
-                                                            <i class="bi bi-person-badge text-primary fs-3"></i>
-                                                        </div>
-                                                        <div class="flex-grow-1">
-                                                            <h6 class="mb-1 text-dark fw-bold">@approver.Text</h6>
-                                                            <small class="text-muted">Klik untuk memilih sebagai penyetuju</small>
-                                                            <div class="mt-2">
-                                                                <span class="badge bg-primary bg-opacity-10 text-primary">
-                                                                    <i class="bi bi-shield-check me-1"></i>Atasan Berwenang
-                                                                </span>
-                                                            </div>
-                                                        </div>
-                                                        <div class="check-indicator d-none">
-                                                            <div class="check-circle">
-                                                                <i class="bi bi-check-circle-fill text-success fs-4"></i>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </label>
-                                            </div>
-                                        </div>
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                <div class="col-12">
-                                    <div class="alert alert-warning border-warning">
-                                        <div class="d-flex align-items-center">
-                                            <i class="bi bi-exclamation-triangle me-3 text-warning fs-4"></i>
-                                            <div>
-                                                <h6 class="mb-1 fw-bold">Tidak Ada Penyetuju Tersedia</h6>
-                                                <p class="mb-0">Saat ini tidak ada penyetuju yang tersedia dalam sistem. Silakan hubungi administrator untuk menambahkan penyetuju.</p>
-                                                <div class="mt-2">
-                                                    <small class="text-muted">
-                                                        <i class="bi bi-telephone me-1"></i>Hubungi: admin@nikelnusantara.co.id
-                                                    </small>
+                                    <div class="form-check mb-2 p-3 rounded approver-card" id="approverCard_@approver.Value">
+                                        <input class="form-check-input approver-checkbox" type="checkbox" name="ApproverIds" value="@approver.Value" id="approver_@approver.Value">
+                                        <label class="form-check-label w-100" for="approver_@approver.Value">
+                                            <div class="d-flex align-items-center">
+                                                <i class="bi bi-person-badge text-primary me-2 fs-5"></i>
+                                                <div class="flex-grow-1">
+                                                    <strong>@approver.Text</strong>
+                                                    <br><small class="text-muted">Klik untuk memilih sebagai penyetuju</small>
+                                                </div>
+                                                <div class="check-indicator d-none">
+                                                    <i class="bi bi-check-circle-fill text-success fs-5"></i>
                                                 </div>
                                             </div>
-                                        </div>
+                                        </label>
+                                    </div>
+                                }
+                            }
+                        }
+                        else
+                        {
+                            <div class="alert alert-warning">
+                                <div class="d-flex align-items-center">
+                                    <i class="bi bi-exclamation-triangle me-2 text-warning fs-5"></i>
+                                    <div>
+                                        <strong>Tidak Ada Penyetuju Tersedia</strong>
+                                        <p class="mb-0">Saat ini tidak ada penyetuju yang tersedia dalam sistem. Silakan hubungi administrator untuk menambahkan penyetuju.</p>
                                     </div>
                                 </div>
-                            }
-                        </div>
+                            </div>
+                        }
                     </div>
                     
-                    <!-- Feedback Section -->
-                    <div class="approver-feedback-section mt-4">
-                        <div class="selected-approvers-info p-3 rounded" id="approverFeedback">
-                            <div class="d-flex align-items-center">
-                                <i class="bi bi-exclamation-triangle text-warning me-3 fs-5" id="approverIcon"></i>
-                                <div class="flex-grow-1">
-                                    <h6 class="mb-1 fw-medium" id="approverMessage">
-                                        Pilih minimal 2 penyetuju untuk melanjutkan
-                                    </h6>
-                                    <div class="selected-approvers-list mt-2" id="selectedApproversList" style="display: none;">
-                                        <small class="text-muted">
-                                            <i class="bi bi-people me-1"></i>Penyetuju yang dipilih: 
-                                            <span id="approverNames" class="fw-medium text-primary"></span>
-                                        </small>
-                                    </div>
+                    <div class="selected-approvers-info mt-3 p-3 rounded bg-light" id="approverFeedback">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-exclamation-triangle text-warning me-2 fs-5" id="approverIcon"></i>
+                            <div>
+                                <small class="fw-medium" id="approverMessage">
+                                    Pilih minimal 2 penyetuju untuk melanjutkan
+                                </small>
+                                <div class="selected-approvers-list mt-1" id="selectedApproversList" style="display: none;">
+                                    <small class="text-muted">Penyetuju yang dipilih: <span id="approverNames"></span></small>
                                 </div>
                             </div>
                         </div>
@@ -460,99 +413,493 @@
     </div>
 </div>
 
-<script>
-    window.handlePurposeChange = function() {
-        const purposeSelect = document.getElementById('Purpose');
-        const customPurposeDiv = document.getElementById('customPurposeDiv');
-        if (purposeSelect && customPurposeDiv) {
-            if (purposeSelect.value === 'Lainnya') {
-                customPurposeDiv.style.display = 'block';
-                const customInput = document.getElementById('customPurpose');
-                if (customInput) customInput.required = true;
+@section Scripts {
+    <script>
+        let currentStep = 1;
+          $(document).ready(function() {
+            // Set minimum date to today and clear any invalid initial values
+            const now = new Date();
+            const minDateTime = now.toISOString().slice(0, 16);
+            
+            // Clear any invalid initial values before setting constraints
+            const startDateInput = $("#StartDate");
+            const endDateInput = $("#EndDate");
+            
+            // Check if current values are before minimum and clear them if so
+            if (startDateInput.val() && new Date(startDateInput.val()) < now) {
+                startDateInput.val('');
+            }
+            if (endDateInput.val() && new Date(endDateInput.val()) < now) {
+                endDateInput.val('');
+            }
+            
+            startDateInput.attr('min', minDateTime);
+            endDateInput.attr('min', minDateTime);
+
+            // Auto-calculate end date when start date changes
+            $("#StartDate").change(function() {
+                const startDate = new Date($(this).val());
+                if (startDate) {
+                    const endDate = new Date(startDate);
+                    endDate.setHours(endDate.getHours() + 4); // Default 4 hours duration
+                    
+                    const year = endDate.getFullYear();
+                    const month = (endDate.getMonth() + 1).toString().padStart(2, '0');
+                    const day = endDate.getDate().toString().padStart(2, '0');
+                    const hours = endDate.getHours().toString().padStart(2, '0');
+                    const minutes = endDate.getMinutes().toString().padStart(2, '0');
+                    
+                    $("#EndDate").val(`${year}-${month}-${day}T${hours}:${minutes}`);
+                    $("#EndDate").attr('min', $(this).val());
+                    
+                    // Clear validation error if exists
+                    $("#StartDate").removeClass('is-invalid');
+                    $("#EndDate").removeClass('is-invalid');
+                }
+            });
+            
+            // Initialize approver counter
+            updateApproverCount();
+            
+            // Listen for approver checkbox changes with animation
+            $(document).on('change', '.approver-checkbox', function() {
+                updateApproverCount();
+                
+                // Add visual feedback
+                const card = $(this).closest('.approver-card');
+                if ($(this).is(':checked')) {
+                    card.addClass('border-success bg-success bg-opacity-10').removeClass('bg-light');
+                } else {
+                    card.removeClass('border-success bg-success bg-opacity-10').addClass('bg-light');
+                }
+            });
+            
+            // Real-time validation for all form fields
+            $('input, select').on('change blur', function() {
+                const field = $(this);
+                const fieldId = field.attr('id');
+                
+                // Remove validation error when user starts typing/selecting
+                if (field.val()) {
+                    field.removeClass('is-invalid');
+                    field.siblings('.text-danger').addClass('d-none');
+                }
+            });
+            
+            // Enhanced form validation
+            $("#reservationForm").on('submit', function(e) {
+                if (!validateCurrentStep()) {
+                    e.preventDefault();
+                    return false;
+                }
+                
+                // Show enhanced loading state
+                const submitBtn = $("#submitBtn");
+                const originalText = submitBtn.html();
+                submitBtn.html('<i class="bi bi-hourglass-split me-1"></i>Memproses reservasi...').prop('disabled', true);
+                
+                // Add progress animation
+                submitBtn.addClass('btn-loading');
+                
+                // If there's an error, restore button
+                setTimeout(() => {
+                    if (!submitBtn.prop('disabled')) {
+                        submitBtn.html(originalText).removeClass('btn-loading');
+                    }
+                }, 3000);
+            });
+            
+            // Initialize driver option visual state
+            selectDriverOption('no-driver');
+            
+            // Initialize form
+            initializeForm();
+        });
+          // Enhanced Vehicle preview function
+        function showVehiclePreview(select) {
+            const preview = $("#vehiclePreview");
+            const namePreview = $("#vehicleNamePreview");
+            const detailsPreview = $("#vehicleDetailsPreview");
+            const iconPreview = $("#vehicleIconPreview");
+            const capacityPreview = $("#vehicleCapacity");
+            const fuelTypePreview = $("#vehicleFuelType");
+            
+            if (select.value) {
+                const selectedText = select.options[select.selectedIndex].text;
+                const parts = selectedText.split(' - ');
+                const vehicleName = parts[0] || 'Kendaraan';
+                const vehicleDetails = parts[1] || 'Detail tidak tersedia';
+                
+                namePreview.html(`${vehicleName} <span class="badge bg-success ms-2 fs-6"><i class="bi bi-check-circle me-1"></i>Tersedia</span>`);
+                detailsPreview.text(vehicleDetails);
+                
+                // Enhanced icon selection based on vehicle type
+                let iconClass = 'bi-truck';
+                let capacity = '4-6 orang';
+                let fuelType = 'Solar';
+                
+                if (vehicleName.toLowerCase().includes('double cabin')) {
+                    iconClass = 'bi-truck-front-fill';
+                    capacity = '5 orang';
+                    fuelType = 'Solar';
+                } else if (vehicleName.toLowerCase().includes('suv')) {
+                    iconClass = 'bi-car-front-fill';
+                    capacity = '7 orang';
+                    fuelType = 'Bensin';
+                } else if (vehicleName.toLowerCase().includes('bus')) {
+                    iconClass = 'bi-bus-front-fill';
+                    capacity = '25-30 orang';
+                    fuelType = 'Solar';
+                } else if (vehicleName.toLowerCase().includes('sedan')) {
+                    iconClass = 'bi-car-front';
+                    capacity = '4 orang';
+                    fuelType = 'Bensin';
+                }
+                
+                iconPreview.html(`<i class="bi ${iconClass} text-success fs-1"></i>`);
+                capacityPreview.text(capacity);
+                fuelTypePreview.text(fuelType);
+                
+                preview.removeClass('d-none').hide().fadeIn(300);
+                
+                // Clear validation error if exists
+                $("#vehicleError").addClass('d-none');
+                $("#VehicleId").removeClass('is-invalid');
+                
             } else {
-                customPurposeDiv.style.display = 'none';
-                const customInput = document.getElementById('customPurpose');
-                if (customInput) {
-                    customInput.required = false;
-                    customInput.value = '';
+                preview.fadeOut(200, function() {
+                    $(this).addClass('d-none');
+                });
+            }
+        }
+        
+        // Enhanced Driver selection function
+        function selectDriverOption(option) {
+            const driverSelect = $("#driverSelectContainer");
+            const driverIdSelect = $("#DriverId");
+            const noDriverCard = $("#noDriverCard");
+            const specificDriverCard = $("#specificDriverCard");
+            
+            // Reset all cards
+            $(".driver-option-card").removeClass('active-option border-primary bg-primary bg-opacity-10');
+            
+            if (option === 'specific') {
+                driverSelect.removeClass('d-none').hide().slideDown(300);
+                specificDriverCard.addClass('active-option border-info bg-info bg-opacity-10');
+                specificDriverCard.find('i').removeClass('text-muted').addClass('text-info');
+                specificDriverCard.find('strong').addClass('text-info');
+            } else {
+                driverSelect.slideUp(300, function() {
+                    $(this).addClass('d-none');
+                });
+                driverIdSelect.val(''); // Clear driver selection
+                noDriverCard.addClass('active-option border-primary bg-primary bg-opacity-10');
+                noDriverCard.find('i').removeClass('text-muted').addClass('text-primary');
+            }
+        }
+          // Enhanced Update approver count with better UX
+        function updateApproverCount() {
+            const selectedCount = $('.approver-checkbox:checked').length;
+            const progressBar = $('#approverProgressBar');
+            const countDisplay = $('#approversSelectedCount');
+            const approverMessage = $('#approverMessage');
+            const approverIcon = $('#approverIcon');
+            const approverFeedback = $('#approverFeedback');
+            const selectedList = $('#selectedApproversList');
+            const approverNames = $('#approverNames');
+            
+            // Update count display
+            countDisplay.text(selectedCount);
+            
+            // Update progress bar
+            const progress = Math.min((selectedCount / 2) * 100, 100);
+            progressBar.css('width', progress + '%');
+            
+            // Update visual feedback based on selection count
+            if (selectedCount === 0) {
+                progressBar.removeClass('bg-warning bg-success').addClass('bg-danger');
+                approverIcon.removeClass('bi-check-circle-fill bi-exclamation-triangle').addClass('bi-exclamation-triangle text-warning');
+                approverMessage.html('Pilih minimal 2 penyetuju untuk melanjutkan').removeClass('text-success text-warning').addClass('text-muted');
+                approverFeedback.removeClass('border-success border-warning bg-success bg-warning').addClass('bg-light');
+                selectedList.hide();
+            } else if (selectedCount === 1) {
+                progressBar.removeClass('bg-danger bg-success').addClass('bg-warning');
+                approverIcon.removeClass('bi-check-circle-fill bi-exclamation-triangle').addClass('bi-exclamation-triangle text-warning');
+                approverMessage.html('Pilih 1 penyetuju lagi untuk melanjutkan').removeClass('text-success text-muted').addClass('text-warning');
+                approverFeedback.removeClass('border-success bg-success bg-light').addClass('border-warning bg-warning bg-opacity-10');
+                selectedList.hide();
+            } else {
+                progressBar.removeClass('bg-danger bg-warning').addClass('bg-success');
+                approverIcon.removeClass('bi-exclamation-triangle').addClass('bi-check-circle-fill text-success');
+                approverMessage.html(`Bagus! ${selectedCount} penyetuju telah dipilih`).removeClass('text-warning text-muted').addClass('text-success');
+                approverFeedback.removeClass('border-warning bg-warning bg-light').addClass('border-success bg-success bg-opacity-10');
+                
+                // Show selected approvers list
+                const selectedNames = [];
+                $('.approver-checkbox:checked').each(function() {
+                    const label = $(`label[for="${$(this).attr('id')}"]`);
+                    const name = label.find('strong').text();
+                    selectedNames.push(name);
+                });
+                
+                approverNames.text(selectedNames.join(', '));
+                selectedList.show();
+            }
+            
+            // Update individual approver cards
+            $('.approver-checkbox').each(function() {
+                const card = $(this).closest('.approver-card');
+                const checkIndicator = card.find('.check-indicator');
+                
+                if ($(this).is(':checked')) {
+                    card.addClass('border-success bg-success bg-opacity-10').removeClass('bg-light');
+                    checkIndicator.removeClass('d-none');
+                } else {
+                    card.removeClass('border-success bg-success bg-opacity-10').addClass('bg-light');
+                    checkIndicator.addClass('d-none');
+                }
+            });
+            
+            // Clear validation error if minimum requirement is met
+            if (selectedCount >= 2) {
+                $("#approverError").addClass('d-none');
+                $('.approvers-container').removeClass('border border-danger');
+            }
+        }
+        
+        function nextStep(step) {
+            if (validateCurrentStep()) {
+                $(`#step${currentStep}`).removeClass('active');
+                $(`.step-circle:nth-child(${currentStep * 2 - 1})`).removeClass('active');
+                
+                currentStep = step;
+                $(`#step${currentStep}`).addClass('active');
+                $(`.step-circle:nth-child(${currentStep * 2 - 1})`).addClass('active');
+                
+                // Scroll to top
+                $('html, body').animate({ scrollTop: 0 }, 300);
+            }
+        }
+        
+        function previousStep(step) {
+            $(`#step${currentStep}`).removeClass('active');
+            $(`.step-circle:nth-child(${currentStep * 2 - 1})`).removeClass('active');
+            
+            currentStep = step;
+            $(`#step${currentStep}`).addClass('active');
+            $(`.step-circle:nth-child(${currentStep * 2 - 1})`).addClass('active');
+            
+            // Scroll to top
+            $('html, body').animate({ scrollTop: 0 }, 300);
+        }
+          function validateCurrentStep() {
+            let isValid = true;
+            const currentStepElement = $(`#step${currentStep}`);
+            
+            // Clear previous validation
+            currentStepElement.find('.is-invalid').removeClass('is-invalid');
+            currentStepElement.find('.text-danger').addClass('d-none');
+            
+            switch(currentStep) {
+                case 1:
+                    if (!$("#RequesterId").val()) {
+                        $("#RequesterId").addClass('is-invalid');
+                        showInlineError('RequesterId', 'Silakan pilih pemohon');
+                        isValid = false;
+                    }
+                    if (!$("#NumberOfPassengers").val() || $("#NumberOfPassengers").val() < 1) {
+                        $("#NumberOfPassengers").addClass('is-invalid');
+                        showInlineError('NumberOfPassengers', 'Jumlah penumpang harus minimal 1');
+                        isValid = false;
+                    }
+                    if (!$("#Purpose").val()) {
+                        $("#Purpose").addClass('is-invalid');
+                        showInlineError('Purpose', 'Pilih tujuan penggunaan kendaraan');
+                        isValid = false;
+                    }
+                    if ($("#Purpose").val() === "Lainnya" && !$("#customPurpose").val()) {
+                        $("#customPurpose").addClass('is-invalid');
+                        isValid = false;
+                    }
+                    break;
+                case 2:
+                    if (!$("#VehicleId").val()) {
+                        $("#VehicleId").addClass('is-invalid');
+                        $("#vehicleError").removeClass('d-none').text('Silakan pilih kendaraan terlebih dahulu');
+                        isValid = false;
+                    }
+                    break;
+                case 3:
+                    if (!$("#StartDate").val()) {
+                        $("#StartDate").addClass('is-invalid');
+                        showInlineError('StartDate', 'Tanggal mulai harus diisi');
+                        isValid = false;
+                    }
+                    if (!$("#EndDate").val()) {
+                        $("#EndDate").addClass('is-invalid');
+                        showInlineError('EndDate', 'Tanggal selesai harus diisi');
+                        isValid = false;
+                    }
+                    if (!$("#Destination").val()) {
+                        $("#Destination").addClass('is-invalid');
+                        showInlineError('Destination', 'Tujuan/lokasi harus diisi');
+                        isValid = false;
+                    }
+                    // Validate dates
+                    if ($("#StartDate").val() && $("#EndDate").val()) {
+                        const start = new Date($("#StartDate").val());
+                        const end = new Date($("#EndDate").val());
+                        if (end <= start) {
+                            $("#EndDate").addClass('is-invalid');
+                            showInlineError('EndDate', 'Tanggal selesai harus setelah tanggal mulai');
+                            isValid = false;
+                        }
+                    }
+                    break;                case 4:
+                    const selectedApprovers = $('.approver-checkbox:checked').length;
+                    const totalApprovers = $('.approver-checkbox').length;
+                    
+                    // Check if there are any approvers available
+                    if (totalApprovers === 0) {
+                        $("#approverError").removeClass('d-none').text('Tidak ada penyetuju yang tersedia. Hubungi administrator.');
+                        $('.approvers-container').addClass('border border-warning rounded-3');
+                        setTimeout(() => {
+                            $('.approvers-container').removeClass('border border-warning rounded-3');
+                        }, 3000);
+                        isValid = false;
+                    } else if (selectedApprovers < 2) {
+                        $("#approverError").removeClass('d-none').text('Pilih minimal 2 penyetuju untuk melanjutkan');
+                        $('.approvers-container').addClass('border border-danger rounded-3');
+                        setTimeout(() => {
+                            $('.approvers-container').removeClass('border border-danger rounded-3');
+                        }, 3000);
+                        isValid = false;
+                    }
+                    break;
+            }
+            
+            return isValid;
+        }
+        
+        // Helper function to show inline validation errors
+        function showInlineError(fieldId, message) {
+            const field = $(`#${fieldId}`);
+            const errorSpan = field.siblings('.text-danger');
+            if (errorSpan.length > 0) {
+                errorSpan.removeClass('d-none').text(message);
+            }
+        }
+        
+        // Auto-calculate end date when start date changes
+        function handleStartDateChange() {
+            const startDate = $("#StartDate").val();
+            const endDate = $("#EndDate").val();
+            
+            if (startDate && !endDate) {
+                // Auto-set end date to 1 day after start date as default
+                const start = new Date(startDate);
+                start.setDate(start.getDate() + 1);
+                start.setHours(17, 0, 0, 0); // Set to 5 PM
+                
+                const endDateTime = start.toISOString().slice(0, 16);
+                $("#EndDate").val(endDateTime);
+            }
+            
+            // Clear validation error if exists
+            $("#StartDate").removeClass('is-invalid');
+            $("#StartDate").siblings('.text-danger').addClass('d-none');
+        }
+        
+        // Validate end date when it changes
+        function handleEndDateChange() {
+            const startDate = $("#StartDate").val();
+            const endDate = $("#EndDate").val();
+            
+            if (startDate && endDate) {
+                const start = new Date(startDate);
+                const end = new Date(endDate);
+                
+                if (end <= start) {
+                    $("#EndDate").addClass('is-invalid');
+                    showInlineError('EndDate', 'Tanggal selesai harus setelah tanggal mulai');
+                } else {
+                    $("#EndDate").removeClass('is-invalid');
+                    $("#EndDate").siblings('.text-danger').addClass('d-none');
                 }
             }
         }
-    }
-    window.nextStep = function(step) {
-        if (!window.validateCurrentStep()) {
-            return false;
+        
+        // Enhanced form initialization
+        function initializeForm() {
+            // Set minimum date for start date to today
+            const today = new Date();
+            const minDate = today.toISOString().slice(0, 16);
+            $("#StartDate").attr('min', minDate);
+            
+            // Initialize approver count
+            updateApproverCount();
+            
+            // Set default driver option
+            selectDriverOption('no-driver');
+            
+            // Add change event listeners
+            $("#StartDate").on('change', handleStartDateChange);
+            $("#EndDate").on('change', handleEndDateChange);
+            
+            // Add input validation clearing
+            $('input, select, textarea').on('input change', function() {
+                $(this).removeClass('is-invalid');
+                $(this).siblings('.text-danger').addClass('d-none');
+            });
+            
+            console.log('Create Reservation form initialized successfully');
         }
-        window.updateStepCircle(window.currentStep, false, true);
-        window.currentStep = step;
-        window.updateStepCircle(window.currentStep, true, false);
-        $('.form-step').removeClass('active').hide();
-        $('#step' + step).addClass('active').show();
-        return true;
-    }
-    window.previousStep = function(step) {
-        window.updateStepCircle(window.currentStep, false, false);
-        window.currentStep = step;
-        window.updateStepCircle(window.currentStep, true, false);
-        $('.form-step').removeClass('active').hide();
-        $('#step' + step).addClass('active').show();
-    }
-    window.updateStepCircle = function(stepNum, isActive, isCompleted) {
-        const circle = $('#stepCircle' + stepNum);
-        if (!circle.length) return;
-        circle.removeClass('active completed pulse-animation');
-        if (isCompleted) {
-            circle.addClass('completed');
-            circle.find('i').removeClass().addClass('bi bi-check-lg');
-        } else if (isActive) {
-            circle.addClass('active pulse-animation');
-        } else {
-            const originalIcons = {
-                1: 'bi-person-fill',
-                2: 'bi-truck',
-                3: 'bi-calendar-event',
-                4: 'bi-check-circle'
-            };
-            circle.find('i').removeClass().addClass('bi ' + originalIcons[stepNum]);
-        }
-    }
-    window.validateCurrentStep = function() {
-        let isValid = true;
-        const step = window.currentStep;
-        $('.is-invalid').removeClass('is-invalid');
-        $('.text-danger').addClass('d-none');
-        if (step === 1) {
-            const requesterId = $('#RequesterId').val();
-            const passengers = $('#NumberOfPassengers').val();
-            const purpose = $('#Purpose').val();
-            if (!requesterId) isValid = false;
-            if (!passengers || passengers < 1 || passengers > 50) isValid = false;
-            if (!purpose) isValid = false;
-            if (purpose === 'Lainnya') {
-                const customPurpose = $('#customPurpose').val();
-                if (!customPurpose || customPurpose.trim().length < 5) isValid = false;
+        
+        // Enhanced destination selection with validation
+        function handleDestinationChange() {
+            const destination = $("#destinationSelect").val();
+            const destinationInput = $("#Destination");
+            
+            if (destination === "Lainnya") {
+                $("#destinationSelect").addClass('d-none');
+                destinationInput.removeClass('d-none').val('').focus();
+                destinationInput.attr('placeholder', 'Masukkan tujuan/lokasi khusus');
+            } else if (destination) {
+                destinationInput.val(destination);
+                $("#destinationSelect").removeClass('d-none');
+                destinationInput.addClass('d-none');
+                // Clear validation error
+                destinationInput.removeClass('is-invalid');
+                destinationInput.siblings('.text-danger').addClass('d-none');
+            } else {
+                destinationInput.val('');
+                $("#destinationSelect").removeClass('d-none');
+                destinationInput.addClass('d-none');
             }
-        } else if (step === 2) {
-            if (!$('#VehicleId').val()) isValid = false;
-        } else if (step === 3) {
-            if (!$('#StartDate').val() || !$('#EndDate').val() || !$('#Destination').val()) isValid = false;
-        } else if (step === 4) {
-            const selectedApprovers = $('.approver-checkbox:checked').length;
-            if (selectedApprovers < 2 || selectedApprovers > 4) isValid = false;
         }
-        return isValid;
-    }
-    window.currentStep = 1;
-    window.initializeForm = function() {
-        window.currentStep = 1;
-        window.updateStepCircle(1, true, false);
-        $('.form-step').removeClass('active').hide();
-        $('#step1').addClass('active').show();
-    }
-    $(document).ready(function() {
-        window.initializeForm();
-    });
-</script>
+        
+        // Enhanced purpose selection
+        function handlePurposeChange() {
+            const purpose = $("#Purpose").val();
+            const customPurposeDiv = $("#customPurposeDiv");
+            const customPurpose = $("#customPurpose");
+            
+            if (purpose === "Lainnya") {
+                customPurposeDiv.removeClass('d-none').hide().slideDown(300);
+                customPurpose.prop('required', true).focus();
+            } else {
+                customPurposeDiv.slideUp(300, function() {
+                    $(this).addClass('d-none');
+                });
+                customPurpose.prop('required', false).val('');
+                
+                // Clear validation error for Purpose
+                $("#Purpose").removeClass('is-invalid');
+                $("#Purpose").siblings('.text-danger').addClass('d-none');
+            }
+        }
+    </script>
+}
 
 <style>
 /* Form Step Wizard Styles */
@@ -652,1320 +999,161 @@
 
 /* Step Circle Enhancements */
 .step-circle {
-    width: 60px;
-    height: 60px;
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #e9ecef, #f8f9fa);
-    border: 3px solid #dee2e6;
+    background-color: #e9ecef;
+    color: #6c757d;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #6c757d;
-    font-size: 1.5rem;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
     margin: 0 auto;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-}
-
-.step-circle::before {
-    content: '';
-    position: absolute;
-    top: -5px;
-    left: -5px;
-    right: -5px;
-    bottom: -5px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, var(--mining-primary), var(--mining-accent));
-    opacity: 0;
-    transition: all 0.4s ease;
-    z-index: -1;
+    font-size: 1.5rem;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    position: relative;
 }
 
 .step-circle.active {
-    background: linear-gradient(135deg, var(--mining-primary), var(--mining-secondary));
-    border-color: var(--mining-primary);
+    background-color: var(--mining-primary);
     color: white;
+    border-color: var(--mining-primary-dark);
+    box-shadow: 0 4px 12px rgba(var(--mining-primary-rgb), 0.3);
     transform: scale(1.1);
-    box-shadow: 0 8px 25px rgba(26, 54, 93, 0.3);
 }
 
-.step-circle.active::before {
-    opacity: 1;
-    animation: ripple 2s infinite;
-}
-
-.step-circle.completed {
-    background: linear-gradient(135deg, var(--mining-success), #48bb78);
-    border-color: var(--mining-success);
-    color: white;
-    transform: scale(1.05);
-    box-shadow: 0 6px 20px rgba(56, 161, 105, 0.3);
-}
-
-@@keyframes ripple {
-    0% { transform: scale(1); opacity: 1; }
-    100% { transform: scale(1.4); opacity: 0; }
-}
-
-/* Progress Steps Container */
-.progress-steps {
-    position: relative;
-}
-
-.progress-steps::before {
+.step-circle.active::after {
     content: '';
     position: absolute;
-    top: 30px;
-    left: 12.5%;
-    right: 12.5%;
-    height: 3px;
-    background: linear-gradient(to right, #dee2e6, #dee2e6);
-    z-index: -1;
-    border-radius: 2px;
+    width: 60px;
+    height: 60px;
+    border: 2px solid var(--mining-primary-light);
+    border-radius: 50%;
+    opacity: 0.5;
+    animation: pulse 2s infinite;
+}
+
+@@keyframes pulse {
+    0% { transform: scale(1); opacity: 0.5; }
+    50% { transform: scale(1.1); opacity: 0.2; }
+    100% { transform: scale(1); opacity: 0.5; }
 }
 
 /* Modern Card Styling */
 .modern-card {
     border: none;
     border-radius: 1rem;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+    box-shadow: 0 0.5rem 2rem rgba(0, 0, 0, 0.1);
     overflow: hidden;
-    transition: all 0.3s ease;
 }
 
-.modern-card:hover {
-    box-shadow: 0 8px 30px rgba(0,0,0,0.12);
-    transform: translateY(-2px);
+.modern-card .card-header.bg-gradient-primary {
+    background: linear-gradient(135deg, var(--mining-primary), var(--mining-primary-dark));
+    color: white;
+    padding: 1.25rem;
+    border-bottom: none;
 }
 
-.modern-card .card-header {
-    background: linear-gradient(135deg, var(--mining-primary), var(--mining-secondary));
-    border: none;
-    padding: 1.5rem;
-    border-radius: 0;
-}
-
-/* Form Controls Enhancement */
+/* Form Control Enhancements */
 .form-control-modern, .form-select-modern {
-    border: 2px solid #e9ecef;
     border-radius: 0.75rem;
-    padding: 0.875rem 1.25rem;
-    font-size: 0.95rem;
+    border: 2px solid #e9ecef;
+    padding: 0.75rem 1rem;
     transition: all 0.3s ease;
-    background: #ffffff;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+    background-color: #fff;
 }
 
 .form-control-modern:focus, .form-select-modern:focus {
-    border-color: var(--mining-accent);
-    box-shadow: 0 0 0 0.25rem rgba(212, 175, 55, 0.15);
+    border-color: var(--mining-primary);
+    box-shadow: 0 0 0 0.25rem rgba(var(--mining-primary-rgb), 0.15);
     background-color: #fff;
-    transform: translateY(-1px);
 }
 
 .form-control-modern.is-invalid, .form-select-modern.is-invalid {
-    border-color: var(--mining-danger);
-    box-shadow: 0 0 0 0.25rem rgba(229, 62, 62, 0.15);
-    animation: shake 0.5s ease-in-out;
+    border-color: var(--bs-danger);
+    box-shadow: 0 0 0 0.25rem rgba(var(--bs-danger-rgb), 0.15);
 }
 
-/* Button Enhancements */
-.btn {
+/* Alert Enhancements */
+.alert {
     border-radius: 0.75rem;
-    padding: 0.875rem 1.75rem;
-    font-weight: 600;
-    transition: all 0.3s ease;
     border: none;
-    font-size: 0.95rem;
-}
-
-.btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
-}
-
-.btn-primary {
-    background: linear-gradient(135deg, var(--mining-primary), var(--mining-info));
-    color: white;
-    box-shadow: 0 4px 15px rgba(26, 54, 93, 0.3);
-}
-
-.btn-primary:hover {
-    background: linear-gradient(135deg, var(--mining-info), var(--mining-primary));
-    box-shadow: 0 6px 25px rgba(26, 54, 93, 0.4);
-}
-
-.btn-success {
-    background: linear-gradient(135deg, var(--mining-success), #48bb78);
-    color: white;
-    box-shadow: 0 4px 15px rgba(56, 161, 105, 0.3);
-}
-
-.btn-success:hover {
-    background: linear-gradient(135deg, #48bb78, var(--mining-success));
-    box-shadow: 0 6px 25px rgba(56, 161, 105, 0.4);
-}
-
-.btn-outline-secondary {
-    border: 2px solid var(--mining-secondary);
-    color: var(--mining-secondary);
-    background: transparent;
-}
-
-.btn-outline-secondary:hover {
-    background: var(--mining-secondary);
-    color: white;
-}
-
-/* Enhanced Animations and Effects */
-.pulse-animation {
-    animation: pulse 2s infinite;
-}
-
-@@keyframes pulse {
-    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(26, 54, 93, 0.4); }
-    70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(26, 54, 93, 0); }
-    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(26, 54, 93, 0); }
-}
-
-.shake-animation {
-    animation: shake 0.5s ease-in-out;
-}
-
-.btn-loading {
-    position: relative;
-    color: transparent !important;
-}
-
-.btn-loading::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 20px;
-    height: 20px;
-    margin: -10px 0 0 -10px;
-    border: 2px solid #ffffff;
-    border-radius: 50%;
-    border-top-color: transparent;
-    animation: spin 1s linear infinite;
-}
-
-@@keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-}
-
-/* Validation Alert Styles */
-.validation-alert {
-    border-left: 4px solid #dc3545;
-    margin-bottom: 1.5rem;
-    animation: slideDown 0.3s ease-out;
-}
-
-@@keyframes slideDown {
-    from { opacity: 0; transform: translateY(-10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-/* Enhanced Step Circle Styles */
-.step-circle {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #e9ecef, #f8f9fa);
-    border: 3px solid #dee2e6;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #6c757d;
-    font-size: 1.5rem;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-    margin: 0 auto;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
-.step-circle::before {
-    content: '';
-    position: absolute;
-    top: -5px;
-    left: -5px;
-    right: -5px;
-    bottom: -5px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, var(--mining-primary), var(--mining-accent));
-    opacity: 0;
-    transition: all 0.4s ease;
-    z-index: -1;
-}
-
-.step-circle.active {
-    background: linear-gradient(135deg, var(--mining-primary), var(--mining-secondary));
-    border-color: var(--mining-primary);
-    color: white;
-    transform: scale(1.1);
-    box-shadow: 0 8px 25px rgba(26, 54, 93, 0.3);
-}
-
-.step-circle.active::before {
-    opacity: 1;
-    animation: ripple 2s infinite;
-}
-
-.step-circle.completed {
-    background: linear-gradient(135deg, var(--mining-success), #48bb78);
-    border-color: var(--mining-success);
-    color: white;
-    transform: scale(1.05);
-    box-shadow: 0 6px 20px rgba(56, 161, 105, 0.3);
-}
-
-@@keyframes ripple {
-    0% { transform: scale(1); opacity: 1; }
-    100% { transform: scale(1.4); opacity: 0; }
-}
-
-/* Progress Steps Container */
-.progress-steps {
-    position: relative;
-}
-
-.progress-steps::before {
-    content: '';
-    position: absolute;
-    top: 30px;
-    left: 12.5%;
-    right: 12.5%;
-    height: 3px;
-    background: linear-gradient(to right, #dee2e6, #dee2e6);
-    z-index: -1;
-    border-radius: 2px;
-}
-
-/* Modern Card Styling */
-.modern-card {
-    border: none;
-    border-radius: 1rem;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-    overflow: hidden;
-    transition: all 0.3s ease;
-}
-
-.modern-card:hover {
-    box-shadow: 0 8px 30px rgba(0,0,0,0.12);
-    transform: translateY(-2px);
-}
-
-.modern-card .card-header {
-    background: linear-gradient(135deg, var(--mining-primary), var(--mining-secondary));
-    border: none;
-    padding: 1.5rem;
-    border-radius: 0;
-}
-
-/* Form Controls Enhancement */
-.form-control-modern, .form-select-modern {
-    border: 2px solid #e9ecef;
-    border-radius: 0.75rem;
-    padding: 0.875rem 1.25rem;
-    font-size: 0.95rem;
-    transition: all 0.3s ease;
-    background: #ffffff;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-}
-
-.form-control-modern:focus, .form-select-modern:focus {
-    border-color: var(--mining-accent);
-    box-shadow: 0 0 0 0.25rem rgba(212, 175, 55, 0.15);
-    background-color: #fff;
-    transform: translateY(-1px);
-}
-
-.form-control-modern.is-invalid, .form-select-modern.is-invalid {
-    border-color: var(--mining-danger);
-    box-shadow: 0 0 0 0.25rem rgba(229, 62, 62, 0.15);
-    animation: shake 0.5s ease-in-out;
-}
-
 /* Button Enhancements */
 .btn {
-    border-radius: 0.75rem;
-    padding: 0.875rem 1.75rem;
-    font-weight: 600;
+    border-radius: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    font-weight: 500;
     transition: all 0.3s ease;
-    border: none;
-    font-size: 0.95rem;
 }
 
 .btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
-}
-
-.btn-primary {
-    background: linear-gradient(135deg, var(--mining-primary), var(--mining-info));
-    color: white;
-    box-shadow: 0 4px 15px rgba(26, 54, 93, 0.3);
-}
-
-.btn-primary:hover {
-    background: linear-gradient(135deg, var(--mining-info), var(--mining-primary));
-    box-shadow: 0 6px 25px rgba(26, 54, 93, 0.4);
-}
-
-.btn-success {
-    background: linear-gradient(135deg, var(--mining-success), #48bb78);
-    color: white;
-    box-shadow: 0 4px 15px rgba(56, 161, 105, 0.3);
-}
-
-.btn-success:hover {
-    background: linear-gradient(135deg, #48bb78, var(--mining-success));
-    box-shadow: 0 6px 25px rgba(56, 161, 105, 0.4);
-}
-
-.btn-outline-secondary {
-    border: 2px solid var(--mining-secondary);
-    color: var(--mining-secondary);
-    background: transparent;
-}
-
-.btn-outline-secondary:hover {
-    background: var(--mining-secondary);
-    color: white;
-}
-
-/* Enhanced Animations and Effects */
-.pulse-animation {
-    animation: pulse 2s infinite;
-}
-
-@@keyframes pulse {
-    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(26, 54, 93, 0.4); }
-    70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(26, 54, 93, 0); }
-    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(26, 54, 93, 0); }
-}
-
-.shake-animation {
-    animation: shake 0.5s ease-in-out;
-}
-
-.btn-loading {
-    position: relative;
-    color: transparent !important;
-}
-
-.btn-loading::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 20px;
-    height: 20px;
-    margin: -10px 0 0 -10px;
-    border: 2px solid #ffffff;
-    border-radius: 50%;
-    border-top-color: transparent;
-    animation: spin 1s linear infinite;
-}
-
-@@keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-}
-
-/* Validation Alert Styles */
-.validation-alert {
-    border-left: 4px solid #dc3545;
-    margin-bottom: 1.5rem;
-    animation: slideDown 0.3s ease-out;
-}
-
-@@keyframes slideDown {
-    from { opacity: 0; transform: translateY(-10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-/* Enhanced Step Circle Styles */
-.step-circle {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #e9ecef, #f8f9fa);
-    border: 3px solid #dee2e6;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #6c757d;
-    font-size: 1.5rem;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-    margin: 0 auto;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-}
-
-.step-circle::before {
-    content: '';
-    position: absolute;
-    top: -5px;
-    left: -5px;
-    right: -5px;
-    bottom: -5px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, var(--mining-primary), var(--mining-accent));
-    opacity: 0;
-    transition: all 0.4s ease;
-    z-index: -1;
-}
-
-.step-circle.active {
-    background: linear-gradient(135deg, var(--mining-primary), var(--mining-secondary));
-    border-color: var(--mining-primary);
-    color: white;
-    transform: scale(1.1);
-    box-shadow: 0 8px 25px rgba(26, 54, 93, 0.3);
-}
-
-.step-circle.active::before {
-    opacity: 1;
-    animation: ripple 2s infinite;
-}
-
-.step-circle.completed {
-    background: linear-gradient(135deg, var(--mining-success), #48bb78);
-    border-color: var(--mining-success);
-    color: white;
-    transform: scale(1.05);
-    box-shadow: 0 6px 20px rgba(56, 161, 105, 0.3);
-}
-
-@@keyframes ripple {
-    0% { transform: scale(1); opacity: 1; }
-    100% { transform: scale(1.4); opacity: 0; }
-}
-
-/* Progress Steps Container */
-.progress-steps {
-    position: relative;
-}
-
-.progress-steps::before {
-    content: '';
-    position: absolute;
-    top: 30px;
-    left: 12.5%;
-    right: 12.5%;
-    height: 3px;
-    background: linear-gradient(to right, #dee2e6, #dee2e6);
-    z-index: -1;
-    border-radius: 2px;
-}
-
-/* Modern Card Styling */
-.modern-card {
-    border: none;
-    border-radius: 1rem;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-    overflow: hidden;
-    transition: all 0.3s ease;
-}
-
-.modern-card:hover {
-    box-shadow: 0 8px 30px rgba(0,0,0,0.12);
-    transform: translateY(-2px);
-}
-
-.modern-card .card-header {
-    background: linear-gradient(135deg, var(--mining-primary), var(--mining-secondary));
-    border: none;
-    padding: 1.5rem;
-    border-radius: 0;
-}
-
-/* Form Controls Enhancement */
-.form-control-modern, .form-select-modern {
-    border: 2px solid #e9ecef;
-    border-radius: 0.75rem;
-    padding: 0.875rem 1.25rem;
-    font-size: 0.95rem;
-    transition: all 0.3s ease;
-    background: #ffffff;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-}
-
-.form-control-modern:focus, .form-select-modern:focus {
-    border-color: var(--mining-accent);
-    box-shadow: 0 0 0 0.25rem rgba(212, 175, 55, 0.15);
-    background-color: #fff;
     transform: translateY(-1px);
-}
-
-.form-control-modern.is-invalid, .form-select-modern.is-invalid {
-    border-color: var(--mining-danger);
-    box-shadow: 0 0 0 0.25rem rgba(229, 62, 62, 0.15);
-    animation: shake 0.5s ease-in-out;
-}
-
-/* Button Enhancements */
-.btn {
-    border-radius: 0.75rem;
-    padding: 0.875rem 1.75rem;
-    font-weight: 600;
-    transition: all 0.3s ease;
-    border: none;
-    font-size: 0.95rem;
-}
-
-.btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
 
 .btn-primary {
-    background: linear-gradient(135deg, var(--mining-primary), var(--mining-info));
-    color: white;
-    box-shadow: 0 4px 15px rgba(26, 54, 93, 0.3);
-}
-
-.btn-primary:hover {
-    background: linear-gradient(135deg, var(--mining-info), var(--mining-primary));
-    box-shadow: 0 6px 25px rgba(26, 54, 93, 0.4);
+    background: linear-gradient(135deg, var(--mining-primary), var(--mining-primary-dark));
+    border: none;
 }
 
 .btn-success {
-    background: linear-gradient(135deg, var(--mining-success), #48bb78);
-    color: white;
-    box-shadow: 0 4px 15px rgba(56, 161, 105, 0.3);
-}
-
-.btn-success:hover {
-    background: linear-gradient(135deg, #48bb78, var(--mining-success));
-    box-shadow: 0 6px 25px rgba(56, 161, 105, 0.4);
-}
-
-.btn-outline-secondary {
-    border: 2px solid var(--mining-secondary);
-    color: var(--mining-secondary);
-    background: transparent;
-}
-
-.btn-outline-secondary:hover {
-    background: var(--mining-secondary);
-    color: white;
-}
-
-/* Enhanced Animations and Effects */
-.pulse-animation {
-    animation: pulse 2s infinite;
-}
-
-@@keyframes pulse {
-    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(26, 54, 93, 0.4); }
-    70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(26, 54, 93, 0); }
-    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(26, 54, 93, 0); }
-}
-
-.shake-animation {
-    animation: shake 0.5s ease-in-out;
-}
-
-.btn-loading {
-    position: relative;
-    color: transparent !important;
-}
-
-.btn-loading::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 20px;
-    height: 20px;
-    margin: -10px 0 0 -10px;
-    border: 2px solid #ffffff;
-    border-radius: 50%;
-    border-top-color: transparent;
-    animation: spin 1s linear infinite;
-}
-
-@@keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-}
-
-/* Validation Alert Styles */
-.validation-alert {
-    border-left: 4px solid #dc3545;
-    margin-bottom: 1.5rem;
-    animation: slideDown 0.3s ease-out;
-}
-
-@@keyframes slideDown {
-    from { opacity: 0; transform: translateY(-10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-/* Enhanced Step Circle Styles */
-.step-circle {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #e9ecef, #f8f9fa);
-    border: 3px solid #dee2e6;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #6c757d;
-    font-size: 1.5rem;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-    margin: 0 auto;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-}
-
-.step-circle::before {
-    content: '';
-    position: absolute;
-    top: -5px;
-    left: -5px;
-    right: -5px;
-    bottom: -5px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, var(--mining-primary), var(--mining-accent));
-    opacity: 0;
-    transition: all 0.4s ease;
-    z-index: -1;
-}
-
-.step-circle.active {
-    background: linear-gradient(135deg, var(--mining-primary), var(--mining-secondary));
-    border-color: var(--mining-primary);
-    color: white;
-    transform: scale(1.1);
-    box-shadow: 0 8px 25px rgba(26, 54, 93, 0.3);
-}
-
-.step-circle.active::before {
-    opacity: 1;
-    animation: ripple 2s infinite;
-}
-
-.step-circle.completed {
-    background: linear-gradient(135deg, var(--mining-success), #48bb78);
-    border-color: var(--mining-success);
-    color: white;
-    transform: scale(1.05);
-    box-shadow: 0 6px 20px rgba(56, 161, 105, 0.3);
-}
-
-@@keyframes ripple {
-    0% { transform: scale(1); opacity: 1; }
-    100% { transform: scale(1.4); opacity: 0; }
-}
-
-/* Progress Steps Container */
-.progress-steps {
-    position: relative;
-}
-
-.progress-steps::before {
-    content: '';
-    position: absolute;
-    top: 30px;
-    left: 12.5%;
-    right: 12.5%;
-    height: 3px;
-    background: linear-gradient(to right, #dee2e6, #dee2e6);
-    z-index: -1;
-    border-radius: 2px;
-}
-
-/* Modern Card Styling */
-.modern-card {
+    background: linear-gradient(135deg, var(--bs-success), #198754);
     border: none;
-    border-radius: 1rem;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-    overflow: hidden;
-    transition: all 0.3s ease;
 }
 
-.modern-card:hover {
-    box-shadow: 0 8px 30px rgba(0,0,0,0.12);
-    transform: translateY(-2px);
-}
-
-.modern-card .card-header {
-    background: linear-gradient(135deg, var(--mining-primary), var(--mining-secondary));
-    border: none;
-    padding: 1.5rem;
-    border-radius: 0;
-}
-
-/* Form Controls Enhancement */
-.form-control-modern, .form-select-modern {
-    border: 2px solid #e9ecef;
-    border-radius: 0.75rem;
-    padding: 0.875rem 1.25rem;
-    font-size: 0.95rem;
-    transition: all 0.3s ease;
-    background: #ffffff;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-}
-
-.form-control-modern:focus, .form-select-modern:focus {
-    border-color: var(--mining-accent);
-    box-shadow: 0 0 0 0.25rem rgba(212, 175, 55, 0.15);
-    background-color: #fff;
-    transform: translateY(-1px);
-}
-
-.form-control-modern.is-invalid, .form-select-modern.is-invalid {
-    border-color: var(--mining-danger);
-    box-shadow: 0 0 0 0.25rem rgba(229, 62, 62, 0.15);
-    animation: shake 0.5s ease-in-out;
-}
-
-/* Button Enhancements */
-.btn {
-    border-radius: 0.75rem;
-    padding: 0.875rem 1.75rem;
-    font-weight: 600;
-    transition: all 0.3s ease;
-    border: none;
-    font-size: 0.95rem;
-}
-
-.btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
-}
-
-.btn-primary {
-    background: linear-gradient(135deg, var(--mining-primary), var(--mining-info));
-    color: white;
-    box-shadow: 0 4px 15px rgba(26, 54, 93, 0.3);
-}
-
-.btn-primary:hover {
-    background: linear-gradient(135deg, var(--mining-info), var(--mining-primary));
-    box-shadow: 0 6px 25px rgba(26, 54, 93, 0.4);
-}
-
-.btn-success {
-    background: linear-gradient(135deg, var(--mining-success), #48bb78);
-    color: white;
-    box-shadow: 0 4px 15px rgba(56, 161, 105, 0.3);
-}
-
-.btn-success:hover {
-    background: linear-gradient(135deg, #48bb78, var(--mining-success));
-    box-shadow: 0 6px 25px rgba(56, 161, 105, 0.4);
-}
-
-.btn-outline-secondary {
-    border: 2px solid var(--mining-secondary);
-    color: var(--mining-secondary);
-    background: transparent;
-}
-
-.btn-outline-secondary:hover {
-    background: var(--mining-secondary);
-    color: white;
-}
-
-/* Enhanced Animations and Effects */
-.pulse-animation {
-    animation: pulse 2s infinite;
-}
-
-@@keyframes pulse {
-    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(26, 54, 93, 0.4); }
-    70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(26, 54, 93, 0); }
-    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(26, 54, 93, 0); }
-}
-
-.shake-animation {
-    animation: shake 0.5s ease-in-out;
-}
-
-.btn-loading {
-    position: relative;
-    color: transparent !important;
-}
-
-.btn-loading::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 20px;
-    height: 20px;
-    margin: -10px 0 0 -10px;
-    border: 2px solid #ffffff;
-    border-radius: 50%;
-    border-top-color: transparent;
-    animation: spin 1s linear infinite;
-}
-
-@@keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-}
-
-/* Validation Alert Styles */
-.validation-alert {
-    border-left: 4px solid #dc3545;
-    margin-bottom: 1.5rem;
-    animation: slideDown 0.3s ease-out;
-}
-
-@@keyframes slideDown {
-    from { opacity: 0; transform: translateY(-10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-/* Enhanced Step Circle Styles */
-.step-circle {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #e9ecef, #f8f9fa);
-    border: 3px solid #dee2e6;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #6c757d;
-    font-size: 1.5rem;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-    margin: 0 auto;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-}
-
-.step-circle::before {
-    content: '';
-    position: absolute;
-    top: -5px;
-    left: -5px;
-    right: -5px;
-    bottom: -5px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, var(--mining-primary), var(--mining-accent));
-    opacity: 0;
-    transition: all 0.4s ease;
-    z-index: -1;
-}
-
-.step-circle.active {
-    background: linear-gradient(135deg, var(--mining-primary), var(--mining-secondary));
-    border-color: var(--mining-primary);
-    color: white;
-    transform: scale(1.1);
-    box-shadow: 0 8px 25px rgba(26, 54, 93, 0.3);
-}
-
-.step-circle.active::before {
-    opacity: 1;
-    animation: ripple 2s infinite;
-}
-
-.step-circle.completed {
-    background: linear-gradient(135deg, var(--mining-success), #48bb78);
-    border-color: var(--mining-success);
-    color: white;
-    transform: scale(1.05);
-    box-shadow: 0 6px 20px rgba(56, 161, 105, 0.3);
-}
-
-@@keyframes ripple {
-    0% { transform: scale(1); opacity: 1; }
-    100% { transform: scale(1.4); opacity: 0; }
-}
-
-/* Progress Steps Container */
-.progress-steps {
-    position: relative;
-}
-
-.progress-steps::before {
-    content: '';
-    position: absolute;
-    top: 30px;
-    left: 12.5%;
-    right: 12.5%;
-    height: 3px;
-    background: linear-gradient(to right, #dee2e6, #dee2e6);
-    z-index: -1;
-    border-radius: 2px;
-}
-
-/* Modern Card Styling */
-.modern-card {
-    border: none;
-    border-radius: 1rem;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-    overflow: hidden;
-    transition: all 0.3s ease;
-}
-
-.modern-card:hover {
-    box-shadow: 0 8px 30px rgba(0,0,0,0.12);
-    transform: translateY(-2px);
-}
-
-.modern-card .card-header {
-    background: linear-gradient(135deg, var(--mining-primary), var(--mining-secondary));
-    border: none;
-    padding: 1.5rem;
-    border-radius: 0;
-}
-
-/* Form Controls Enhancement */
-.form-control-modern, .form-select-modern {
-    border: 2px solid #e9ecef;
-    border-radius: 0.75rem;
-    padding: 0.875rem 1.25rem;
-    font-size: 0.95rem;
-    transition: all 0.3s ease;
-    background: #ffffff;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-}
-
-.form-control-modern:focus, .form-select-modern:focus {
-    border-color: var(--mining-accent);
-    box-shadow: 0 0 0 0.25rem rgba(212, 175, 55, 0.15);
-    background-color: #fff;
-    transform: translateY(-1px);
-}
-
-.form-control-modern.is-invalid, .form-select-modern.is-invalid {
-    border-color: var(--mining-danger);
-    box-shadow: 0 0 0 0.25rem rgba(229, 62, 62, 0.15);
-    animation: shake 0.5s ease-in-out;
-}
-
-/* Button Enhancements */
-.btn {
-    border-radius: 0.75rem;
-    padding: 0.875rem 1.75rem;
-    font-weight: 600;
-    transition: all 0.3s ease;
-    border: none;
-    font-size: 0.95rem;
-}
-
-.btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
-}
-
-.btn-primary {
-    background: linear-gradient(135deg, var(--mining-primary), var(--mining-info));
-    color: white;
-    box-shadow: 0 4px 15px rgba(26, 54, 93, 0.3);
-}
-
-.btn-primary:hover {
-    background: linear-gradient(135deg, var(--mining-info), var(--mining-primary));
-    box-shadow: 0 6px 25px rgba(26, 54, 93, 0.4);
-}
-
-.btn-success {
-    background: linear-gradient(135deg, var(--mining-success), #48bb78);
-    color: white;
-    box-shadow: 0 4px 15px rgba(56, 161, 105, 0.3);
-}
-
-.btn-success:hover {
-    background: linear-gradient(135deg, #48bb78, var(--mining-success));
-    box-shadow: 0 6px 25px rgba(56, 161, 105, 0.4);
-}
-
-.btn-outline-secondary {
-    border: 2px solid var(--mining-secondary);
-    color: var(--mining-secondary);
-    background: transparent;
-}
-
-.btn-outline-secondary:hover {
-    background: var(--mining-secondary);
-    color: white;
-}
-
-/* Enhanced Animations and Effects */
-.pulse-animation {
-    animation: pulse 2s infinite;
-}
-
-@@keyframes pulse {
-    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(26, 54, 93, 0.4); }
-    70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(26, 54, 93, 0); }
-    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(26, 54, 93, 0); }
-}
-
-.shake-animation {
-    animation: shake 0.5s ease-in-out;
-}
-
-.btn-loading {
-    position: relative;
-    color: transparent !important;
-}
-
-.btn-loading::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 20px;
-    height: 20px;
-    margin: -10px 0 0 -10px;
-    border: 2px solid #ffffff;
-    border-radius: 50%;
-    border-top-color: transparent;
-    animation: spin 1s linear infinite;
-}
-
-@@keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-}
-
-/* Validation Alert Styles */
-.validation-alert {
-    border-left: 4px solid #dc3545;
-    margin-bottom: 1.5rem;
-    animation: slideDown 0.3s ease-out;
-}
-
-@@keyframes slideDown {
-    from { opacity: 0; transform: translateY(-10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-/* Enhanced Step Circle Styles */
-.step-circle {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #e9ecef, #f8f9fa);
-    border: 3px solid #dee2e6;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #6c757d;
-    font-size: 1.5rem;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-    margin: 0 auto;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-}
-
-.step-circle::before {
-    content: '';
-    position: absolute;
-    top: -5px;
-    left: -5px;
-    right: -5px;
-    bottom: -5px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, var(--mining-primary), var(--mining-accent));
-    opacity: 0;
-    transition: all 0.4s ease;
-    z-index: -1;
-}
-
-.step-circle.active {
-    background: linear-gradient(135deg, var(--mining-primary), var(--mining-secondary));
-    border-color: var(--mining-primary);
-    color: white;
-    transform: scale(1.1);
-    box-shadow: 0 8px 25px rgba(26, 54, 93, 0.3);
-}
-
-.step-circle.active::before {
-    opacity: 1;
-    animation: ripple 2s infinite;
-}
-
-.step-circle.completed {
-    background: linear-gradient(135deg, var(--mining-success), #48bb78);
-    border-color: var(--mining-success);
-    color: white;
-    transform: scale(1.05);
-    box-shadow: 0 6px 20px rgba(56, 161, 105, 0.3);
-}
-
-@@keyframes ripple {
-    0% { transform: scale(1); opacity: 1; }
-    100% { transform: scale(1.4); opacity: 0; }
-}
-
-/* Progress Steps Container */
-.progress-steps {
-    position: relative;
-}
-
-.progress-steps::before {
-    content: '';
-    position: absolute;
-    top: 30px;
-    left: 12.5%;
-    right: 12.5%;
-    height: 3px;
-    background: linear-gradient(to right, #dee2e6, #dee2e6);
-    z-index: -1;
-    border-radius: 2px;
-}
-
-/* Modern Card Styling */
-.modern-card {
-    border: none;
-    border-radius: 1rem;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-    overflow: hidden;
-    transition: all 0.3s ease;
-}
-
-.modern-card:hover {
-    box-shadow: 0 8px 30px rgba(0,0,0,0.12);
-    transform: translateY(-2px);
-}
-
-.modern-card .card-header {
-    background: linear-gradient(135deg, var(--mining-primary), var(--mining-secondary));
-    border: none;
-    padding: 1.5rem;
-    border-radius: 0;
-}
-
-/* Form Controls Enhancement */
-.form-control-modern, .form-select-modern {
-    border: 2px solid #e9ecef;
-    border-radius: 0.75rem;
-    padding: 0.875rem 1.25rem;
-    font-size: 0.95rem;
-    transition: all 0.3s ease;
-    background: #ffffff;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-}
-
-.form-control-modern:focus, .form-select-modern:focus {
-    border-color: var(--mining-accent);
-    box-shadow: 0 0 0 0.25rem rgba(212, 175, 55, 0.15);
-    background-color: #fff;
-    transform: translateY(-1px);
-}
-
-.form-control-modern.is-invalid, .form-select-modern.is-invalid {
-    border-color: var(--mining-danger);
-    box-shadow: 0 0 0 0.25rem rgba(229, 62, 62, 0.15);
-    animation: shake 0.5s ease-in-out;
-}
-
-/* Button Enhancements */
-.btn {
-    border-radius: 0.75rem;
-    padding: 0.875rem 1.75rem;
-    font-weight: 600;
-    transition: all 0.3s ease;
-    border: none;
-    font-size: 0.95rem;
-}
-
-.btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
-}
-
-.btn-primary {
-    background: linear-gradient(135deg, var(--mining-primary), var(--mining-info));
-    color: white;
-    box-shadow: 0 4px 15px rgba(26, 54, 93, 0.3);
-}
-
-.btn-primary:hover {
-    background: linear-gradient(135deg, var(--mining-info), var(--mining-primary));
-    box-shadow: 0 6px 25px rgba(26, 54, 93, 0.4);
-}
-
-.btn-success {
-    background: linear-gradient(135deg, var(--mining-success), #48bb78);
-    color: white;
-    box-shadow: 0 4px 15px rgba(56, 161, 105, 0.3);
-}
-
-.btn-success:hover {
-    background: linear-gradient(135deg, #48bb78, var(--mining-success));
-    box-shadow: 0 6px 25px rgba(56, 161, 105, 0.4);
-}
-
-.btn-outline-secondary {
-    border: 2px solid var(--mining-secondary);
-    color: var(--mining-secondary);
-    background: transparent;
-}
-
-.btn-outline-secondary:hover {
-    background: var(--mining-secondary);
-    color: white;
-}
-
-/* Enhanced Animations and Effects */
-.pulse-animation {
-    animation: pulse 2s infinite;
-}
-
-@@keyframes pulse {
-    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(26, 54, 93, 0.4); }
-    70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(26, 54, 93, 0); }
-    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(26, 54, 93, 0); }
-}
-
-.shake-animation {
-    animation: shake 0.5s ease-in-out;
-}
-
-.btn-loading {
-    position: relative;
-    color: transparent !important;
-}
-
-.btn-loading::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 20px;
-    height: 20px;
-    margin: -10px 0 0 -10px;
-    border: 2px solid #ffffff;
-    border-radius: 50%;
-    border-top-color: transparent;
-    animation: spin 1s linear infinite;
-}
-
-@@keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-}
-
-/* Validation Alert Styles */
-.validation-alert {
-    border-left: 4px solid #dc3545;
-    margin-bottom: 1.5rem;
-    animation: slideDown 0.3s ease-out;
-}
-
-@@keyframes slideDown {
-    from { opacity: 0; transform: translateY(-10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
+/* Check Indicator Animation */
+.check-indicator {
+    animation: bounceIn 0.5s ease;
+}
+
+@@keyframes bounceIn {
+    0% { transform: scale(0); opacity: 0; }
+    50% { transform: scale(1.2); opacity: 1; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+/* Responsive Enhancements */
+@@media (max-width: 768px) {
+    .vehicle-card, .driver-card, .approver-card {
+        margin-bottom: 1rem;
+    }
+    
+    .step-circle {
+        width: 40px;
+        height: 40px;
+        font-size: 1.2rem;
+    }
+    
+    .step-circle.active::after {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .modern-card .card-header {
+        padding: 1rem;
+    }
+}
+
+/* Mining Company Theme Variables */
+:root {
+    --mining-primary: #0d6efd;
+    --mining-primary-light: #6ea8fe;
+    --mining-primary-dark: #0b5ed7;
+    --mining-primary-rgb: 13, 110, 253;
+}
+
+/* Loading States */
+.btn[disabled] {
+    opacity: 0.7;
+    transform: none !important;
+    cursor: not-allowed;
+}
+
+/* Smooth Scrolling */
+html {
+    scroll-behavior: smooth;
+}
+</style>
