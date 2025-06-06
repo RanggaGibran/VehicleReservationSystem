@@ -67,6 +67,44 @@ body {
   transform: translateY(-1px);
 }
 
+/* Responsive rules for navbar and mining-navbar */
+@media (max-width: 991.98px) {
+  .mining-navbar .navbar-nav {
+    background: linear-gradient(90deg, #1b263b 60%, #415a77 100%);
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    margin-top: 0.5rem;
+  }
+  .mining-navbar .navbar-nav .nav-link {
+    margin-bottom: 0.25rem;
+    border-radius: 0.375rem;
+    padding: 0.5rem 1rem;
+    text-align: left;
+  }
+  .mining-navbar .navbar-nav .dropdown-menu {
+    position: static;
+    float: none;
+    box-shadow: none;
+    margin-top: 0.25rem;
+    border-radius: 0.5rem;
+  }
+  .mining-navbar .navbar-brand {
+    font-size: 1.1rem;
+  }
+}
+@media (max-width: 575.98px) {
+  .mining-navbar .brand-main {
+    font-size: 1rem;
+  }
+  .mining-navbar .brand-sub {
+    font-size: 0.75rem;
+  }
+  .mining-navbar .navbar-brand {
+    padding-left: 0.25rem;
+  }
+}
+/* End responsive navbar rules */
+
 /* Main Content */
 .main-content {
   min-height: calc(100vh - 160px);
