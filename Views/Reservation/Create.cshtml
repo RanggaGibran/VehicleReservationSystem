@@ -469,7 +469,6 @@
         function handlePurposeChange() {
             const purposeSelect = document.getElementById('Purpose');
             const customPurposeDiv = document.getElementById('customPurposeDiv');
-            
             if (purposeSelect && customPurposeDiv) {
                 if (purposeSelect.value === 'Lainnya') {
                     customPurposeDiv.style.display = 'block';
@@ -483,226 +482,6 @@
                         customInput.value = '';
                     }
                 }
-            }        }
-
-        // Document ready
-        $(document).ready(function() {
-            // Set minimum date to today and clear any invalid initial values
-            const now = new Date();
-            const minDateTime = now.toISOString().slice(0, 16);
-            
-            // Clear any invalid initial values before setting constraints
-            const startDateInput = $("#StartDate");
-            const endDateInput = $("#EndDate");
-            
-            // Check if current values are before minimum and clear them if so
-            if (startDateInput.val() && new Date(startDateInput.val()) < now) {
-                startDateInput.val('');
-            }
-            if (endDateInput.val() && new Date(endDateInput.val()) < now) {
-                endDateInput.val('');
-            }
-            
-            startDateInput.attr('min', minDateTime);
-            endDateInput.attr('min', minDateTime);
-
-            // Auto-calculate end date when start date changes
-            $("#StartDate").change(function() {
-                const startDate = new Date($(this).val());
-                if (startDate) {
-                    const endDate = new Date(startDate);
-                    endDate.setHours(endDate.getHours() + 4); // Default 4 hours duration
-                    
-                    const year = endDate.getFullYear();
-                    const month = (endDate.getMonth() + 1).toString().padStart(2, '0');
-                    const day = endDate.getDate().toString().padStart(2, '0');
-                    const hours = endDate.getHours().toString().padStart(2, '0');
-                    const minutes = endDate.getMinutes().toString().padStart(2, '0');
-                    
-                    $("#EndDate").val(`${year}-${month}-${day}T${hours}:${minutes}`);
-                    $("#EndDate").attr('min', $(this).val());
-                    
-                    // Clear validation error if exists
-                    $("#StartDate").removeClass('is-invalid');
-                    $("#EndDate").removeClass('is-invalid');
-                }
-            });
-            
-            // Initialize approver counter
-            updateApproverCount();
-            
-            // Listen for approver checkbox changes with animation
-            $(document).on('change', '.approver-checkbox', function() {
-                updateApproverCount();
-                
-                // Add visual feedback
-                const card = $(this).closest('.approver-card');
-                if ($(this).is(':checked')) {
-                    card.addClass('border-success bg-success bg-opacity-10').removeClass('bg-light');
-                } else {
-                    card.removeClass('border-success bg-success bg-opacity-10').addClass('bg-light');
-                }
-            });
-            
-            // Real-time validation for all form fields
-            $('input, select').on('change blur', function() {
-                const field = $(this);
-                const fieldId = field.attr('id');
-                
-                // Remove validation error when user starts typing/selecting
-                if (field.val()) {
-                    field.removeClass('is-invalid');
-                    field.siblings('.text-danger').addClass('d-none');
-                }
-            });
-            
-            // Enhanced form validation
-            $("#reservationForm").on('submit', function(e) {
-                if (!validateCurrentStep()) {
-                    e.preventDefault();
-                    return false;
-                }
-                
-                // Show enhanced loading state
-                const submitBtn = $("#submitBtn");
-                const originalText = submitBtn.html();
-                submitBtn.html('<i class="bi bi-hourglass-split me-1"></i>Memproses reservasi...').prop('disabled', true);
-                
-                // Add progress animation
-                submitBtn.addClass('btn-loading');
-                
-                // If there's an error, restore button
-                setTimeout(() => {
-                    if (!submitBtn.prop('disabled')) {
-                        submitBtn.html(originalText).removeClass('btn-loading');
-                    }
-                }, 3000);
-            });
-            
-            // Initialize driver option visual state
-            selectDriverOption('no-driver');
-              // Initialize form
-            initializeForm();
-        });
-        
-        // Enhanced Vehicle preview function
-        function showVehiclePreview(select) {
-            const preview = $("#vehiclePreview");
-            const namePreview = $("#vehicleNamePreview");
-            const detailsPreview = $("#vehicleDetailsPreview");
-            const iconPreview = $("#vehicleIconPreview");
-            const capacityPreview = $("#vehicleCapacity");
-            const fuelTypePreview = $("#vehicleFuelType");
-            
-            if (select.value) {
-                const selectedText = select.options[select.selectedIndex].text;
-                const parts = selectedText.split(' - ');
-                const vehicleName = parts[0] || 'Kendaraan';
-                const vehicleDetails = parts[1] || 'Detail tidak tersedia';
-                
-                namePreview.html(`${vehicleName} <span class="badge bg-success ms-2 fs-6"><i class="bi bi-check-circle me-1"></i>Tersedia</span>`);
-                detailsPreview.text(vehicleDetails);
-                
-                // Enhanced icon selection based on vehicle type
-                let iconClass = 'bi-truck';
-                let capacity = '4-6 orang';
-                let fuelType = 'Solar';
-                
-                if (vehicleName.toLowerCase().includes('double cabin')) {
-                    iconClass = 'bi-truck-front-fill';
-                    capacity = '5 orang';
-                    fuelType = 'Solar';
-                } else if (vehicleName.toLowerCase().includes('suv')) {
-                    iconClass = 'bi-car-front-fill';
-                    capacity = '7 orang';
-                    fuelType = 'Bensin';
-                } else if (vehicleName.toLowerCase().includes('bus')) {
-                    iconClass = 'bi-bus-front-fill';
-                    capacity = '25-30 orang';
-                    fuelType = 'Solar';
-                } else if (vehicleName.toLowerCase().includes('sedan')) {
-                    iconClass = 'bi-car-front';
-                    capacity = '4 orang';
-                    fuelType = 'Bensin';
-                }
-                
-                iconPreview.html(`<i class="bi ${iconClass} text-success fs-1"></i>`);
-                capacityPreview.text(capacity);
-                fuelTypePreview.text(fuelType);
-                
-                preview.removeClass('d-none').hide().fadeIn(300);
-                
-                // Clear validation error if exists
-                $("#vehicleError").addClass('d-none');
-                $("#VehicleId").removeClass('is-invalid');
-                
-            } else {
-                preview.fadeOut(200, function() {
-                    $(this).addClass('d-none');
-                });
-            }
-        }
-        
-        // Enhanced Driver selection function
-        function selectDriverOption(option) {
-            const driverSelect = $("#driverSelectContainer");
-            const driverIdSelect = $("#DriverId");
-            const noDriverCard = $("#noDriverCard");
-            const specificDriverCard = $("#specificDriverCard");
-            
-            // Reset all cards
-            $(".driver-option-card").removeClass('active-option border-primary bg-primary bg-opacity-10');
-            
-            if (option === 'specific') {
-                driverSelect.removeClass('d-none').hide().slideDown(300);
-                specificDriverCard.addClass('active-option border-info bg-info bg-opacity-10');
-                specificDriverCard.find('i').removeClass('text-muted').addClass('text-info');
-                specificDriverCard.find('strong').addClass('text-info');
-            } else {
-                driverSelect.slideUp(300, function() {
-                    $(this).addClass('d-none');
-                });
-                driverIdSelect.val(''); // Clear driver selection
-                noDriverCard.addClass('active-option border-primary bg-primary bg-opacity-10');
-                noDriverCard.find('i').removeClass('text-muted').addClass('text-primary');
-            }        }
-        
-        // Enhanced Update approver count with better UX
-        function updateApproverCount() {
-            const selectedCount = $('.approver-checkbox:checked').length;
-            const progressBar = $('#approverProgressBar');
-            const feedback = $('#approverFeedback');
-            const minApprovers = 2;
-            const maxApprovers = 4;
-            
-            // Update progress bar
-            const percentage = Math.min((selectedCount / maxApprovers) * 100, 100);
-            progressBar.find('.progress-bar').css('width', percentage + '%');
-            
-            // Update feedback message with enhanced styling
-            let message = '';
-            let className = 'selected-approvers-info';
-            
-            if (selectedCount === 0) {
-                message = `<i class="bi bi-exclamation-triangle text-warning me-2"></i>Belum ada approver yang dipilih. Minimal ${minApprovers} approver diperlukan.`;
-                className += ' warning';
-            } else if (selectedCount < minApprovers) {
-                message = `<i class="bi bi-info-circle text-info me-2"></i>Sudah ${selectedCount} approver dipilih. Minimal ${minApprovers} approver diperlukan.`;
-                className += ' warning';
-            } else if (selectedCount <= maxApprovers) {
-                message = `<i class="bi bi-check-circle text-success me-2"></i>Perfect! ${selectedCount} approver telah dipilih.`;
-                className += ' success';
-            } else {
-                message = `<i class="bi bi-exclamation-circle text-warning me-2"></i>Terlalu banyak approver (${selectedCount}). Maksimal ${maxApprovers} approver.`;
-                className += ' warning';
-            }
-            
-            feedback.html(message).attr('class', className + ' p-3 rounded');
-            
-            // Update form validation
-            if (selectedCount >= minApprovers && selectedCount <= maxApprovers) {
-                $('#approverError').addClass('d-none');
-                $('.approver-container').removeClass('is-invalid');
             }
         }
 
@@ -711,63 +490,34 @@
             if (!validateCurrentStep()) {
                 return false;
             }
-            
-            // Update step circle states
-            updateStepCircle(currentStep, false, true); // Mark current as completed
+            updateStepCircle(currentStep, false, true);
             currentStep = step;
-            updateStepCircle(currentStep, true, false); // Mark new step as active
-            
-            // Show/hide form steps with animation
-            $('.form-step').removeClass('active').fadeOut(200, function() {
-                $('#step' + step).addClass('active').fadeIn(300);
-            });
-            
-            // Scroll to top smoothly
-            $('html, body').animate({
-                scrollTop: $('.progress-steps').offset().top - 100
-            }, 500);
-            
+            updateStepCircle(currentStep, true, false);
+            $('.form-step').removeClass('active').hide();
+            $('#step' + step).addClass('active').show();
             return true;
         }
 
         // Navigate to previous step
         function previousStep(step) {
-            // Update step circle states
-            updateStepCircle(currentStep, false, false); // Mark current as inactive
+            updateStepCircle(currentStep, false, false);
             currentStep = step;
-            updateStepCircle(currentStep, true, false); // Mark new step as active
-            
-            // Show/hide form steps with animation
-            $('.form-step').removeClass('active').fadeOut(200, function() {
-                $('#step' + step).addClass('active').fadeIn(300);
-            });
-            
-            // Scroll to top smoothly
-            $('html, body').animate({
-                scrollTop: $('.progress-steps').offset().top - 100
-            }, 500);
+            updateStepCircle(currentStep, true, false);
+            $('.form-step').removeClass('active').hide();
+            $('#step' + step).addClass('active').show();
         }
 
         // Update step circle appearance
         function updateStepCircle(stepNum, isActive, isCompleted) {
             const circle = $('#stepCircle' + stepNum);
-            
-            // Remove all states
-            circle.removeClass('active completed');
-            
+            if (!circle.length) return;
+            circle.removeClass('active completed pulse-animation');
             if (isCompleted) {
                 circle.addClass('completed');
-                // Add completion animation
-                circle.find('i').fadeOut(150, function() {
-                    $(this).removeClass().addClass('bi bi-check-lg').fadeIn(150);
-                });
+                circle.find('i').removeClass().addClass('bi bi-check-lg');
             } else if (isActive) {
-                circle.addClass('active');
-                // Add pulsing animation
-                circle.addClass('pulse-animation');
+                circle.addClass('active pulse-animation');
             } else {
-                circle.removeClass('pulse-animation');
-                // Restore original icon based on step
                 const originalIcons = {
                     1: 'bi-person-fill',
                     2: 'bi-truck',
@@ -782,186 +532,41 @@
         function validateCurrentStep() {
             let isValid = true;
             const step = currentStep;
-            
-            // Clear previous validation errors
             $('.is-invalid').removeClass('is-invalid');
             $('.text-danger').addClass('d-none');
-            
             if (step === 1) {
-                // Validate requester information
                 const requesterId = $('#RequesterId').val();
                 const passengers = $('#NumberOfPassengers').val();
                 const purpose = $('#Purpose').val();
-                
-                if (!requesterId) {
-                    showFieldError('#RequesterId', 'Pemohon harus dipilih');
-                    isValid = false;
-                }
-                
-                if (!passengers || passengers < 1 || passengers > 50) {
-                    showFieldError('#NumberOfPassengers', 'Jumlah penumpang harus antara 1-50 orang');
-                    isValid = false;
-                }
-                
-                if (!purpose) {
-                    showFieldError('#Purpose', 'Tujuan penggunaan harus dipilih');
-                    isValid = false;
-                }
-                
-                // Validate custom purpose if "Lainnya" selected
+                if (!requesterId) isValid = false;
+                if (!passengers || passengers < 1 || passengers > 50) isValid = false;
+                if (!purpose) isValid = false;
                 if (purpose === 'Lainnya') {
                     const customPurpose = $('#customPurpose').val();
-                    if (!customPurpose || customPurpose.trim().length < 5) {
-                        showFieldError('#customPurpose', 'Jelaskan tujuan minimal 5 karakter');
-                        isValid = false;
-                    }
+                    if (!customPurpose || customPurpose.trim().length < 5) isValid = false;
                 }
-                
             } else if (step === 2) {
-                // Validate vehicle and driver selection
-                const vehicleId = $('#VehicleId').val();
-                
-                if (!vehicleId) {
-                    showFieldError('#VehicleId', 'Kendaraan harus dipilih');
-                    isValid = false;
-                }
-                
+                if (!$('#VehicleId').val()) isValid = false;
             } else if (step === 3) {
-                // Validate schedule and destination
-                const startDate = $('#StartDate').val();
-                const endDate = $('#EndDate').val();
-                const destination = $('#Destination').val();
-                
-                if (!startDate) {
-                    showFieldError('#StartDate', 'Tanggal dan waktu mulai harus diisi');
-                    isValid = false;
-                }
-                
-                if (!endDate) {
-                    showFieldError('#EndDate', 'Tanggal dan waktu selesai harus diisi');
-                    isValid = false;
-                }
-                
-                if (!destination || destination.trim().length < 3) {
-                    showFieldError('#Destination', 'Tujuan harus diisi minimal 3 karakter');
-                    isValid = false;
-                }
-                
-                // Validate date range
-                if (startDate && endDate) {
-                    const start = new Date(startDate);
-                    const end = new Date(endDate);
-                    const now = new Date();
-                    
-                    if (start < now) {
-                        showFieldError('#StartDate', 'Waktu mulai tidak boleh di masa lalu');
-                        isValid = false;
-                    }
-                    
-                    if (end <= start) {
-                        showFieldError('#EndDate', 'Waktu selesai harus setelah waktu mulai');
-                        isValid = false;
-                    }
-                    
-                    // Check if duration is reasonable (max 7 days)
-                    const diffHours = (end - start) / (1000 * 60 * 60);
-                    if (diffHours > 168) { // 7 days
-                        showFieldError('#EndDate', 'Durasi reservasi maksimal 7 hari');
-                        isValid = false;
-                    }
-                }
-                
+                if (!$('#StartDate').val() || !$('#EndDate').val() || !$('#Destination').val()) isValid = false;
             } else if (step === 4) {
-                // Validate approver selection
                 const selectedApprovers = $('.approver-checkbox:checked').length;
-                const minApprovers = 2;
-                const maxApprovers = 4;
-                
-                if (selectedApprovers < minApprovers) {
-                    $('#approverError').text(`Minimal ${minApprovers} approver harus dipilih`).removeClass('d-none');
-                    isValid = false;
-                }
-                
-                if (selectedApprovers > maxApprovers) {
-                    $('#approverError').text(`Maksimal ${maxApprovers} approver dapat dipilih`).removeClass('d-none');
-                    isValid = false;
-                }
+                if (selectedApprovers < 2 || selectedApprovers > 4) isValid = false;
             }
-            
-            // Show validation summary if there are errors
-            if (!isValid) {
-                showValidationAlert('Harap perbaiki kesalahan pada formulir sebelum melanjutkan.');
-                
-                // Scroll to first error
-                const firstError = $('.is-invalid').first();
-                if (firstError.length) {
-                    $('html, body').animate({
-                        scrollTop: firstError.offset().top - 100
-                    }, 500);
-                }
-            }
-            
             return isValid;
         }
 
-        // Show field error
-        function showFieldError(fieldSelector, message) {
-            const field = $(fieldSelector);
-            field.addClass('is-invalid');
-            
-            // Find or create error message element
-            let errorElement = field.siblings('.text-danger');
-            if (errorElement.length === 0) {
-                errorElement = $('<span class="text-danger small"></span>');
-                field.after(errorElement);
-            }
-            
-            errorElement.text(message).removeClass('d-none');
-            
-            // Add shake animation
-            field.addClass('shake-animation');
-            setTimeout(() => field.removeClass('shake-animation'), 500);
-        }
+        // Initialize form wizard on document ready
+        $(document).ready(function() {
+            initializeForm();
+        });
 
-        // Show validation alert
-        function showValidationAlert(message) {
-            const alertHtml = `
-                <div class="alert alert-danger alert-dismissible fade show validation-alert" role="alert">
-                    <i class="bi bi-exclamation-triangle me-2"></i>
-                    <strong>Validasi Error:</strong> ${message}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-            `;
-            
-            // Remove existing alerts
-            $('.validation-alert').remove();
-            
-            // Add new alert at the top of the form
-            $('#reservationForm').prepend(alertHtml);
-            
-            // Auto-hide after 5 seconds
-            setTimeout(() => {
-                $('.validation-alert').alert('close');
-            }, 5000);
-        }
-
-        // Initialize form
+        // Initialize form wizard
         function initializeForm() {
-            // Set initial step
             currentStep = 1;
             updateStepCircle(1, true, false);
-            
-            // Show only first step
             $('.form-step').removeClass('active').hide();
             $('#step1').addClass('active').show();
-            
-            // Initialize date constraints
-            const now = new Date();
-            const minDateTime = now.toISOString().slice(0, 16);
-            $('#StartDate, #EndDate').attr('min', minDateTime);
-            
-            // Initialize tooltips
-            $('[data-bs-toggle="tooltip"]').tooltip();
         }
     </script>
 }
@@ -1620,6 +1225,666 @@
 .form-control-modern.is-invalid, .form-select-modern.is-invalid {
     border-color: var(--mining-danger);
     box-shadow: 0 0 0 0.25rem rgba(229, 62, 62, 0.15);
+    animation: shake 0.5s ease-in-out;
+}
+
+/* Button Enhancements */
+.btn {
+    border-radius: 0.75rem;
+    padding: 0.875rem 1.75rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    border: none;
+    font-size: 0.95rem;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--mining-primary), var(--mining-info));
+    color: white;
+    box-shadow: 0 4px 15px rgba(26, 54, 93, 0.3);
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, var(--mining-info), var(--mining-primary));
+    box-shadow: 0 6px 25px rgba(26, 54, 93, 0.4);
+}
+
+.btn-success {
+    background: linear-gradient(135deg, var(--mining-success), #48bb78);
+    color: white;
+    box-shadow: 0 4px 15px rgba(56, 161, 105, 0.3);
+}
+
+.btn-success:hover {
+    background: linear-gradient(135deg, #48bb78, var(--mining-success));
+    box-shadow: 0 6px 25px rgba(56, 161, 105, 0.4);
+}
+
+.btn-outline-secondary {
+    border: 2px solid var(--mining-secondary);
+    color: var(--mining-secondary);
+    background: transparent;
+}
+
+.btn-outline-secondary:hover {
+    background: var(--mining-secondary);
+    color: white;
+}
+
+/* Enhanced Animations and Effects */
+.pulse-animation {
+    animation: pulse 2s infinite;
+}
+
+@@keyframes pulse {
+    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(26, 54, 93, 0.4); }
+    70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(26, 54, 93, 0); }
+    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(26, 54, 93, 0); }
+}
+
+.shake-animation {
+    animation: shake 0.5s ease-in-out;
+}
+
+.btn-loading {
+    position: relative;
+    color: transparent !important;
+}
+
+.btn-loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid #ffffff;
+    border-radius: 50%;
+    border-top-color: transparent;
+    animation: spin 1s linear infinite;
+}
+
+@@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Validation Alert Styles */
+.validation-alert {
+    border-left: 4px solid #dc3545;
+    margin-bottom: 1.5rem;
+    animation: slideDown 0.3s ease-out;
+}
+
+@@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Enhanced Step Circle Styles */
+.step-circle {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #e9ecef, #f8f9fa);
+    border: 3px solid #dee2e6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #6c757d;
+    font-size: 1.5rem;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    margin: 0 auto;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.step-circle::before {
+    content: '';
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    right: -5px;
+    bottom: -5px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--mining-primary), var(--mining-accent));
+    opacity: 0;
+    transition: all 0.4s ease;
+    z-index: -1;
+}
+
+.step-circle.active {
+    background: linear-gradient(135deg, var(--mining-primary), var(--mining-secondary));
+    border-color: var(--mining-primary);
+    color: white;
+    transform: scale(1.1);
+    box-shadow: 0 8px 25px rgba(26, 54, 93, 0.3);
+}
+
+.step-circle.active::before {
+    opacity: 1;
+    animation: ripple 2s infinite;
+}
+
+.step-circle.completed {
+    background: linear-gradient(135deg, var(--mining-success), #48bb78);
+    border-color: var(--mining-success);
+    color: white;
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(56, 161, 105, 0.3);
+}
+
+@@keyframes ripple {
+    0% { transform: scale(1); opacity: 1; }
+    100% { transform: scale(1.4); opacity: 0; }
+}
+
+/* Progress Steps Container */
+.progress-steps {
+    position: relative;
+}
+
+.progress-steps::before {
+    content: '';
+    position: absolute;
+    top: 30px;
+    left: 12.5%;
+    right: 12.5%;
+    height: 3px;
+    background: linear-gradient(to right, #dee2e6, #dee2e6);
+    z-index: -1;
+    border-radius: 2px;
+}
+
+/* Modern Card Styling */
+.modern-card {
+    border: none;
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.modern-card:hover {
+    box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+    transform: translateY(-2px);
+}
+
+.modern-card .card-header {
+    background: linear-gradient(135deg, var(--mining-primary), var(--mining-secondary));
+    border: none;
+    padding: 1.5rem;
+    border-radius: 0;
+}
+
+/* Form Controls Enhancement */
+.form-control-modern, .form-select-modern {
+    border: 2px solid #e9ecef;
+    border-radius: 0.75rem;
+    padding: 0.875rem 1.25rem;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    background: #ffffff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.form-control-modern:focus, .form-select-modern:focus {
+    border-color: var(--mining-accent);
+    box-shadow: 0 0 0 0.25rem rgba(212, 175, 55, 0.15);
+    background-color: #fff;
+    transform: translateY(-1px);
+}
+
+.form-control-modern.is-invalid, .form-select-modern.is-invalid {
+    border-color: var(--mining-danger);
+    box-shadow: 0 0 0 0.25rem rgba(229, 62, 62, 0.15);
+    animation: shake 0.5s ease-in-out;
+}
+
+/* Button Enhancements */
+.btn {
+    border-radius: 0.75rem;
+    padding: 0.875rem 1.75rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    border: none;
+    font-size: 0.95rem;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--mining-primary), var(--mining-info));
+    color: white;
+    box-shadow: 0 4px 15px rgba(26, 54, 93, 0.3);
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, var(--mining-info), var(--mining-primary));
+    box-shadow: 0 6px 25px rgba(26, 54, 93, 0.4);
+}
+
+.btn-success {
+    background: linear-gradient(135deg, var(--mining-success), #48bb78);
+    color: white;
+    box-shadow: 0 4px 15px rgba(56, 161, 105, 0.3);
+}
+
+.btn-success:hover {
+    background: linear-gradient(135deg, #48bb78, var(--mining-success));
+    box-shadow: 0 6px 25px rgba(56, 161, 105, 0.4);
+}
+
+.btn-outline-secondary {
+    border: 2px solid var(--mining-secondary);
+    color: var(--mining-secondary);
+    background: transparent;
+}
+
+.btn-outline-secondary:hover {
+    background: var(--mining-secondary);
+    color: white;
+}
+
+/* Enhanced Animations and Effects */
+.pulse-animation {
+    animation: pulse 2s infinite;
+}
+
+@@keyframes pulse {
+    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(26, 54, 93, 0.4); }
+    70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(26, 54, 93, 0); }
+    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(26, 54, 93, 0); }
+}
+
+.shake-animation {
+    animation: shake 0.5s ease-in-out;
+}
+
+.btn-loading {
+    position: relative;
+    color: transparent !important;
+}
+
+.btn-loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid #ffffff;
+    border-radius: 50%;
+    border-top-color: transparent;
+    animation: spin 1s linear infinite;
+}
+
+@@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Validation Alert Styles */
+.validation-alert {
+    border-left: 4px solid #dc3545;
+    margin-bottom: 1.5rem;
+    animation: slideDown 0.3s ease-out;
+}
+
+@@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Enhanced Step Circle Styles */
+.step-circle {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #e9ecef, #f8f9fa);
+    border: 3px solid #dee2e6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #6c757d;
+    font-size: 1.5rem;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    margin: 0 auto;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.step-circle::before {
+    content: '';
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    right: -5px;
+    bottom: -5px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--mining-primary), var(--mining-accent));
+    opacity: 0;
+    transition: all 0.4s ease;
+    z-index: -1;
+}
+
+.step-circle.active {
+    background: linear-gradient(135deg, var(--mining-primary), var(--mining-secondary));
+    border-color: var(--mining-primary);
+    color: white;
+    transform: scale(1.1);
+    box-shadow: 0 8px 25px rgba(26, 54, 93, 0.3);
+}
+
+.step-circle.active::before {
+    opacity: 1;
+    animation: ripple 2s infinite;
+}
+
+.step-circle.completed {
+    background: linear-gradient(135deg, var(--mining-success), #48bb78);
+    border-color: var(--mining-success);
+    color: white;
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(56, 161, 105, 0.3);
+}
+
+@@keyframes ripple {
+    0% { transform: scale(1); opacity: 1; }
+    100% { transform: scale(1.4); opacity: 0; }
+}
+
+/* Progress Steps Container */
+.progress-steps {
+    position: relative;
+}
+
+.progress-steps::before {
+    content: '';
+    position: absolute;
+    top: 30px;
+    left: 12.5%;
+    right: 12.5%;
+    height: 3px;
+    background: linear-gradient(to right, #dee2e6, #dee2e6);
+    z-index: -1;
+    border-radius: 2px;
+}
+
+/* Modern Card Styling */
+.modern-card {
+    border: none;
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.modern-card:hover {
+    box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+    transform: translateY(-2px);
+}
+
+.modern-card .card-header {
+    background: linear-gradient(135deg, var(--mining-primary), var(--mining-secondary));
+    border: none;
+    padding: 1.5rem;
+    border-radius: 0;
+}
+
+/* Form Controls Enhancement */
+.form-control-modern, .form-select-modern {
+    border: 2px solid #e9ecef;
+    border-radius: 0.75rem;
+    padding: 0.875rem 1.25rem;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    background: #ffffff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.form-control-modern:focus, .form-select-modern:focus {
+    border-color: var(--mining-accent);
+    box-shadow: 0 0 0 0.25rem rgba(212, 175, 55, 0.15);
+    background-color: #fff;
+    transform: translateY(-1px);
+}
+
+.form-control-modern.is-invalid, .form-select-modern.is-invalid {
+    border-color: var(--mining-danger);
+    box-shadow: 0 0 0 0.25rem rgba(229, 62, 62, 0.15);
+    animation: shake 0.5s ease-in-out;
+}
+
+/* Button Enhancements */
+.btn {
+    border-radius: 0.75rem;
+    padding: 0.875rem 1.75rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    border: none;
+    font-size: 0.95rem;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--mining-primary), var(--mining-info));
+    color: white;
+    box-shadow: 0 4px 15px rgba(26, 54, 93, 0.3);
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, var(--mining-info), var(--mining-primary));
+    box-shadow: 0 6px 25px rgba(26, 54, 93, 0.4);
+}
+
+.btn-success {
+    background: linear-gradient(135deg, var(--mining-success), #48bb78);
+    color: white;
+    box-shadow: 0 4px 15px rgba(56, 161, 105, 0.3);
+}
+
+.btn-success:hover {
+    background: linear-gradient(135deg, #48bb78, var(--mining-success));
+    box-shadow: 0 6px 25px rgba(56, 161, 105, 0.4);
+}
+
+.btn-outline-secondary {
+    border: 2px solid var(--mining-secondary);
+    color: var(--mining-secondary);
+    background: transparent;
+}
+
+.btn-outline-secondary:hover {
+    background: var(--mining-secondary);
+    color: white;
+}
+
+/* Enhanced Animations and Effects */
+.pulse-animation {
+    animation: pulse 2s infinite;
+}
+
+@@keyframes pulse {
+    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(26, 54, 93, 0.4); }
+    70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(26, 54, 93, 0); }
+    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(26, 54, 93, 0); }
+}
+
+.shake-animation {
+    animation: shake 0.5s ease-in-out;
+}
+
+.btn-loading {
+    position: relative;
+    color: transparent !important;
+}
+
+.btn-loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid #ffffff;
+    border-radius: 50%;
+    border-top-color: transparent;
+    animation: spin 1s linear infinite;
+}
+
+@@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Validation Alert Styles */
+.validation-alert {
+    border-left: 4px solid #dc3545;
+    margin-bottom: 1.5rem;
+    animation: slideDown 0.3s ease-out;
+}
+
+@@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Enhanced Step Circle Styles */
+.step-circle {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #e9ecef, #f8f9fa);
+    border: 3px solid #dee2e6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #6c757d;
+    font-size: 1.5rem;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    margin: 0 auto;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.step-circle::before {
+    content: '';
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    right: -5px;
+    bottom: -5px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--mining-primary), var(--mining-accent));
+    opacity: 0;
+    transition: all 0.4s ease;
+    z-index: -1;
+}
+
+.step-circle.active {
+    background: linear-gradient(135deg, var(--mining-primary), var(--mining-secondary));
+    border-color: var(--mining-primary);
+    color: white;
+    transform: scale(1.1);
+    box-shadow: 0 8px 25px rgba(26, 54, 93, 0.3);
+}
+
+.step-circle.active::before {
+    opacity: 1;
+    animation: ripple 2s infinite;
+}
+
+.step-circle.completed {
+    background: linear-gradient(135deg, var(--mining-success), #48bb78);
+    border-color: var(--mining-success);
+    color: white;
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(56, 161, 105, 0.3);
+}
+
+@@keyframes ripple {
+    0% { transform: scale(1); opacity: 1; }
+    100% { transform: scale(1.4); opacity: 0; }
+}
+
+/* Progress Steps Container */
+.progress-steps {
+    position: relative;
+}
+
+.progress-steps::before {
+    content: '';
+    position: absolute;
+    top: 30px;
+    left: 12.5%;
+    right: 12.5%;
+    height: 3px;
+    background: linear-gradient(to right, #dee2e6, #dee2e6);
+    z-index: -1;
+    border-radius: 2px;
+}
+
+/* Modern Card Styling */
+.modern-card {
+    border: none;
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.modern-card:hover {
+    box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+    transform: translateY(-2px);
+}
+
+.modern-card .card-header {
+    background: linear-gradient(135deg, var(--mining-primary), var(--mining-secondary));
+    border: none;
+    padding: 1.5rem;
+    border-radius: 0;
+}
+
+/* Form Controls Enhancement */
+.form-control-modern, .form-select-modern {
+    border: 2px solid #e9ecef;
+    border-radius: 0.75rem;
+    padding: 0.875rem 1.25rem;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    background: #ffffff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.form-control-modern:focus, .form-select-modern:focus {
+    border-color: var(--mining-accent);
+    box-shadow: 0 0 0 0.25rem rgba(212, 175, 55, 0.15);
+    background-color: #fff;
+    transform: translateY(-1px);
+}
+
+.form-control-modern.is-invalid, .form-select-modern.is-invalid {
+    border-color: var(--mining-danger);
+       box-shadow: 0 0 0 0.25rem rgba(229, 62, 62, 0.15);
     animation: shake 0.5s ease-in-out;
 }
 
