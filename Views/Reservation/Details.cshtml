@@ -7,7 +7,7 @@
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
         <h1 class="mb-1">
-            <i class="bi bi-info-circle text-primary me-2"></i>Detail Reservasi #@Model.Id.ToString("D4")
+            <i class="bi bi-info-circle text-primary me-2"></i>Detail Reservasi #@Model?.Id.ToString("D4")
         </h1>
         <p class="text-muted mb-0">
             <i class="bi bi-calendar-check me-1"></i>Informasi lengkap reservasi kendaraan
@@ -90,12 +90,12 @@
                             </label>
                             <div class="d-flex align-items-center">
                                 <div class="avatar-circle bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
-                                    @Model.Requester.FullName.Substring(0, 1).ToUpper()
+                                    @(Model?.Requester?.FullName != null ? Model.Requester.FullName.Substring(0, 1).ToUpper() : "-")
                                 </div>
                                 <div>
-                                    <div class="fw-medium">@Model.Requester.FullName</div>
-                                    <small class="text-muted">@Model.Requester.Email</small>
-                                    @if (!string.IsNullOrEmpty(Model.Requester.Position))
+                                    <div class="fw-medium">@Model?.Requester?.FullName ?? "-"</div>
+                                    <small class="text-muted">@Model?.Requester?.Email ?? "-"</small>
+                                    @if (!string.IsNullOrEmpty(Model?.Requester?.Position))
                                     {
                                         <br><small class="text-muted">@Model.Requester.Position</small>
                                     }
@@ -115,9 +115,9 @@
                                     <i class="bi bi-truck"></i>
                                 </div>
                                 <div>
-                                    <div class="fw-medium">@Model.Vehicle.Brand @Model.Vehicle.Model</div>
-                                    <small class="text-muted">@Model.Vehicle.RegistrationNumber</small>
-                                    <br><small class="badge bg-secondary">@Model.Vehicle.VehicleType.Name</small>
+                                    <div class="fw-medium">@Model?.Vehicle?.Brand ?? "-" @Model?.Vehicle?.Model ?? ""</div>
+                                    <small class="text-muted">@Model?.Vehicle?.RegistrationNumber ?? "-"</small>
+                                    <br><small class="badge bg-secondary">@Model?.Vehicle?.VehicleType?.Name ?? "-"</small>
                                 </div>
                             </div>
                         </div>
@@ -243,7 +243,7 @@
 </div>
 
 <!-- Approval History -->
-@if (Model.Approvals.Any())
+@if (Model?.Approvals != null && Model.Approvals.Any())
 {
     <div class="row g-4 mt-2">
         <div class="col-12">
@@ -282,11 +282,11 @@
                                         <td class="align-middle">
                                             <div class="d-flex align-items-center">
                                                 <div class="avatar-circle bg-secondary text-white rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px; font-size: 12px;">
-                                                    @approval.Approver.FullName.Substring(0, 1).ToUpper()
+                                                    @(approval?.Approver?.FullName != null ? approval.Approver.FullName.Substring(0, 1).ToUpper() : "-")
                                                 </div>
                                                 <div>
-                                                    <div class="fw-medium">@approval.Approver.FullName</div>
-                                                    <small class="text-muted">@approval.Approver.Position</small>
+                                                    <div class="fw-medium">@approval?.Approver?.FullName ?? "-"</div>
+                                                    <small class="text-muted">@approval?.Approver?.Position ?? "-"</small>
                                                 </div>
                                             </div>
                                         </td>
