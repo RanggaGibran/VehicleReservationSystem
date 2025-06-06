@@ -410,3 +410,500 @@ body {
 .alert-success { border-left-color: var(--mining-success); }
 .alert-warning { border-left-color: var(--mining-warning); }
 .alert-danger { border-left-color: var(--mining-danger); }
+
+/* ===== CREATE RESERVATION PAGE STYLING ===== */
+
+/* Modern Card Design */
+.modern-card {
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.modern-card:hover {
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* Step Circles and Progress */
+.step-circle {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: #e9ecef;
+  border: 3px solid #dee2e6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 2;
+}
+
+.step-circle i {
+  font-size: 1.5rem;
+  color: #6c757d;
+  transition: all 0.3s ease;
+}
+
+.step-circle.active {
+  background: linear-gradient(135deg, var(--mining-primary) 0%, var(--mining-secondary) 100%);
+  border-color: var(--mining-primary);
+  box-shadow: 0 4px 15px rgba(26, 54, 93, 0.3);
+}
+
+.step-circle.active i {
+  color: white;
+}
+
+.step-circle.completed {
+  background: linear-gradient(135deg, var(--mining-success) 0%, #28a745 100%);
+  border-color: var(--mining-success);
+}
+
+.step-circle.completed i {
+  color: white;
+}
+
+.step-number {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: var(--mining-gold);
+  color: white;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: bold;
+  box-shadow: 0 2px 8px rgba(212, 175, 55, 0.4);
+}
+
+/* Step Connectors */
+.step-connector {
+  position: absolute;
+  top: 50%;
+  left: 60px;
+  right: -60px;
+  height: 3px;
+  background: linear-gradient(90deg, #dee2e6 0%, #e9ecef 100%);
+  z-index: 1;
+  transform: translateY(-50%);
+}
+
+.step-circle.active ~ .step-connector,
+.step-circle.completed ~ .step-connector {
+  background: linear-gradient(90deg, var(--mining-primary) 0%, var(--mining-secondary) 100%);
+}
+
+/* Form Steps */
+.form-step {
+  display: none;
+}
+
+.form-step.active {
+  display: block;
+  animation: fadeInSlide 0.4s ease-in-out;
+}
+
+@keyframes fadeInSlide {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Step Headers */
+.step-header {
+  border-bottom: 2px solid #f8f9fa;
+  padding-bottom: 1rem;
+  margin-bottom: 2rem;
+}
+
+.step-header h6 {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+/* Enhanced Form Controls */
+.form-control-modern,
+.form-select-modern {
+  border: 2px solid #e9ecef;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+  background-color: #fff;
+}
+
+.form-control-modern:focus,
+.form-select-modern:focus {
+  border-color: var(--mining-primary);
+  box-shadow: 0 0 0 0.2rem rgba(26, 54, 93, 0.15);
+  background-color: #fff;
+}
+
+.form-control-modern:hover,
+.form-select-modern:hover {
+  border-color: var(--mining-secondary);
+}
+
+/* Vehicle Preview */
+.vehicle-preview {
+  animation: slideInUp 0.4s ease-out;
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.vehicle-icon-large {
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+  border-radius: 50%;
+}
+
+/* Driver Options */
+.driver-option-card {
+  border: 2px solid #e9ecef !important;
+  background-color: #f8f9fa;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.driver-option-card:hover {
+  border-color: var(--mining-secondary) !important;
+  background-color: #fff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.driver-option-card.active-option {
+  border-color: var(--mining-primary) !important;
+  background: linear-gradient(135deg, rgba(26, 54, 93, 0.05) 0%, rgba(52, 144, 220, 0.05) 100%);
+  box-shadow: 0 4px 15px rgba(26, 54, 93, 0.15);
+}
+
+.driver-select-container {
+  animation: fadeInDown 0.3s ease-out;
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Approver Cards */
+.approver-card {
+  border: 2px solid #e9ecef !important;
+  background-color: #f8f9fa;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.approver-card:hover {
+  border-color: var(--mining-secondary) !important;
+  background-color: #fff;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.approver-card.border-success {
+  border-color: var(--mining-success) !important;
+  background: linear-gradient(135deg, rgba(40, 167, 69, 0.05) 0%, rgba(25, 135, 84, 0.05) 100%);
+  box-shadow: 0 6px 20px rgba(40, 167, 69, 0.2);
+}
+
+.approver-avatar {
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.approver-card.border-success .approver-avatar {
+  background: linear-gradient(135deg, var(--mining-success) 0%, #28a745 100%);
+}
+
+.approver-card.border-success .approver-avatar i {
+  color: white;
+}
+
+.approver-checkbox {
+  width: 1.5rem !important;
+  height: 1.5rem !important;
+  border: 2px solid #dee2e6;
+  border-radius: 4px;
+}
+
+.approver-checkbox:checked {
+  background-color: var(--mining-success);
+  border-color: var(--mining-success);
+}
+
+.check-indicator {
+  transition: all 0.3s ease;
+}
+
+.approver-card.border-success .check-indicator {
+  display: block !important;
+  animation: bounceIn 0.4s ease-out;
+}
+
+@keyframes bounceIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+  70% {
+    transform: scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Approver Progress */
+.approver-progress .progress {
+  background-color: #e9ecef;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.approver-progress .progress-bar {
+  background: linear-gradient(90deg, var(--mining-primary) 0%, var(--mining-secondary) 100%);
+  transition: width 0.6s ease;
+}
+
+/* Selected Approvers Feedback */
+#approverFeedback {
+  border: 2px solid #ffc107 !important;
+  background: linear-gradient(135deg, rgba(255, 193, 7, 0.05) 0%, rgba(255, 193, 7, 0.1) 100%);
+  transition: all 0.3s ease;
+}
+
+#approverFeedback.success-state {
+  border-color: var(--mining-success) !important;
+  background: linear-gradient(135deg, rgba(40, 167, 69, 0.05) 0%, rgba(25, 135, 84, 0.05) 100%);
+}
+
+.feedback-icon {
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 193, 7, 0.1);
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+#approverFeedback.success-state .feedback-icon {
+  background: rgba(40, 167, 69, 0.1);
+}
+
+#approverFeedback.success-state .feedback-icon i {
+  color: var(--mining-success) !important;
+}
+
+/* Mining-themed Buttons */
+.btn-mining-primary {
+  background: linear-gradient(135deg, var(--mining-primary) 0%, var(--mining-secondary) 100%);
+  border: none;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(26, 54, 93, 0.3);
+}
+
+.btn-mining-primary:hover {
+  background: linear-gradient(135deg, #0f2027 0%, var(--mining-primary) 100%);
+  box-shadow: 0 6px 20px rgba(26, 54, 93, 0.4);
+  transform: translateY(-2px);
+  color: white;
+}
+
+.btn-mining-success {
+  background: linear-gradient(135deg, var(--mining-success) 0%, #28a745 100%);
+  border: none;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+}
+
+.btn-mining-success:hover {
+  background: linear-gradient(135deg, #1e7e34 0%, var(--mining-success) 100%);
+  box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+  transform: translateY(-2px);
+  color: white;
+}
+
+.btn-outline-mining-secondary {
+  border: 2px solid var(--mining-secondary);
+  color: var(--mining-secondary);
+  background: transparent;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.btn-outline-mining-secondary:hover {
+  background: var(--mining-secondary);
+  color: white;
+  box-shadow: 0 4px 12px rgba(52, 144, 220, 0.3);
+  transform: translateY(-2px);
+}
+
+/* Mining Gradient Backgrounds */
+.bg-mining-gradient {
+  background: linear-gradient(135deg, var(--mining-primary) 0%, var(--mining-secondary) 100%);
+}
+
+/* Enhanced Alerts */
+.alert.border-0 {
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+.alert-icon {
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Form Group Enhancements */
+.form-group .form-label {
+  font-weight: 500;
+  color: #495057;
+  margin-bottom: 0.5rem;
+}
+
+.form-group .form-label i {
+  opacity: 0.7;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .step-circle {
+    width: 50px;
+    height: 50px;
+  }
+  
+  .step-circle i {
+    font-size: 1.2rem;
+  }
+  
+  .step-number {
+    width: 20px;
+    height: 20px;
+    font-size: 0.7rem;
+    top: -6px;
+    right: -6px;
+  }
+  
+  .step-connector {
+    display: none !important;
+  }
+  
+  .approver-card {
+    margin-bottom: 1rem !important;
+  }
+  
+  .btn-mining-primary,
+  .btn-mining-success,
+  .btn-outline-mining-secondary {
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
+}
+
+/* Badge Styling */
+.badge.bg-light {
+  background-color: #f8f9fa !important;
+  border: 1px solid #dee2e6;
+}
+
+/* Input Group Enhancements */
+.input-group .form-control-modern,
+.input-group .form-select-modern {
+  border-right: none;
+}
+
+.input-group .form-control-modern:focus,
+.input-group .form-select-modern:focus {
+  border-right: 2px solid var(--mining-primary);
+}
+
+/* Loading States */
+.btn.loading {
+  position: relative;
+  color: transparent !important;
+}
+
+.btn.loading::after {
+  content: "";
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  top: 50%;
+  left: 50%;
+  margin-left: -8px;
+  margin-top: -8px;
+  border: 2px solid #ffffff;
+  border-radius: 50%;
+  border-top-color: transparent;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ===== END CREATE RESERVATION STYLING ===== */

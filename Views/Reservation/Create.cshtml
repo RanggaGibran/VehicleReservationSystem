@@ -335,22 +335,20 @@
                         </div>
                     </div>
                 </div>
-                
-                <div class="form-group mb-4">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <label class="form-label fw-medium mb-0">
-                            <i class="bi bi-people-fill text-muted me-1"></i>Pilih Penyetuju <span class="text-danger">*</span>
+                  <div class="form-group mb-4">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <label class="form-label fw-semibold mb-0">
+                            <i class="bi bi-people-fill text-mining-primary me-2"></i>Pilih Penyetuju <span class="text-danger">*</span>
                         </label>
                         <div class="approver-progress">
-                            <div class="progress" style="width: 150px; height: 8px;">
-                                <div class="progress-bar bg-danger" role="progressbar" style="width: 0%" id="approverProgressBar"></div>
+                            <div class="progress shadow-sm" style="width: 180px; height: 12px; border-radius: 6px;">
+                                <div class="progress-bar bg-mining-primary" role="progressbar" style="width: 0%" id="approverProgressBar"></div>
                             </div>
-                            <small class="text-muted mt-1 d-block text-center">
-                                <span id="approversSelectedCount">0</span> / 2 minimum
+                            <small class="text-muted mt-2 d-block text-center">
+                                <span id="approversSelectedCount" class="fw-semibold text-mining-primary">0</span> / 2 minimum dipilih
                             </small>
                         </div>
-                    </div>
-                      <!-- Enhanced Approvers Checkboxes -->
+                    </div>                      <!-- Enhanced Approvers Checkboxes -->
                     <div class="approvers-container">
                         @if (Model.Approvers != null && Model.Approvers.Any())
                         {
@@ -358,17 +356,24 @@
                             {
                                 if (!string.IsNullOrEmpty(approver.Value))
                                 {
-                                    <div class="form-check mb-2 p-3 rounded approver-card" id="approverCard_@approver.Value">
-                                        <input class="form-check-input approver-checkbox" type="checkbox" name="ApproverIds" value="@approver.Value" id="approver_@approver.Value">
+                                    <div class="form-check mb-3 p-4 rounded-3 approver-card shadow-sm border" id="approverCard_@approver.Value">
+                                        <input class="form-check-input approver-checkbox fs-5" type="checkbox" name="ApproverIds" value="@approver.Value" id="approver_@approver.Value">
                                         <label class="form-check-label w-100" for="approver_@approver.Value">
                                             <div class="d-flex align-items-center">
-                                                <i class="bi bi-person-badge text-primary me-2 fs-5"></i>
+                                                <div class="approver-avatar me-3">
+                                                    <i class="bi bi-person-circle text-mining-secondary fs-1"></i>
+                                                </div>
                                                 <div class="flex-grow-1">
-                                                    <strong>@approver.Text</strong>
-                                                    <br><small class="text-muted">Klik untuk memilih sebagai penyetuju</small>
+                                                    <h6 class="mb-1 text-dark">@approver.Text</h6>
+                                                    <small class="text-muted">Klik untuk memilih sebagai penyetuju</small>
+                                                    <div class="approver-badges mt-2">
+                                                        <span class="badge bg-light text-muted">
+                                                            <i class="bi bi-shield-check me-1"></i>Berwenang
+                                                        </span>
+                                                    </div>
                                                 </div>
                                                 <div class="check-indicator d-none">
-                                                    <i class="bi bi-check-circle-fill text-success fs-5"></i>
+                                                    <i class="bi bi-check-circle-fill text-success fs-3"></i>
                                                 </div>
                                             </div>
                                         </label>
@@ -378,27 +383,30 @@
                         }
                         else
                         {
-                            <div class="alert alert-warning">
-                                <div class="d-flex align-items-center">
-                                    <i class="bi bi-exclamation-triangle me-2 text-warning fs-5"></i>
+                            <div class="alert alert-warning border-0 shadow-sm">
+                                <div class="d-flex align-items-start">
+                                    <div class="alert-icon me-3">
+                                        <i class="bi bi-exclamation-triangle-fill text-warning fs-4"></i>
+                                    </div>
                                     <div>
-                                        <strong>Tidak Ada Penyetuju Tersedia</strong>
+                                        <h6 class="alert-heading text-warning mb-2">Tidak Ada Penyetuju Tersedia</h6>
                                         <p class="mb-0">Saat ini tidak ada penyetuju yang tersedia dalam sistem. Silakan hubungi administrator untuk menambahkan penyetuju.</p>
                                     </div>
                                 </div>
                             </div>
                         }
                     </div>
-                    
-                    <div class="selected-approvers-info mt-3 p-3 rounded bg-light" id="approverFeedback">
+                      <div class="selected-approvers-info mt-4 p-4 rounded-3 bg-light border" id="approverFeedback">
                         <div class="d-flex align-items-center">
-                            <i class="bi bi-exclamation-triangle text-warning me-2 fs-5" id="approverIcon"></i>
-                            <div>
-                                <small class="fw-medium" id="approverMessage">
+                            <div class="feedback-icon me-3">
+                                <i class="bi bi-exclamation-triangle text-warning fs-4" id="approverIcon"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <h6 class="mb-1" id="approverMessage">
                                     Pilih minimal 2 penyetuju untuk melanjutkan
-                                </small>
-                                <div class="selected-approvers-list mt-1" id="selectedApproversList" style="display: none;">
-                                    <small class="text-muted">Penyetuju yang dipilih: <span id="approverNames"></span></small>
+                                </h6>
+                                <div class="selected-approvers-list mt-2" id="selectedApproversList" style="display: none;">
+                                    <small class="text-muted">Penyetuju yang dipilih: <span id="approverNames" class="fw-semibold text-mining-primary"></span></small>
                                 </div>
                             </div>
                         </div>
@@ -406,13 +414,12 @@
                     
                     <span asp-validation-for="ApproverIds" class="text-danger small d-none" id="approverError"></span>
                 </div>
-                
-                <div class="d-flex justify-content-between">
-                    <button type="button" class="btn btn-outline-secondary" onclick="previousStep(3)">
+                  <div class="d-flex justify-content-between">
+                    <button type="button" class="btn btn-outline-mining-secondary" onclick="previousStep(3)">
                         <i class="bi bi-arrow-left me-1"></i>Sebelumnya
                     </button>
-                    <button type="submit" class="btn btn-success btn-lg px-4" id="submitBtn">
-                        <i class="bi bi-check-circle me-1"></i>Buat Reservasi
+                    <button type="submit" class="btn btn-mining-success btn-lg px-5 shadow" id="submitBtn">
+                        <i class="bi bi-check-circle me-2"></i>Buat Reservasi
                     </button>
                 </div>
             </div>
