@@ -21,39 +21,46 @@
 </div>
 
 <!-- Progress Steps -->
-<div class="card mb-4">
-    <div class="card-body">
+<div class="card mb-4 modern-card">
+    <div class="card-body py-4">
         <div class="row text-center">
-            <div class="col-3">
-                <div class="step-circle active">
+            <div class="col-3 position-relative">
+                <div class="step-circle active" id="stepCircle1">
                     <i class="bi bi-person-fill"></i>
                 </div>
-                <small class="text-muted d-block mt-2">Informasi Pemohon</small>
+                <div class="step-connector d-none d-md-block"></div>
+                <small class="text-primary fw-semibold d-block mt-2">Informasi Pemohon</small>
+                <div class="step-number">1</div>
             </div>
-            <div class="col-3">
-                <div class="step-circle">
+            <div class="col-3 position-relative">
+                <div class="step-circle" id="stepCircle2">
                     <i class="bi bi-truck"></i>
                 </div>
+                <div class="step-connector d-none d-md-block"></div>
                 <small class="text-muted d-block mt-2">Pilih Kendaraan</small>
+                <div class="step-number">2</div>
             </div>
-            <div class="col-3">
-                <div class="step-circle">
+            <div class="col-3 position-relative">
+                <div class="step-circle" id="stepCircle3">
                     <i class="bi bi-calendar-event"></i>
                 </div>
+                <div class="step-connector d-none d-md-block"></div>
                 <small class="text-muted d-block mt-2">Jadwal & Tujuan</small>
+                <div class="step-number">3</div>
             </div>
-            <div class="col-3">
-                <div class="step-circle">
+            <div class="col-3 position-relative">
+                <div class="step-circle" id="stepCircle4">
                     <i class="bi bi-check-circle"></i>
                 </div>
                 <small class="text-muted d-block mt-2">Persetujuan</small>
+                <div class="step-number">4</div>
             </div>
         </div>
     </div>
 </div>
 
 <div class="card modern-card">
-    <div class="card-header bg-gradient-primary text-white">
+    <div class="card-header bg-mining-gradient text-white">
         <h5 class="mb-0">
             <i class="bi bi-clipboard-data me-2"></i>Detail Reservasi
         </h5>
@@ -61,12 +68,14 @@
     <div class="card-body">
         <form asp-action="Create" method="post" id="reservationForm">
             <div asp-validation-summary="ModelOnly" class="alert alert-danger d-none"></div>
-            
-            <!-- Step 1: Requester Information -->
+              <!-- Step 1: Requester Information -->
             <div class="form-step active" id="step1">
-                <h6 class="text-primary mb-3">
-                    <i class="bi bi-person-badge me-2"></i>Informasi Pemohon
-                </h6>
+                <div class="step-header mb-4">
+                    <h6 class="text-mining-primary mb-2">
+                        <i class="bi bi-person-badge me-2"></i>Informasi Pemohon
+                    </h6>
+                    <p class="text-muted mb-0">Masukkan informasi pemohon dan tujuan penggunaan kendaraan</p>
+                </div>
                 
                 <div class="row">
                     <div class="col-md-6">
@@ -116,17 +125,20 @@
                     </label>
                     <input type="text" class="form-control form-control-modern" id="customPurpose" placeholder="Jelaskan tujuan penggunaan kendaraan" />
                 </div>
-                
-                <div class="d-flex justify-content-end">
-                    <button type="button" class="btn btn-primary" onclick="nextStep(2)">
+                  <div class="d-flex justify-content-end">
+                    <button type="button" class="btn btn-mining-primary px-4" onclick="nextStep(2)">
                         Selanjutnya <i class="bi bi-arrow-right ms-1"></i>
                     </button>
                 </div>
-            </div>            <!-- Step 2: Vehicle Selection -->
-            <div class="form-step" id="step2">
-                <h6 class="text-primary mb-3">
-                    <i class="bi bi-truck me-2"></i>Pilih Kendaraan & Pengemudi
-                </h6>
+            </div>
+            
+            <!-- Step 2: Vehicle Selection -->            <div class="form-step" id="step2">
+                <div class="step-header mb-4">
+                    <h6 class="text-mining-primary mb-2">
+                        <i class="bi bi-truck me-2"></i>Pilih Kendaraan & Pengemudi
+                    </h6>
+                    <p class="text-muted mb-0">Pilih kendaraan yang sesuai dengan kebutuhan dan tentukan pengemudi</p>
+                </div>
                 
                 <div class="row">                    <!-- Vehicle Selection - Enhanced -->
                     <div class="col-md-6">
@@ -233,22 +245,23 @@
                         </div>
                     </div>
                 </div>
-                
-                <div class="d-flex justify-content-between">
-                    <button type="button" class="btn btn-outline-secondary" onclick="previousStep(1)">
+                  <div class="d-flex justify-content-between">
+                    <button type="button" class="btn btn-outline-mining-secondary" onclick="previousStep(1)">
                         <i class="bi bi-arrow-left me-1"></i>Sebelumnya
                     </button>
-                    <button type="button" class="btn btn-primary" onclick="nextStep(3)">
+                    <button type="button" class="btn btn-mining-primary px-4" onclick="nextStep(3)">
                         Selanjutnya <i class="bi bi-arrow-right ms-1"></i>
                     </button>
                 </div>
             </div>
-            
-            <!-- Step 3: Schedule & Destination -->
+              <!-- Step 3: Schedule & Destination -->
             <div class="form-step" id="step3">
-                <h6 class="text-primary mb-3">
-                    <i class="bi bi-calendar-event me-2"></i>Jadwal & Tujuan
-                </h6>
+                <div class="step-header mb-4">
+                    <h6 class="text-mining-primary mb-2">
+                        <i class="bi bi-calendar-event me-2"></i>Jadwal & Tujuan
+                    </h6>
+                    <p class="text-muted mb-0">Tentukan waktu penggunaan dan tujuan perjalanan</p>
+                </div>
                 
                 <div class="row">
                     <div class="col-md-6">
@@ -293,37 +306,31 @@
                     </div>
                     <span asp-validation-for="Destination" class="text-danger small"></span>
                 </div>
-                
-                <div class="d-flex justify-content-between">
-                    <button type="button" class="btn btn-outline-secondary" onclick="previousStep(2)">
+                  <div class="d-flex justify-content-between">
+                    <button type="button" class="btn btn-outline-mining-secondary" onclick="previousStep(2)">
                         <i class="bi bi-arrow-left me-1"></i>Sebelumnya
                     </button>
-                    <button type="button" class="btn btn-primary" onclick="nextStep(4)">
+                    <button type="button" class="btn btn-mining-primary px-4" onclick="nextStep(4)">
                         Selanjutnya <i class="bi bi-arrow-right ms-1"></i>
                     </button>
                 </div>
             </div>
-            
-            <!-- Step 4: Approval -->
+              <!-- Step 4: Approval -->
             <div class="form-step" id="step4">
-                <h6 class="text-primary mb-3">
-                    <i class="bi bi-person-check me-2"></i>Persetujuan
-                </h6>
+                <div class="step-header mb-4">
+                    <h6 class="text-mining-primary mb-2">
+                        <i class="bi bi-person-check me-2"></i>Persetujuan
+                    </h6>
+                    <p class="text-muted mb-0">Pilih penyetuju yang berwenang untuk menyetujui reservasi ini</p>
+                </div>
                 
-                <div class="alert alert-info">
-                    <i class="bi bi-info-circle me-2"></i>
-                    <strong>Catatan:</strong> Reservasi memerlukan persetujuan dari minimal 2 pihak yang berwenang. Pilih penyetuju sesuai dengan kebijakan perusahaan.
-                </div>            <!-- Step 4: Approval -->
-            <div class="form-step" id="step4">
-                <h6 class="text-primary mb-3">
-                    <i class="bi bi-person-check me-2"></i>Persetujuan
-                </h6>
-                
-                <div class="alert alert-info border-info bg-info bg-opacity-10">
-                    <div class="d-flex align-items-center">
-                        <i class="bi bi-info-circle me-2 text-info fs-5"></i>
+                <div class="alert alert-info border-0 shadow-sm mb-4">
+                    <div class="d-flex align-items-start">
+                        <div class="alert-icon me-3">
+                            <i class="bi bi-info-circle-fill text-info fs-4"></i>
+                        </div>
                         <div>
-                            <strong>Persetujuan Diperlukan</strong>
+                            <h6 class="alert-heading text-info mb-2">Persetujuan Diperlukan</h6>
                             <p class="mb-0">Reservasi memerlukan persetujuan dari <strong>minimal 2 pihak</strong> yang berwenang. Pilih penyetuju sesuai dengan kebijakan perusahaan untuk mempercepat proses persetujuan.</p>
                         </div>
                     </div>
