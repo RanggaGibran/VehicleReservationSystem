@@ -27,40 +27,7 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav ms-auto">
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">
-                                <i class="bi bi-house-door me-1"></i>Beranda
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Dashboard" asp-action="Index">
-                                <i class="bi bi-speedometer2 me-1"></i>Dashboard
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Reservation" asp-action="Index">
-                                <i class="bi bi-calendar-check me-1"></i>Reservasi
-                            </a>
-                        </li>
-                        @if (SignInManager.IsSignedIn(User) && UserManager.IsInRoleAsync(UserManager.GetUserAsync(User).Result, "Approver").Result)
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-controller="Approval" asp-action="Index">
-                                    <i class="bi bi-check-circle me-1"></i>Persetujuan
-                                </a>
-                            </li>
-                        }
-                        @if (SignInManager.IsSignedIn(User) && UserManager.IsInRoleAsync(UserManager.GetUserAsync(User).Result, "Admin").Result)
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-controller="Report" asp-action="Index">
-                                    <i class="bi bi-graph-up me-1"></i>Laporan
-                                </a>
-                            </li>
-                        }
-                    </ul>
-                    <partial name="_LoginPartial" />
+                    @await Component.InvokeAsync("RoleMenu")
                 </div>
             </div>
         </nav>
