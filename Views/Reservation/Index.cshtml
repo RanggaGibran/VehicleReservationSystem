@@ -1,4 +1,7 @@
 @model IEnumerable<VehicleReservationSystem.Models.Reservation>
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
 
 @{
     ViewData["Title"] = "Manajemen Reservasi";
@@ -17,9 +20,12 @@
         <button class="btn btn-outline-secondary btn-sm" onclick="refreshReservations()">
             <i class="bi bi-arrow-clockwise me-1"></i>Refresh
         </button>
-        <a asp-action="Create" class="btn btn-primary">
-            <i class="bi bi-plus-circle me-1"></i>Buat Reservasi Baru
-        </a>
+        @if (!(SignInManager.IsSignedIn(User) && (UserManager.IsInRoleAsync(UserManager.GetUserAsync(User).Result, "Admin").Result || UserManager.IsInRoleAsync(UserManager.GetUserAsync(User).Result, "Approver").Result)))
+        {
+            <a asp-action="Create" class="btn btn-primary">
+                <i class="bi bi-plus-circle me-1"></i>Buat Reservasi Baru
+            </a>
+        }
     </div>
 </div>
 
