@@ -464,8 +464,8 @@
     <script>
         // Global variables
         let currentStep = 1;
-        
-        // Handle purpose selection change
+
+        // --- GLOBAL FUNCTIONS ---
         function handlePurposeChange() {
             const purposeSelect = document.getElementById('Purpose');
             const customPurposeDiv = document.getElementById('customPurposeDiv');
@@ -485,7 +485,6 @@
             }
         }
 
-        // Navigate to next step
         function nextStep(step) {
             if (!validateCurrentStep()) {
                 return false;
@@ -498,7 +497,6 @@
             return true;
         }
 
-        // Navigate to previous step
         function previousStep(step) {
             updateStepCircle(currentStep, false, false);
             currentStep = step;
@@ -507,7 +505,6 @@
             $('#step' + step).addClass('active').show();
         }
 
-        // Update step circle appearance
         function updateStepCircle(stepNum, isActive, isCompleted) {
             const circle = $('#stepCircle' + stepNum);
             if (!circle.length) return;
@@ -528,7 +525,6 @@
             }
         }
 
-        // Validate current step
         function validateCurrentStep() {
             let isValid = true;
             const step = currentStep;
@@ -556,18 +552,17 @@
             return isValid;
         }
 
-        // Initialize form wizard on document ready
-        $(document).ready(function() {
-            initializeForm();
-        });
-
-        // Initialize form wizard
         function initializeForm() {
             currentStep = 1;
             updateStepCircle(1, true, false);
             $('.form-step').removeClass('active').hide();
             $('#step1').addClass('active').show();
         }
+
+        // --- INIT CODE ---
+        $(document).ready(function() {
+            initializeForm();
+        });
     </script>
 }
 
@@ -1884,7 +1879,7 @@
 
 .form-control-modern.is-invalid, .form-select-modern.is-invalid {
     border-color: var(--mining-danger);
-       box-shadow: 0 0 0 0.25rem rgba(229, 62, 62, 0.15);
+    box-shadow: 0 0 0 0.25rem rgba(229, 62, 62, 0.15);
     animation: shake 0.5s ease-in-out;
 }
 
