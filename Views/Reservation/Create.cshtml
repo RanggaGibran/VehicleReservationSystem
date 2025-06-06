@@ -462,8 +462,116 @@
 
 @section Scripts {
     <script>
+        // Global variables
         let currentStep = 1;
         
+        // Handle purpose selection change
+        function handlePurposeChange() {
+            const purposeSelect = document.getElementById('Purpose');
+            const customPurposeDiv = document.getElementById('customPurposeDiv');
+            
+            if (purposeSelect && customPurposeDiv) {
+                if (purposeSelect.value === 'Lainnya') {
+                    customPurposeDiv.style.display = 'block';
+                    const customInput = document.getElementById('customPurpose');
+                    if (customInput) customInput.required = true;
+                } else {
+                    customPurposeDiv.style.display = 'none';
+                    const customInput = document.getElementById('customPurpose');
+                    if (customInput) {
+                        customInput.required = false;
+                        customInput.value = '';
+                    }
+                }
+            }
+        }
+
+        // Navigate to next step
+        function nextStep(step) {
+            // Simple validation
+            if (!validateCurrentStep()) {
+                return false;
+            }
+            
+            // Update step circles
+            updateStepCircle(currentStep, false, true);
+            currentStep = step;
+            updateStepCircle(currentStep, true, false);
+            
+            // Show/hide form steps
+            $('.form-step').removeClass('active').hide();
+            $('#step' + step).addClass('active').show();
+            
+            return true;
+        }
+
+        // Navigate to previous step
+        function previousStep(step) {
+            updateStepCircle(currentStep, false, false);
+            currentStep = step;
+            updateStepCircle(currentStep, true, false);
+            
+            $('.form-step').removeClass('active').hide();
+            $('#step' + step).addClass('active').show();
+        }
+
+        // Update step circle appearance
+        function updateStepCircle(stepNum, isActive, isCompleted) {
+            const circle = $('#stepCircle' + stepNum);
+            if (!circle.length) return;
+            
+            circle.removeClass('active completed pulse-animation');
+            
+            if (isCompleted) {
+                circle.addClass('completed');
+                circle.find('i').removeClass().addClass('bi bi-check-lg');
+            } else if (isActive) {
+                circle.addClass('active pulse-animation');
+            } else {
+                const originalIcons = {
+                    1: 'bi-person-fill',
+                    2: 'bi-truck', 
+                    3: 'bi-calendar-event',
+                    4: 'bi-check-circle'
+                };
+                circle.find('i').removeClass().addClass('bi ' + originalIcons[stepNum]);
+            }
+        }
+
+        // Simple validation
+        function validateCurrentStep() {
+            let isValid = true;
+            
+            if (currentStep === 1) {
+                const requesterId = $('#RequesterId').val();
+                const passengers = $('#NumberOfPassengers').val();
+                const purpose = $('#Purpose').val();
+                
+                if (!requesterId || !passengers || !purpose) {
+                    alert('Harap lengkapi semua field yang diperlukan');
+                    isValid = false;
+                }
+                
+                if (purpose === 'Lainnya' && !$('#customPurpose').val()) {
+                    alert('Harap jelaskan tujuan lainnya');
+                    isValid = false;
+                }
+            } else if (currentStep === 2) {
+                if (!$('#VehicleId').val()) {
+                    alert('Harap pilih kendaraan');
+                    isValid = false;
+                }
+            } else if (currentStep === 3) {
+                if (!$('#StartDate').val() || !$('#EndDate').val() || !$('#Destination').val()) {
+                    alert('Harap lengkapi jadwal dan tujuan');
+                    isValid = false;
+                }
+            }
+            
+            return isValid;
+        }
+
+        // Document ready
         $(document).ready(function() {
             // Set minimum date to today and clear any invalid initial values
             const now = new Date();
@@ -681,26 +789,6 @@
             if (selectedCount >= minApprovers && selectedCount <= maxApprovers) {
                 $('#approverError').addClass('d-none');
                 $('.approver-container').removeClass('is-invalid');
-            }
-        }
-
-        // Handle purpose selection change
-        function handlePurposeChange() {
-            const purposeSelect = document.getElementById('Purpose');
-            const customPurposeDiv = document.getElementById('customPurposeDiv');
-            
-            if (purposeSelect.value === 'Lainnya') {
-                customPurposeDiv.style.display = 'block';
-                document.getElementById('customPurpose').required = true;
-                // Animate in
-                $(customPurposeDiv).hide().slideDown(300);
-            } else {
-                document.getElementById('customPurpose').required = false;
-                document.getElementById('customPurpose').value = '';
-                // Animate out
-                $(customPurposeDiv).slideUp(300, function() {
-                    this.style.display = 'none';
-                });
             }
         }
 
@@ -1061,226 +1149,6 @@
 }
 
 /* Step Circle Enhancements */
-.step-circle {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #e9ecef, #f8f9fa);
-    border: 3px solid #dee2e6;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #6c757d;
-    font-size: 1.5rem;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-    margin: 0 auto;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-}
-
-.step-circle::before {
-    content: '';
-    position: absolute;
-    top: -5px;
-    left: -5px;
-    right: -5px;
-    bottom: -5px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, var(--mining-primary), var(--mining-accent));
-    opacity: 0;
-    transition: all 0.4s ease;
-    z-index: -1;
-}
-
-.step-circle.active {
-    background: linear-gradient(135deg, var(--mining-primary), var(--mining-secondary));
-    border-color: var(--mining-primary);
-    color: white;
-    transform: scale(1.1);
-    box-shadow: 0 8px 25px rgba(26, 54, 93, 0.3);
-}
-
-.step-circle.active::before {
-    opacity: 1;
-    animation: ripple 2s infinite;
-}
-
-.step-circle.completed {
-    background: linear-gradient(135deg, var(--mining-success), #48bb78);
-    border-color: var(--mining-success);
-    color: white;
-    transform: scale(1.05);
-    box-shadow: 0 6px 20px rgba(56, 161, 105, 0.3);
-}
-
-@@keyframes ripple {
-    0% { transform: scale(1); opacity: 1; }
-    100% { transform: scale(1.4); opacity: 0; }
-}
-
-/* Progress Steps Container */
-.progress-steps {
-    position: relative;
-}
-
-.progress-steps::before {
-    content: '';
-    position: absolute;
-    top: 30px;
-    left: 12.5%;
-    right: 12.5%;
-    height: 3px;
-    background: linear-gradient(to right, #dee2e6, #dee2e6);
-    z-index: -1;
-    border-radius: 2px;
-}
-
-/* Modern Card Styling */
-.modern-card {
-    border: none;
-    border-radius: 1rem;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-    overflow: hidden;
-    transition: all 0.3s ease;
-}
-
-.modern-card:hover {
-    box-shadow: 0 8px 30px rgba(0,0,0,0.12);
-    transform: translateY(-2px);
-}
-
-.modern-card .card-header {
-    background: linear-gradient(135deg, var(--mining-primary), var(--mining-secondary));
-    border: none;
-    padding: 1.5rem;
-    border-radius: 0;
-}
-
-/* Form Controls Enhancement */
-.form-control-modern, .form-select-modern {
-    border: 2px solid #e9ecef;
-    border-radius: 0.75rem;
-    padding: 0.875rem 1.25rem;
-    font-size: 0.95rem;
-    transition: all 0.3s ease;
-    background: #ffffff;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-}
-
-.form-control-modern:focus, .form-select-modern:focus {
-    border-color: var(--mining-accent);
-    box-shadow: 0 0 0 0.25rem rgba(212, 175, 55, 0.15);
-    background-color: #fff;
-    transform: translateY(-1px);
-}
-
-.form-control-modern.is-invalid, .form-select-modern.is-invalid {
-    border-color: var(--mining-danger);
-    box-shadow: 0 0 0 0.25rem rgba(229, 62, 62, 0.15);
-    animation: shake 0.5s ease-in-out;
-}
-
-/* Button Enhancements */
-.btn {
-    border-radius: 0.75rem;
-    padding: 0.875rem 1.75rem;
-    font-weight: 600;
-    transition: all 0.3s ease;
-    border: none;
-    font-size: 0.95rem;
-}
-
-.btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
-}
-
-.btn-primary {
-    background: linear-gradient(135deg, var(--mining-primary), var(--mining-info));
-    color: white;
-    box-shadow: 0 4px 15px rgba(26, 54, 93, 0.3);
-}
-
-.btn-primary:hover {
-    background: linear-gradient(135deg, var(--mining-info), var(--mining-primary));
-    box-shadow: 0 6px 25px rgba(26, 54, 93, 0.4);
-}
-
-.btn-success {
-    background: linear-gradient(135deg, var(--mining-success), #48bb78);
-    color: white;
-    box-shadow: 0 4px 15px rgba(56, 161, 105, 0.3);
-}
-
-.btn-success:hover {
-    background: linear-gradient(135deg, #48bb78, var(--mining-success));
-    box-shadow: 0 6px 25px rgba(56, 161, 105, 0.4);
-}
-
-.btn-outline-secondary {
-    border: 2px solid var(--mining-secondary);
-    color: var(--mining-secondary);
-    background: transparent;
-}
-
-.btn-outline-secondary:hover {
-    background: var(--mining-secondary);
-    color: white;
-}
-
-/* Enhanced Animations and Effects */
-.pulse-animation {
-    animation: pulse 2s infinite;
-}
-
-@@keyframes pulse {
-    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(26, 54, 93, 0.4); }
-    70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(26, 54, 93, 0); }
-    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(26, 54, 93, 0); }
-}
-
-.shake-animation {
-    animation: shake 0.5s ease-in-out;
-}
-
-.btn-loading {
-    position: relative;
-    color: transparent !important;
-}
-
-.btn-loading::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 20px;
-    height: 20px;
-    margin: -10px 0 0 -10px;
-    border: 2px solid #ffffff;
-    border-radius: 50%;
-    border-top-color: transparent;
-    animation: spin 1s linear infinite;
-}
-
-@@keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-}
-
-/* Validation Alert Styles */
-.validation-alert {
-    border-left: 4px solid #dc3545;
-    margin-bottom: 1.5rem;
-    animation: slideDown 0.3s ease-out;
-}
-
-@@keyframes slideDown {
-    from { opacity: 0; transform: translateY(-10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-/* Enhanced Step Circle Styles */
 .step-circle {
     width: 60px;
     height: 60px;
